@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Indian Pay App</title>
+    <!-- Fonts और Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { --primary-color: #00a884; --secondary-color: #1f2937; --text-color: #334155; --bg-color: #f8fafc; --card-bg: #ffffff; --danger-color: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        h1, h2, h3 { color: var(--secondary-color); font-weight: 700; }
+        
+        /* Header */
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: 500; }
+        
+        /* Hero Section */
+        .download-hero { padding: 5rem 0; background: var(--card-bg); }
+        .hero-content { display: flex; align-items: center; gap: 3rem; }
+        .hero-text { flex: 1; }
+        .hero-text h1 { font-size: 3rem; line-height: 1.2; margin-bottom: 1.5rem; }
+        .hero-text p { font-size: 1.1rem; color: #64748b; margin-bottom: 2.5rem; }
+        .download-button { display: inline-flex; align-items: center; background-color: var(--primary-color); color: white; text-decoration: none; padding: 1rem 2.5rem; border-radius: 12px; font-size: 1.2rem; font-weight: 700; transition: all 0.3s ease; }
+        .download-button:hover { background-color: #008a6e; transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .download-button i { font-size: 1.5rem; margin-right: 12px; }
+        .hero-image { flex: 1; display: flex; justify-content: center; align-items: center; }
+
+        /* ===== फोन मॉक-अप के लिए नया CSS ===== */
+        .phone-mockup {
+            width: 280px;
+            height: 560px;
+            background: var(--secondary-color);
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: floatAnimation 4s ease-in-out infinite;
+        }
+        .phone-screen {
+            background: var(--bg-color);
+            height: 100%;
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .mockup-icon {
+            font-size: 5rem;
+            color: var(--primary-color);
+        }
+        .mockup-text h3 {
+            font-size: 1.8rem;
+            margin-top: 1.5rem;
+        }
+        .mockup-text p {
+            font-size: 1rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+        }
+        .mockup-button {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 20px;
+            margin-top: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        @keyframes floatAnimation {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0); }
+        }
+        /* ============================================== */
+
+        /* Features Section */
+        .features-section { padding: 5rem 0; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 { font-size: 2.5rem; }
+        .section-header p { font-size: 1.1rem; color: #64748b; max-width: 600px; margin: 0.5rem auto 0; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .feature-item { background: var(--card-bg); padding: 2rem; border-radius: 12px; text-align: center; border: 1px solid #e5e7eb; }
+        .feature-item .icon { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem; }
+        .feature-item h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .feature-item p { font-size: 0.95rem; color: #64748b; line-height: 1.6; }
+
+        /* Steps Section */
+        .steps-section { padding: 5rem 0; background: var(--card-bg); }
+        .steps-grid { display: flex; justify-content: space-around; text-align: center; gap: 2rem; }
+        .step-item { max-width: 300px; }
+        .step-item .icon { font-size: 3rem; color: var(--primary-color); margin-bottom: 1.5rem; background: #e6f6f3; width: 80px; height: 80px; line-height: 80px; border-radius: 50%; }
+        .step-item h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+        /* Final CTA Section */
+        .final-cta-section { padding: 5rem 0; text-align: center; }
+        .final-cta-section h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+        .final-cta-section p { font-size: 1.1rem; color: #64748b; margin-bottom: 2.5rem; }
+        .qr-code-container img { margin-top: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; }
+
+        /* Footer */
+        .footer { background-color: var(--secondary-color); color: #e2e8f0; padding: 4rem 0 2rem; text-align: center; }
+        .footer .logo { color: white; margin-bottom: 1rem; }
+        .footer .copyright { font-size: 0.9rem; color: #94a3b8; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
+
+        @media (max-width: 992px) { 
+            .hero-content { flex-direction: column-reverse; text-align: center; } 
+            .hero-text h1 { font-size: 2.5rem; }
+            .phone-mockup { margin-top: 3rem; }
+            .steps-grid { flex-direction: column; align-items: center; } 
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">Indian<span>Pay</span></a>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="login.html">Login</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="download-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Take Your Business Anywhere with the Indian Pay App</h1>
+                        <p>Manage all your transactions, offer a wide range of services, and track your earnings on the go. Our app is fast, secure, and built for your growth.</p>
+                        <!-- ===== YAHAN APNI APK FILE KA LINK DAALEIN ===== -->
+                        <a href="indian-pay.apk" class="download-button" download>
+                            <i class="fab fa-android"></i>
+                            <div>Download for Android</div>
+                        </a>
+                        <!-- ============================================= -->
+                    </div>
+                    
+                    <!-- ===== यहाँ स्क्रीनशॉट की जगह नया मॉक-अप लगाया गया है ===== -->
+                    <div class="hero-image">
+                        <div class="phone-mockup">
+                            <div class="phone-screen">
+                                <div class="mockup-icon">
+                                    <i class="fas fa-cloud-download-alt"></i>
+                                </div>
+                                <div class="mockup-text">
+                                    <h3>Get the App</h3>
+                                    <p>Fast, Secure & Reliable</p>
+                                </div>
+                                <div class="mockup-button">
+                                    Download Now
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ======================================================= -->
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section (All Services) -->
+        <section class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>All Services in Your Pocket</h2>
+                    <p>Our app provides you with the same powerful features as our web platform, optimized for your mobile device.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-item"><div class="icon"><i class="fas fa-fingerprint"></i></div><h3>AEPS Services</h3><p>Withdraw cash, check balances, and get mini statements using Aadhaar.</p></div>
+                    <div class="feature-item"><div class="icon"><i class="fas fa-file-invoice-dollar"></i></div><h3>Bill Payments</h3><p>Pay utility bills like electricity, water, gas, and more for your customers.</p></div>
+                    <div class="feature-item"><div class="icon"><i class="fas fa-paper-plane"></i></div><h3>Money Transfer</h3><p>Send money to any bank account in India, instantly and securely.</p></div>
+                    <div class="feature-item"><div class="icon"><i class="fas fa-address-card"></i></div><h3>Aadhaar Update</h3><p>Offer essential Aadhaar demographic and biometric update services.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Steps Section -->
+        <section class="steps-section">
+            <div class="container">
+                 <div class="section-header">
+                    <h2>Get Started in 3 Easy Steps</h2>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-item"><div class="icon"><i class="fas fa-download"></i></div><h3>1. Download & Install</h3><p>Click the download button to get the secure APK file.</p></div>
+                    <div class="step-item"><div class="icon"><i class="fas fa-user-plus"></i></div><h3>2. Login or Register</h3><p>Use your existing credentials to log in or sign up.</p></div>
+                    <div class="step-item"><div class="icon"><i class="fas fa-rupee-sign"></i></div><h3>3. Start Earning</h3><p>Begin offering services and earning commissions instantly.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Section (QR Code) -->
+        <section class="final-cta-section">
+            <div class="container">
+                <h2>Ready to Grow Your Business?</h2>
+                <p>Scan the QR code with your phone's camera to download the app directly.</p>
+                <div class="qr-code-container">
+                    <!-- यह QR कोड अपने आप बन जाएगा -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <a href="index.html" class="logo">Indian<span>Pay</span></a>
+            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script>
+        // QR कोड बनाने का फंक्शन
+        document.addEventListener("DOMContentLoaded", function() {
+            const apkUrl = document.querySelector('.download-button').href;
+            const qrContainer = document.querySelector('.qr-code-container');
+            
+            if (apkUrl && qrContainer) {
+                new QRCode(qrContainer, {
+                    text: apkUrl,
+                    width: 180,
+                    height: 180,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            }
+        });
+    </script>
+</body>
+</html>

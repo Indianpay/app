@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Indian Pay</title>
+    <!-- Fuentes y Iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- ESTILOS GENERALES Y VARIABLES --- */
+        :root {
+            --primary-color: #00a884;
+            --secondary-color: #1f2937;
+            --text-color: #334155;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --danger-color: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* --- HEADER Y NAVEGACIÓN --- */
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-links .welcome-text { font-weight: 500; }
+        .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease; }
+        .nav-links .logout-btn:hover { background-color: #dc2626; }
+        
+        /* --- ÁREA PRINCIPAL DEL DASHBOARD --- */
+        main { padding: 3rem 0; }
+        
+        /* --- TARJETA DE SALDO Y BIENVENIDA --- */
+        .balance-card {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #37475a 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .balance-card h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            opacity: 0.9;
+            color: white;
+        }
+        .balance-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0 1.5rem;
+            color: white;
+        }
+        .action-buttons a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-right: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .action-buttons a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- SECCIONES DE SERVICIOS --- */
+        .service-section { margin-bottom: 3rem; }
+        .service-section h2 { font-size: 1.8rem; margin-bottom: 1.5rem; border-bottom: 3px solid var(--primary-color); display: inline-block; padding-bottom: 0.5rem; }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 168, 132, 0.1);
+        }
+        .service-icon { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem; }
+        .service-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color); }
+        
+        /* --- FOOTER --- */
+        .footer { background-color: var(--secondary-color); color: #e2e8f0; padding: 4rem 0 2rem; text-align: center; margin-top: 2rem; }
+        .footer .logo { color: white; margin-bottom: 1rem; }
+        .footer .copyright { font-size: 0.9rem; color: #94a3b8; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
+
+        /* --- SUPERPOSICIONES (OVERLAYS) --- */
+        .blocked-overlay, .custom-alert-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; justify-content: center; align-items: center;
+            z-index: 10000;
+        }
+        .blocked-overlay { background-color: rgba(0,0,0,0.85); color: white; flex-direction: column; text-align: center; }
+        .custom-alert-overlay { background-color: rgba(0,0,0,0.5); }
+        
+        .blocked-box, .custom-alert-box {
+            background: var(--card-bg); color: var(--text-color); padding: 2.5rem;
+            border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%; max-width: 450px; text-align: center;
+        }
+        .blocked-box h2 { font-size: 2rem; color: var(--danger-color); margin-bottom: 1rem; }
+        .blocked-box p { font-size: 1.1rem; margin-bottom: 2rem; }
+        .custom-alert-box h3 { font-size: 1.5rem; color: var(--secondary-color); margin-bottom: 1rem; }
+        .custom-alert-box p { font-size: 1rem; margin-bottom: 1.5rem; }
+        .custom-alert-box button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- === HEADER === -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="home.html" class="logo">Indian<span>Pay</span></a>
+                <div class="nav-links">
+                    <span class="welcome-text">Welcome, <strong id="user-name">User</strong></span>
+                    <a href="#" onclick="showAlert('Coming Soon', 'Profile page is under construction.')">Profile</a>
+                    <button id="logout-btn" class="logout-btn">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- === CONTENIDO PRINCIPAL DEL DASHBOARD === -->
+    <main>
+        <div class="container">
+            <!-- Tarjeta de Saldo -->
+            <section class="balance-card">
+                <h1>Main Balance</h1>
+                <div class="balance-display" id="wallet-balance">₹--.--</div>
+                <div class="action-buttons">
+                    <a href="#" onclick="showAlert('Coming Soon', 'Add Money functionality will be available soon.')"><i class="fas fa-plus-circle"></i> Add Money</a>
+                    <a href="#" onclick="showAlert('Coming Soon', 'View your transaction reports here.')"><i class="fas fa-chart-pie"></i> Reports</a>
+                    <a href="#" onclick="showAlert('Info', 'Commission Chart is not yet available.')"><i class="fas fa-percent"></i> Commission Chart</a>
+                </div>
+            </section>
+
+            <!-- Sección de Servicios AEPS -->
+            <section class="service-section">
+                <h2>AEPS Services</h2>
+                <div class="service-grid">
+                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Cash Withdrawal')">
+                        <div class="service-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <h3>Cash Withdrawal</h3>
+                    </a>
+                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Aadhaar Pay')">
+                        <div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div>
+                        <h3>Aadhaar Pay</h3>
+                    </a>
+                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Balance Inquiry')">
+                        <div class="service-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                        <h3>Balance Inquiry</h3>
+                    </a>
+                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Mini Statement')">
+                        <div class="service-icon"><i class="fa-solid fa-receipt"></i></div>
+                        <h3>Mini Statement</h3>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Sección de Servicios de Utilidad -->
+            <section class="service-section">
+                <h2>Utility & Payments</h2>
+                <div class="service-grid">
+                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Mobile Recharge')">
+                        <div class="service-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                        <h3>Mobile Recharge</h3>
+                    </a>
+                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Money Transfer')">
+                        <div class="service-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                        <h3>Money Transfer</h3>
+                    </a>
+                     <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'DTH Recharge')">
+                        <div class="service-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                        <h3>DTH Recharge</h3>
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Sección de Servicios BBPS -->
+             <section class="service-section">
+                <h2>BBPS Services</h2>
+                <div class="service-grid">
+                     <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Broadband')">
+                        <div class="service-icon"><i class="fa-solid fa-wifi"></i></div>
+                        <h3>Broadband</h3>
+                    </a>
+                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Cable TV')">
+                        <div class="service-icon"><i class="fa-solid fa-tv"></i></div>
+                        <h3>Cable TV</h3>
+                    </a>
+                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Electricity')">
+                        <div class="service-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <h3>Electricity</h3>
+                    </a>
+                     
+                    <!-- ===== CÓDIGO MODIFICADO AQUÍ ===== -->
+                    <a href="all-services.html" class="service-card">
+                        <div class="service-icon"><i class="fa-solid fa-ellipsis"></i></div>
+                        <h3>View All</h3>
+                    </a>
+                    <!-- ===== FIN DE LA MODIFICACIÓN ===== -->
+
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- === FOOTER === -->
+    <footer class="footer">
+        <div class="container">
+            <a href="home.html" class="logo">Indian<span>Pay</span></a>
+            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Contenedores para Overlays -->
+    <div id="blocked-overlay" class="blocked-overlay"></div>
+    <div id="custom-alert" class="custom-alert-overlay"></div>
+
+    <!-- === SCRIPTS DE FIREBASE === -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        // El script de JavaScript no ha cambiado, ya que la modificación fue solo en el HTML.
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", 
+            authDomain: "indianpay425.firebaseapp.com",
+            projectId: "indianpay425", 
+            storageBucket: "indianpay425.appspot.com", 
+            messagingSenderId: "6705555817", 
+            appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const userNameEl = document.getElementById('user-name');
+        const walletBalanceEl = document.getElementById('wallet-balance');
+        const blockedOverlay = document.getElementById('blocked-overlay');
+        const customAlert = document.getElementById('custom-alert');
+        const logoutBtn = document.getElementById('logout-btn');
+        
+        function showAlert(title, message) {
+            customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button onclick="closeAlert()">OK</button></div>`;
+            customAlert.style.display = 'flex';
+        }
+        function closeAlert() {
+            customAlert.style.display = 'none';
+        }
+
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut();
+        });
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                const userDocRef = db.collection('users').doc(user.uid);
+                userDocRef.onSnapshot(doc => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        userNameEl.textContent = userData.fullName || 'User';
+                        if (userData.isBlocked === true) {
+                            blockedOverlay.innerHTML = `
+                                <div class="blocked-box">
+                                    <h2>Account Blocked</h2>
+                                    <p>Your account has been temporarily blocked. Please contact support.</p>
+                                </div>`;
+                            blockedOverlay.style.display = 'flex';
+                            setTimeout(() => auth.signOut(), 5000);
+                        } else {
+                            blockedOverlay.style.display = 'none';
+                            walletBalanceEl.textContent = `₹${(userData.walletBalance || 0).toFixed(2)}`;
+                        }
+                    } else { 
+                        showAlert("Error", "User data not found. Logging out.");
+                        auth.signOut(); 
+                    }
+                }, error => { 
+                    console.error("Firestore Error:", error); 
+                    showAlert("Error", "Could not fetch user data. Check security rules.");
+                    auth.signOut(); 
+                });
+            } else { 
+                window.location.href = 'index.html'; 
+            }
+        });
+    </script>
+</body>
+</html>

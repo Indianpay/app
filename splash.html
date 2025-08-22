@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading - Indian Pay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- आपकी हरी थीम के साथ --- */
+        :root { --primary-color: #00a884; }
+        body, html { margin: 0; padding: 0; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #f4f5f7; font-family: 'Poppins', sans-serif; }
+        .mobile-screen {
+            width: 375px; height: 100%; max-height: 812px;
+            background-color: #1a1a1a;
+            border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; overflow: hidden; padding: 20px; text-align: center;
+        }
+        .logo { font-size: 48px; font-weight: 700; letter-spacing: -1px; }
+        .logo .sp { background: linear-gradient(to right, #00c6ff, #0072ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .logo .pay { color: #f4f5f7; }
+        .loader-container { margin-top: 40px; }
+        .dot-loader { display: flex; justify-content: center; align-items: center; }
+        .dot { width: 12px; height: 12px; background-color: white; border-radius: 50%; margin: 0 6px; animation: dot-bounce 1.4s infinite ease-in-out both; }
+        .dot.dot1 { animation-delay: -0.32s; }
+        .dot.dot2 { animation-delay: -0.16s; }
+        @keyframes dot-bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+        #status-text { color: rgba(255, 255, 255, 0.7); margin-top: 25px; font-size: 16px; font-weight: 500; transition: color 0.5s ease; }
+        #status-text.error { color: #ff6b6b; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="mobile-screen">
+        <div class="logo"><span class="sp">INDIAN</span><span class="pay">PAY</span></div>
+        <div class="loader-container">
+            <div class="dot-loader">
+                <div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div>
+            </div>
+        </div>
+        <p id="status-text">Authenticating...</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const statusText = document.getElementById('status-text');
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                statusText.textContent = 'Checking account status...';
+                const userDocRef = db.collection('users').doc(user.uid);
+
+                userDocRef.get().then(doc => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+
+                        // जांच 1: क्या यूज़र ब्लॉक है?
+                        if (userData.isBlocked === true) {
+                            statusText.textContent = 'Blocked by Admin. Contact support.';
+                            statusText.classList.add('error');
+                            setTimeout(() => { auth.signOut().then(() => { window.location.href = 'login.html'; }); }, 3000);
+                            return;
+                        }
+
+                        // जांच 2: क्या अकाउंट एक्टिव है?
+                        if (userData.accountStatus === 'active') {
+                            statusText.textContent = 'Login successful! Redirecting...';
+                            setTimeout(() => { window.location.replace('home.html'); }, 1500);
+                        } else if (userData.accountStatus === 'pending') {
+                            // अगर पेंडिंग है, तो नए 'pending' पेज पर भेजो
+                            statusText.textContent = 'Account is under review...';
+                            setTimeout(() => { window.location.replace('payment-pending.html'); }, 1500);
+                        } else {
+                            // कोई और स्टेटस होने पर
+                            statusText.textContent = 'Account status is invalid. Contact support.';
+                            statusText.classList.add('error');
+                            setTimeout(() => { auth.signOut().then(() => { window.location.href = 'login.html'; }); }, 3000);
+                        }
+                    } else {
+                        statusText.textContent = 'User data not found.';
+                        statusText.classList.add('error');
+                        setTimeout(() => { auth.signOut().then(() => { window.location.href = 'login.html'; }); }, 3000);
+                    }
+                }).catch(error => {
+                    statusText.textContent = 'Error fetching data. Logging out.';
+                    statusText.classList.add('error');
+                    console.error("Firestore error:", error);
+                    setTimeout(() => { auth.signOut().then(() => { window.location.href = 'login.html'; }); }, 3000);
+                });
+
+            } else {
+                window.location.replace('login.html');
+            }
+        });
+    </script>
+</body>
+</html>```
+
+---
+
+### स्टेप 2: `payment-pending.html` (नई फाइल) बनाएं
+
+अब, एक **नई फाइल** बनाएं और उसे **`payment-pending.html`** नाम से सेव करें। यह पेज उन यूज़र्स को दिखाया जाएगा जिनका अकाउंट अभी 'pending' स्टेटस में है।
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Pending - Indian Pay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- आपकी हरी थीम के साथ --- */
+        :root { --primary-color: #00a884; }
+        body, html { margin: 0; padding: 0; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #f4f5f7; font-family: 'Poppins', sans-serif; }
+        .mobile-screen {
+            width: 375px; height: 100%; max-height: 812px;
+            background-color: #ffffff;
+            border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; overflow: hidden; padding: 30px; text-align: center;
+        }
+        .icon-container {
+            font-size: 5rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1rem;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+        .logout-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-screen">
+        <div class="icon-container">
+            <i class="fas fa-hourglass-half"></i>
+        </div>
+        <h1>Account Under Review</h1>
+        <p>Your registration is complete and your account is currently being reviewed. It will be activated within 24 hours. Please wait for the confirmation.</p>
+        <button class="logout-btn" id="logout-button">Logout</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        
+        document.getElementById('logout-button').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>

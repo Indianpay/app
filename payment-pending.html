@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Pending - Indian Pay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- आपकी हरी थीम के साथ --- */
+        :root { --primary-color: #00a884; --primary-dark: #007a5f; --secondary-color: #1f2937; }
+        body, html { margin: 0; padding: 0; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #f4f5f7; font-family: 'Poppins', sans-serif; }
+        .mobile-screen {
+            width: 375px; height: 100%; max-height: 812px;
+            background-color: #f9fafb;
+            border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+        }
+        .header { background-color: #1a1a1a; color: white; padding: 20px 25px 25px; text-align: center; position: relative; flex-shrink: 0; }
+        .header .logo { font-size: 28px; font-weight: 700; }
+        .header .logo .sp { background: linear-gradient(to right, #00c6ff, #0072ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .header .logout-btn { position: absolute; top: 20px; right: 20px; color: white; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        
+        /* ===== यहाँ बदलाव किया गया है ===== */
+        .content { 
+            padding: 25px; 
+            text-align: center; 
+            flex-grow: 1; 
+            overflow-y: auto; /* कंटेंट को स्क्रॉल करने योग्य बनाया */
+            padding-bottom: 100px; /* नीचे बटन के लिए जगह बनाई */
+        }
+        
+        .icon-container { font-size: 4rem; color: #f59e0b; margin-bottom: 1.5rem; }
+        h1 { font-size: 1.6rem; color: var(--secondary-color); margin-bottom: 1rem; }
+        p.subtitle { font-size: 1rem; color: #4b5563; line-height: 1.6; margin-bottom: 2rem; }
+        .user-details-card { background-color: white; border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 2rem; border: 1px solid #e5e7eb; }
+        .user-details-card p { margin: 10px 0; font-size: 1rem; color: #374151; }
+        .user-details-card strong { color: var(--secondary-color); float: right; }
+        
+        /* ===== बटन के लिए नया फुटर बनाया गया है ===== */
+        .action-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            padding: 20px 25px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            border-top: 1px solid #e5e7eb;
+            z-index: 10;
+        }
+        .pay-btn { background-color: var(--primary-color); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; transition: background-color 0.3s; }
+        .pay-btn:hover { background-color: var(--primary-dark); }
+        .pay-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+
+        /* Payment और Alert Overlay (पहले जैसा) */
+        .payment-overlay, .custom-alert-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; }
+        .payment-box, .custom-alert-box { background: white; padding: 20px; border-radius: 15px; text-align: center; width: 85%; }
+        .payment-box button, .custom-alert-box button { background-color: var(--primary-color); color: white; padding: 10px 25px; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="mobile-screen">
+        <header class="header">
+            <div class="logo"><span class="sp">INDIAN</span><span class="pay">PAY</span></div>
+            <button id="logout-btn" class="logout-btn" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        </header>
+        <div class="content">
+            <div class="icon-container"><i class="fas fa-exclamation-triangle"></i></div>
+            <h1>Action Required</h1>
+            <p class="subtitle">Your account is not active yet. Please complete the ID charge payment to activate your services.</p>
+            <div class="user-details-card">
+                <p>Full Name: <strong id="user-fullname">Loading...</strong></p>
+                <p>Email: <strong id="user-email">Loading...</strong></p>
+                <p>ID Role: <strong id="user-role">Loading...</strong></p>
+                <p>ID Charge: <strong id="id-charge-amount">₹--</strong></p>
+            </div>
+        </div>
+        
+        <!-- ===== बटन को फुटर में रखा गया है ===== -->
+        <div class="action-footer">
+            <button class="pay-btn" id="pay-charge-btn" disabled>Pay ID Charge</button>
+        </div>
+    </div>
+
+    <div id="payment-overlay" class="payment-overlay"></div>
+    <div id="custom-alert" class="custom-alert-overlay"></div>
+
+    <!-- JavaScript में कोई बदलाव नहीं -->
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const userFullnameEl = document.getElementById('user-fullname');
+        const userEmailEl = document.getElementById('user-email');
+        const userRoleEl = document.getElementById('user-role');
+        const idChargeAmountEl = document.getElementById('id-charge-amount');
+        const payChargeBtn = document.getElementById('pay-charge-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        let appSettings = null;
+        let currentUserData = null;
+        logoutBtn.addEventListener('click', () => { auth.signOut().then(() => window.location.href = 'login.html'); });
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                Promise.all([ db.collection('users').doc(user.uid).get(), db.collection('app_settings').doc('config').get() ])
+                .then(([userDoc, settingsDoc]) => {
+                    if (!userDoc.exists) { auth.signOut(); return; }
+                    if (!settingsDoc.exists) { alert('Critical Error: App settings not found!'); return; }
+                    currentUserData = userDoc.data();
+                    appSettings = settingsDoc.data();
+                    userFullnameEl.textContent = currentUserData.fullName;
+                    userEmailEl.textContent = currentUserData.email;
+                    userRoleEl.textContent = currentUserData.role.charAt(0).toUpperCase() + currentUserData.role.slice(1);
+                    const price = appSettings.userRoles[currentUserData.role];
+                    idChargeAmountEl.textContent = `₹${price}`;
+                    payChargeBtn.disabled = false;
+                }).catch(error => { console.error("Error fetching data:", error); alert('Could not load your details. Please try again.'); });
+            } else { window.location.href = 'login.html'; }
+        });
+        payChargeBtn.addEventListener('click', () => { const price = appSettings.userRoles[currentUserData.role]; showPaymentScreen(price); });
+        const paymentOverlay = document.getElementById('payment-overlay');
+        function showPaymentScreen(amount) { const upiId = appSettings.paymentUpiId; const paymentUrl = `upi://pay?pa=${upiId}&pn=IndianPay&am=${amount}&cu=INR&tn=IDCharge-${currentUserData.role}`; paymentOverlay.innerHTML = `<div class="payment-box"><h3>Scan to Pay ID Charge</h3><div id="qr-code"></div><p><strong>Amount:</strong> ₹${amount}</p><p><strong>UPI ID:</strong> ${upiId}</p><button onclick="handlePaymentConfirmation()">I have paid</button></div>`; new QRCode(document.getElementById('qr-code'), { text: paymentUrl, width: 200, height: 200 }); paymentOverlay.style.display = 'flex'; }
+        function handlePaymentConfirmation() { paymentOverlay.style.display = 'none'; showAlert('Request Submitted', 'Thank you! Your payment will be verified by our team, and your account will be activated shortly.'); }
+        const customAlert = document.getElementById('custom-alert');
+        function showAlert(title, message) { customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button onclick="closeAlert()">OK</button></div>`; customAlert.style.display = 'flex'; }
+        function closeAlert() { customAlert.style.display = 'none'; }
+    </script>
+</body>
+</html>

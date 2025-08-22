@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Indian Pay</title>
+    <!-- Fuentes y Estilos del Diseño Profesional -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- ESTILOS GENERALES Y DEL DISEÑO PROFESIONAL (SIN CAMBIOS) --- */
+        :root {
+            --primary-color: #00a884;
+            --secondary-color: #1f2937;
+            --text-color: #334155;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: 500; margin-left: 0.5rem; padding: 0.5rem 1rem; border-radius: 6px; transition: all 0.3s ease; }
+        .nav-links .download-app-btn { color: var(--primary-color); border: 2px solid var(--primary-color); }
+        .nav-links .download-app-btn:hover { background-color: var(--primary-color); color: white; }
+        .nav-links .signup-btn { background-color: var(--primary-color); color: white; border: 2px solid var(--primary-color); }
+        .nav-links .signup-btn:hover { background-color: #008a6e; border-color: #008a6e; }
+
+        .auth-section { display: flex; justify-content: center; align-items: center; padding: 5rem 1.5rem; min-height: calc(100vh - 200px); }
+        .auth-card { background: var(--card-bg); padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 480px; text-align: center; }
+        .auth-card h2 { font-size: 2rem; margin-bottom: 1rem; }
+        .auth-card p { color: #64748b; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.2rem; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.9rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; font-family: 'Montserrat', sans-serif; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.2); }
+        .form-group select:disabled { background-color: #f0f0f0; cursor: not-allowed; }
+
+        .auth-button { width: 100%; padding: 0.9rem; border: none; background-color: var(--primary-color); color: white; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease; margin-top: 10px; }
+        .auth-button:hover { background-color: #008a6e; }
+        .auth-card .extra-links { margin-top: 1.5rem; color: #64748b; }
+        .auth-card .extra-links a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .auth-card .extra-links a:hover { text-decoration: underline; }
+        
+        .footer { background-color: var(--secondary-color); color: #e2e8f0; padding: 4rem 0 2rem; text-align: center; }
+        .footer .logo { color: white; margin-bottom: 1rem; }
+        .footer .copyright { font-size: 0.9rem; color: #94a3b8; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
+
+        /* --- NUEVOS ESTILOS AÑADIDOS PARA LA FUNCIONALIDAD DE FIREBASE --- */
+        .price-display { text-align: center; margin: 1rem 0 0.5rem 0; font-size: 1.1rem; font-weight: 600; color: #2e7d32; height: 25px; transition: opacity 0.3s; }
+        
+        #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
+        .loader-spinner { border: 8px solid #f3f3f3; border-top: 8px solid var(--primary-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1.5s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .payment-overlay, .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; flex-direction: column; color: white; }
+        
+        .payment-box, .custom-alert-box { background: white; color: black; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3); width: 90%; max-width: 350px; }
+        #qr-code { margin: 15px 0; }
+        #qr-code img { width: 200px; height: 200px; margin: auto; display: block; }
+        .payment-box p { margin: 10px 0; font-size: 1.1rem; }
+        .payment-box button, .custom-alert-box button { background-color: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: background-color 0.3s; }
+        .payment-box button:hover, .custom-alert-box button:hover { background-color: #008a6e; }
+    </style>
+</head>
+<body>
+
+    <!-- === ELEMENTOS NUEVOS PARA LAS VENTANAS EMERGENTES Y EL CARGADOR === -->
+    <div id="loader-overlay"><div class="loader-spinner"></div></div>
+    <div id="payment-overlay" class="payment-overlay"></div>
+    <div id="custom-alert" class="custom-alert-overlay"></div>
+
+    <!-- === HEADER (SIN CAMBIOS) === -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">Indian<span>Pay</span></a>
+                <div class="nav-links">
+                    <a href="apk-download.html" class="download-app-btn">Download App</a>
+                    <a href="login.html">Login</a>
+                    <a href="signup.html" class="signup-btn">Sign Up Free</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- === SECCIÓN DE REGISTRO CON FORMULARIO ACTUALIZADO === -->
+    <main>
+        <section class="auth-section">
+            <div class="auth-card">
+                <h2>Create Your Account</h2>
+                <p>Become a partner and start earning today.</p>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="fullname">Full Name</label>
+                        <input type="text" id="fullname" name="fullname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Create Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number</label>
+                        <input type="tel" id="mobile" name="mobile" required>
+                    </div>
+                    <!-- CAMPO SELECT DINÁMICO (NUEVO) -->
+                    <div class="form-group">
+                        <label for="user-role">Select Your ID Type</label>
+                        <select id="user-role" required disabled>
+                            <option value="" disabled selected>Loading ID Types...</option>
+                        </select>
+                    </div>
+
+                    <!-- VISUALIZADOR DE PRECIO (NUEVO) -->
+                    <div id="price-display" class="price-display"></div>
+                    
+                    <button type="submit" class="auth-button">Proceed to Payment</button>
+                </form>
+                <div class="extra-links">
+                    <p>Already have an account? <a href="login.html">Login</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- === FOOTER (SIN CAMBIOS) === -->
+    <footer class="footer">
+        <div class="container">
+            <a href="index.html" class="logo">Indian<span>Pay</span></a>
+            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS PARA FIREBASE Y QR (NUEVOS) -->
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        // === TODA TU LÓGICA DE FIREBASE ESTÁ AQUÍ (COPIADA Y PEGADA) ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
+            authDomain: "indianpay425.firebaseapp.com",
+            projectId: "indianpay425",
+            storageBucket: "indianpay425.appspot.com",
+            messagingSenderId: "6705555817",
+            appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
+        };
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+        } catch (e) {
+            console.error("Error initializing Firebase:", e);
+        }
+        
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const loaderOverlay = document.getElementById('loader-overlay');
+        const userRoleSelect = document.getElementById('user-role');
+        const priceDisplay = document.getElementById('price-display');
+        const form = document.getElementById('signup-form');
+        let appSettings = null;
+
+        function hideLoader() {
+            loaderOverlay.style.opacity = '0';
+            setTimeout(() => { loaderOverlay.style.display = 'none'; }, 500);
+        }
+
+        // Obtener configuración de Firestore al cargar la página
+        db.collection('app_settings').doc('config').get().then(doc => {
+            if (doc.exists && doc.data().userRoles) {
+                appSettings = doc.data();
+                
+                userRoleSelect.innerHTML = '<option value="" disabled selected>Select an ID Type</option>';
+                for (const roleKey in appSettings.userRoles) {
+                    const roleName = roleKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    const option = document.createElement('option');
+                    option.value = roleKey;
+                    option.textContent = roleName;
+                    userRoleSelect.appendChild(option);
+                }
+                userRoleSelect.disabled = false;
+            } else {
+                console.error("Error: 'config' document or 'userRoles' field not found!");
+                userRoleSelect.innerHTML = '<option value="" disabled selected>Error: Could not load IDs</option>';
+            }
+            hideLoader();
+        }).catch(error => {
+            console.error("Firestore Error! ", error);
+            alert("Error fetching data. Check console for details (e.g., permissions).");
+            userRoleSelect.innerHTML = '<option value="" disabled selected>Error loading data</option>';
+            hideLoader();
+        });
+
+        // Evento para mostrar el precio al cambiar el rol
+        userRoleSelect.addEventListener('change', () => {
+            const selectedRole = userRoleSelect.value;
+            if (appSettings && appSettings.userRoles && appSettings.userRoles[selectedRole] !== undefined) {
+                const price = appSettings.userRoles[selectedRole];
+                priceDisplay.textContent = `ID Charge: ₹${price}`;
+            } else {
+                priceDisplay.textContent = '';
+            }
+        });
+
+        // Evento para manejar el envío del formulario
+        form.addEventListener('submit', (e) => { 
+            e.preventDefault(); 
+            const selectedRole = userRoleSelect.value; 
+            if (!selectedRole) { 
+                showAlert("Error", "Please select an ID Type from the list."); 
+                return; 
+            } 
+            if (!appSettings) { 
+                showAlert("Error", "Could not load pricing. Please try again."); 
+                return; 
+            } 
+            const price = appSettings.userRoles[selectedRole]; 
+            showPaymentScreen(price); 
+        });
+        
+        // Función para mostrar la pantalla de pago
+        function showPaymentScreen(amount) { 
+            const upiId = appSettings.paymentUpiId; 
+            if (!upiId) { 
+                showAlert("Error", "Payment UPI ID is not set by admin."); 
+                return; 
+            } 
+            const paymentUrl = `upi://pay?pa=${upiId}&pn=IndianPay&am=${amount}&cu=INR&tn=SignupFee`; 
+            const paymentOverlay = document.getElementById('payment-overlay'); 
+            paymentOverlay.innerHTML = `<div class="payment-box"><h3>Scan to Pay</h3><div id="qr-code"></div><p><strong>Amount:</strong> ₹${amount}</p><p><strong>UPI ID:</strong> ${upiId}</p><button onclick="checkPaymentStatus()">I have paid</button></div>`; 
+            new QRCode(document.getElementById('qr-code'), { text: paymentUrl, width: 200, height: 200 }); 
+            paymentOverlay.style.display = 'flex'; 
+        }
+
+        // Simula la verificación y crea la cuenta
+        function checkPaymentStatus() { 
+            createAccountAfterPayment(); 
+        }
+        
+        // Función para crear la cuenta en Firebase
+        function createAccountAfterPayment() { 
+            const email = document.getElementById('email').value; 
+            const password = document.getElementById('password').value; 
+            const fullname = document.getElementById('fullname').value; 
+            const mobile = document.getElementById('mobile').value; 
+            const role = userRoleSelect.value; 
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(userCredential => { 
+                    return db.collection('users').doc(userCredential.user.uid).set({ 
+                        fullName: fullname, 
+                        email: email, 
+                        mobileNumber: mobile, 
+                        role: role, 
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(), 
+                        walletBalance: 0, 
+                        kycStatus: "Not Verified", 
+                        isBlocked: false, 
+                        accountStatus: "pending", 
+                        services: { recharge: false, billPayment: false, aeps: false, payout: false } 
+                    }); 
+                })
+                .then(() => { 
+                    document.getElementById('payment-overlay').style.display = 'none'; 
+                    showAlert("Request Submitted", "Your account is under review and will be activated within 24 hours.", () => { 
+                        window.location.href = 'login.html'; 
+                    }); 
+                })
+                .catch(error => { 
+                    document.getElementById('payment-overlay').style.display = 'none'; 
+                    showAlert("Error", "Error creating account: " + error.message); 
+                }); 
+        }
+        
+        // Función para mostrar alertas personalizadas
+        const customAlert = document.getElementById('custom-alert'); 
+        function showAlert(title, message, callback) { 
+            customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button id="alert-ok-btn-dynamic">OK</button></div>`; 
+            customAlert.style.display = 'flex'; 
+            document.getElementById('alert-ok-btn-dynamic').addEventListener('click', () => { 
+                customAlert.style.display = 'none'; 
+                if (typeof callback === 'function') callback(); 
+            }); 
+        }
+    </script>
+</body>
+</html>
