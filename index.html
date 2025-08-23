@@ -20,11 +20,35 @@
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
         h1, h2, h3 { color: var(--secondary-color); font-weight: 700; }
-        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 10; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Pay - Your B2B Fintech Solution</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00a884;
+            --secondary-color: #1f2937;
+            --text-color: #334155;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        h1, h2, h3 { color: var(--secondary-color); font-weight: 700; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
         .navbar { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
         .logo span { color: var(--primary-color); }
-        .nav-links { display: flex; align-items: center; } /* Added flex and align-items here */
         .nav-links a { text-decoration: none; color: var(--text-color); font-weight: 500; margin-left: 1.5rem; padding: 0.5rem 1rem; border-radius: 6px; transition: all 0.3s ease; }
         .nav-links .signup-btn { background-color: var(--primary-color); color: white; }
         .nav-links a:hover { color: var(--primary-color); }
@@ -55,43 +79,54 @@
         .footer-links a { color: #e2e8f0; text-decoration: none; margin: 0 1rem; transition: color 0.3s ease; }
         .footer-links a:hover { color: var(--primary-color); }
         .footer .copyright { font-size: 0.9rem; color: #94a3b8; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
+        
+        /* ===== YAHAN BADLAV KIYA GAYA HAI ===== */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
 
-        /* ===== Responsive CSS - YAHAN BADLAV KIYA GAYA HAI ===== */
         @media (max-width: 992px) {
             .hero-content { flex-direction: column; }
             .hero-text { text-align: center; }
         }
         
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1.5rem; /* Increased gap between logo and links */
-            }
             .nav-links {
-                flex-direction: column;
-                gap: 1rem; /* Gap between nav items */
+                display: none; /* Hide links by default on mobile */
+                position: absolute;
+                top: 100%; /* Position below navbar */
+                left: 0;
                 width: 100%;
+                background-color: var(--card-bg);
+                flex-direction: column;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            .nav-links.active {
+                display: flex; /* Show links when menu is active */
             }
             .nav-links a {
-                margin-left: 0;
+                margin: 0;
+                padding: 1rem;
                 text-align: center;
-                width: 100%; /* Make links take full width for easier tapping */
+                border-top: 1px solid #f1f5f9;
+                width: 100%;
             }
-            .hero {
-                padding: 3rem 0; /* Reduced padding on mobile */
+            .nav-links .signup-btn {
+                border-radius: 0;
             }
-            .hero-text h1 {
-                font-size: 2.5rem;
+            .hamburger {
+                display: block; /* Show hamburger icon on mobile */
             }
-            .section-header h2 {
-                font-size: 2rem;
-            }
-            .footer-links a {
-                display: block; /* Stack footer links */
-                margin: 0.5rem 0;
-            }
+            .hero { padding: 3rem 0; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .section-header h2 { font-size: 2rem; }
         }
-        /* ========================================================= */
+        /* ======================================= */
     </style>
 </head>
 <body>
@@ -100,7 +135,13 @@
         <div class="container">
             <nav class="navbar">
                 <a href="index.html" class="logo">Indian<span>Pay</span></a>
-                <div class="nav-links">
+                
+                <!-- HAMBURGER ICON -->
+                <button class="hamburger" id="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="nav-links">
                     <a href="#services">Services</a>
                     <a href="apk-download.html">Download App</a>
                     <a href="login.html">Login</a>
@@ -161,6 +202,17 @@
             <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
         </div>
     </footer>
+    
+    <!-- JAVASCRIPT FOR HAMBURGER MENU -->
+    <script>
+        const hamburger = document.getElementById('hamburger-menu');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
 
 </body>
+</html>
 </html>
