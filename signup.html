@@ -9,19 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- ESTILOS GENERALES Y DEL DISEÑO PROFESIONAL (SIN CAMBIOS) --- */
-        :root {
-            --primary-color: #00a884;
-            --secondary-color: #1f2937;
-            --text-color: #334155;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-        }
+        /* --- ESTILOS GENERALES (SIN CAMBIOS) --- */
+        :root { --primary-color: #00a884; --secondary-color: #1f2937; --text-color: #334155; --bg-color: #f8fafc; --card-bg: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
         
-        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: relative; z-index: 100; }
         .navbar { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
         .logo span { color: var(--primary-color); }
@@ -51,45 +45,68 @@
         .footer .logo { color: white; margin-bottom: 1rem; }
         .footer .copyright { font-size: 0.9rem; color: #94a3b8; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
 
-        /* --- NUEVOS ESTILOS AÑADIDOS PARA LA FUNCIONALIDAD DE FIREBASE --- */
         .price-display { text-align: center; margin: 1rem 0 0.5rem 0; font-size: 1.1rem; font-weight: 600; color: #2e7d32; height: 25px; transition: opacity 0.3s; }
-        
         #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
         .loader-spinner { border: 8px solid #f3f3f3; border-top: 8px solid var(--primary-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1.5s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
         .payment-overlay, .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; flex-direction: column; color: white; }
-        
         .payment-box, .custom-alert-box { background: white; color: black; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3); width: 90%; max-width: 350px; }
         #qr-code { margin: 15px 0; }
         #qr-code img { width: 200px; height: 200px; margin: auto; display: block; }
         .payment-box p { margin: 10px 0; font-size: 1.1rem; }
         .payment-box button, .custom-alert-box button { background-color: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: background-color 0.3s; }
         .payment-box button:hover, .custom-alert-box button:hover { background-color: #008a6e; }
+
+        /* --- यहाँ मोबाइल मेनू के लिए CSS जोड़ी गयी है --- */
+        .hamburger-menu { display: none; cursor: pointer; }
+        .hamburger-menu div { width: 25px; height: 3px; background-color: var(--secondary-color); margin: 5px 0; transition: all 0.3s ease; }
+        .mobile-nav-links { display: none; flex-direction: column; background-color: var(--card-bg); position: absolute; top: 100%; left: 0; width: 100%; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-top: 1px solid #e2e8f0; padding: 0.5rem 0 1rem; }
+        .mobile-nav-links a { text-align: center; padding: 1rem 1.5rem; width: 100%; font-weight: 600; color: var(--secondary-color); }
+        .mobile-nav-links .download-app-btn { margin: 0 1.5rem; }
+        .mobile-nav-links .signup-btn { background-color: var(--primary-color); color: white; border: 2px solid var(--primary-color); border-radius: 8px; padding: 0.8rem 1rem; margin: 0.5rem 1.5rem 0; text-align: center; }
+        
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hamburger-menu { display: block; }
+            .mobile-nav-links.active { display: flex; }
+            .hamburger-menu.active div:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
+            .hamburger-menu.active div:nth-child(2) { opacity: 0; }
+            .hamburger-menu.active div:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
+        }
     </style>
 </head>
 <body>
 
-    <!-- === ELEMENTOS NUEVOS PARA LAS VENTANAS EMERGENTES Y EL CARGADOR === -->
     <div id="loader-overlay"><div class="loader-spinner"></div></div>
     <div id="payment-overlay" class="payment-overlay"></div>
     <div id="custom-alert" class="custom-alert-overlay"></div>
 
-    <!-- === HEADER (SIN CAMBIOS) === -->
     <header class="header">
         <div class="container">
             <nav class="navbar">
                 <a href="index.html" class="logo">Indian<span>Pay</span></a>
+                <!-- डेस्कटॉप के लिए लिंक -->
                 <div class="nav-links">
                     <a href="apk-download.html" class="download-app-btn">Download App</a>
                     <a href="login.html">Login</a>
                     <a href="signup.html" class="signup-btn">Sign Up Free</a>
                 </div>
+                <!-- मोबाइल के लिए हैमबर्गर आइकॉन -->
+                <div class="hamburger-menu" id="hamburger-menu">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
             </nav>
+        </div>
+        <!-- मोबाइल के लिए खुलने वाला मेनू -->
+        <div class="mobile-nav-links" id="mobile-nav-links">
+            <a href="apk-download.html" class="download-app-btn">Download App</a>
+            <a href="login.html">Login</a>
+            <a href="signup.html" class="signup-btn">Sign Up Free</a>
         </div>
     </header>
 
-    <!-- === SECCIÓN DE REGISTRO CON FORMULARIO ACTUALIZADO === -->
     <main>
         <section class="auth-section">
             <div class="auth-card">
@@ -112,17 +129,13 @@
                         <label for="mobile">Mobile Number</label>
                         <input type="tel" id="mobile" name="mobile" required>
                     </div>
-                    <!-- CAMPO SELECT DINÁMICO (NUEVO) -->
                     <div class="form-group">
                         <label for="user-role">Select Your ID Type</label>
                         <select id="user-role" required disabled>
                             <option value="" disabled selected>Loading ID Types...</option>
                         </select>
                     </div>
-
-                    <!-- VISUALIZADOR DE PRECIO (NUEVO) -->
                     <div id="price-display" class="price-display"></div>
-                    
                     <button type="submit" class="auth-button">Proceed to Payment</button>
                 </form>
                 <div class="extra-links">
@@ -132,7 +145,6 @@
         </section>
     </main>
     
-    <!-- === FOOTER (SIN CAMBIOS) === -->
     <footer class="footer">
         <div class="container">
             <a href="index.html" class="logo">Indian<span>Pay</span></a>
@@ -140,13 +152,11 @@
         </div>
     </footer>
 
-    <!-- SCRIPTS PARA FIREBASE Y QR (NUEVOS) -->
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // === TODA TU LÓGICA DE FIREBASE ESTÁ AQUÍ (COPIADA Y PEGADA) ===
         const firebaseConfig = {
             apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
             authDomain: "indianpay425.firebaseapp.com",
@@ -165,6 +175,15 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // ===== मोबाइल मेनू को कंट्रोल करने के लिए JavaScript =====
+        const hamburger = document.getElementById('hamburger-menu');
+        const mobileNav = document.getElementById('mobile-nav-links');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+        });
+
+        // ===== आपका बाकी का JavaScript कोड (कोई बदलाव नहीं) =====
         const loaderOverlay = document.getElementById('loader-overlay');
         const userRoleSelect = document.getElementById('user-role');
         const priceDisplay = document.getElementById('price-display');
@@ -176,7 +195,6 @@
             setTimeout(() => { loaderOverlay.style.display = 'none'; }, 500);
         }
 
-        // Obtener configuración de Firestore al cargar la página
         db.collection('app_settings').doc('config').get().then(doc => {
             if (doc.exists && doc.data().userRoles) {
                 appSettings = doc.data();
@@ -202,7 +220,6 @@
             hideLoader();
         });
 
-        // Evento para mostrar el precio al cambiar el rol
         userRoleSelect.addEventListener('change', () => {
             const selectedRole = userRoleSelect.value;
             if (appSettings && appSettings.userRoles && appSettings.userRoles[selectedRole] !== undefined) {
@@ -213,7 +230,6 @@
             }
         });
 
-        // Evento para manejar el envío del formulario
         form.addEventListener('submit', (e) => { 
             e.preventDefault(); 
             const selectedRole = userRoleSelect.value; 
@@ -229,7 +245,6 @@
             showPaymentScreen(price); 
         });
         
-        // Función para mostrar la pantalla de pago
         function showPaymentScreen(amount) { 
             const upiId = appSettings.paymentUpiId; 
             if (!upiId) { 
@@ -243,12 +258,10 @@
             paymentOverlay.style.display = 'flex'; 
         }
 
-        // Simula la verificación y crea la cuenta
         function checkPaymentStatus() { 
             createAccountAfterPayment(); 
         }
         
-        // Función para crear la cuenta en Firebase
         function createAccountAfterPayment() { 
             const email = document.getElementById('email').value; 
             const password = document.getElementById('password').value; 
@@ -283,7 +296,6 @@
                 }); 
         }
         
-        // Función para mostrar alertas personalizadas
         const customAlert = document.getElementById('custom-alert'); 
         function showAlert(title, message, callback) { 
             customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button id="alert-ok-btn-dynamic">OK</button></div>`; 
