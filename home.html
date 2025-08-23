@@ -22,6 +22,32 @@
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 
+        /* ===== NAYA LOADER STYLE ===== */
+        .loader-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+        }
+        .loader-spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--primary-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* ===== END OF LOADER STYLE ===== */
+
+
         /* --- HEADER Y NAVEGACIÓN --- */
         .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .navbar { display: flex; justify-content: space-between; align-items: center; }
@@ -126,112 +152,120 @@
 </head>
 <body>
 
-    <!-- === HEADER === -->
-    <header class="header">
-        <div class="container">
-            <nav class="navbar">
+    <!-- ===== NAYA LOADER HTML ===== -->
+    <div id="loader" class="loader-overlay">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- ===== NAYA WRAPPER JISKO HUM HIDE/SHOW KARENGE ===== -->
+    <div id="main-content" style="display: none;">
+
+        <!-- === HEADER === -->
+        <header class="header">
+            <div class="container">
+                <nav class="navbar">
+                    <a href="home.html" class="logo">Indian<span>Pay</span></a>
+                    <div class="nav-links">
+                        <span class="welcome-text">Welcome, <strong id="user-name">User</strong></span>
+                        <a href="profile.html">Profile</a>
+                        <button id="logout-btn" class="logout-btn">Logout</button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- === CONTENIDO PRINCIPAL DEL DASHBOARD === -->
+        <main>
+            <div class="container">
+                <!-- Tarjeta de Saldo -->
+                <section class="balance-card">
+                    <h1>Main Balance</h1>
+                    <div class="balance-display" id="wallet-balance">₹--.--</div>
+                    <div class="action-buttons">
+                        <a href="add-money.html"><i class="fas fa-plus-circle"></i> Add Money</a>
+                        <a href="reports.html"><i class="fas fa-chart-pie"></i> Reports</a>
+                        <a href="commission-chart.html"><i class="fas fa-percent"></i> Commission Chart</a>
+                    </div>
+                </section>
+
+                <!-- Sección de Servicios AEPS -->
+                <section class="service-section">
+                    <h2>AEPS Services</h2>
+                    <div class="service-grid">
+                        <a href="cash-withdrawal.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                            <h3>Cash Withdrawal</h3>
+                        </a>
+                        <a href="aadhaar-pay.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div>
+                            <h3>Aadhaar Pay</h3>
+                        </a>
+                        <a href="balance-inquiry.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                            <h3>Balance Inquiry</h3>
+                        </a>
+                        <a href="mini-statement.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-receipt"></i></div>
+                            <h3>Mini Statement</h3>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Sección de Servicios de Utilidad -->
+                <section class="service-section">
+                    <h2>Utility & Payments</h2>
+                    <div class="service-grid">
+                        <a href="mobile-recharge.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                            <h3>Mobile Recharge</h3>
+                        </a>
+                        <a href="money-transfer.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                            <h3>Money Transfer</h3>
+                        </a>
+                         <a href="dth-recharge.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                            <h3>DTH Recharge</h3>
+                        </a>
+                    </div>
+                </section>
+                
+                <!-- Sección de Servicios BBPS -->
+                 <section class="service-section">
+                    <h2>BBPS Services</h2>
+                    <div class="service-grid">
+                         <a href="broadband.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-wifi"></i></div>
+                            <h3>Broadband</h3>
+                        </a>
+                        <a href="cable-tv.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-tv"></i></div>
+                            <h3>Cable TV</h3>
+                        </a>
+                        <a href="electricity.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-bolt"></i></div>
+                            <h3>Electricity</h3>
+                        </a>
+                        
+                        <a href="all-services.html" class="service-card">
+                            <div class="service-icon"><i class="fa-solid fa-ellipsis"></i></div>
+                            <h3>View All</h3>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- === FOOTER === -->
+        <footer class="footer">
+            <div class="container">
                 <a href="home.html" class="logo">Indian<span>Pay</span></a>
-                <div class="nav-links">
-                    <span class="welcome-text">Welcome, <strong id="user-name">User</strong></span>
-                    <a href="#" onclick="showAlert('Coming Soon', 'Profile page is under construction.')">Profile</a>
-                    <button id="logout-btn" class="logout-btn">Logout</button>
-                </div>
-            </nav>
-        </div>
-    </header>
+                <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
+            </div>
+        </footer>
 
-    <!-- === CONTENIDO PRINCIPAL DEL DASHBOARD === -->
-    <main>
-        <div class="container">
-            <!-- Tarjeta de Saldo -->
-            <section class="balance-card">
-                <h1>Main Balance</h1>
-                <div class="balance-display" id="wallet-balance">₹--.--</div>
-                <div class="action-buttons">
-                    <a href="#" onclick="showAlert('Coming Soon', 'Add Money functionality will be available soon.')"><i class="fas fa-plus-circle"></i> Add Money</a>
-                    <a href="#" onclick="showAlert('Coming Soon', 'View your transaction reports here.')"><i class="fas fa-chart-pie"></i> Reports</a>
-                    <a href="#" onclick="showAlert('Info', 'Commission Chart is not yet available.')"><i class="fas fa-percent"></i> Commission Chart</a>
-                </div>
-            </section>
+    </div> <!-- ===== WRAPPER KA END TAG ===== -->
 
-            <!-- Sección de Servicios AEPS -->
-            <section class="service-section">
-                <h2>AEPS Services</h2>
-                <div class="service-grid">
-                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Cash Withdrawal')">
-                        <div class="service-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
-                        <h3>Cash Withdrawal</h3>
-                    </a>
-                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Aadhaar Pay')">
-                        <div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div>
-                        <h3>Aadhaar Pay</h3>
-                    </a>
-                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Balance Inquiry')">
-                        <div class="service-icon"><i class="fa-solid fa-scale-balanced"></i></div>
-                        <h3>Balance Inquiry</h3>
-                    </a>
-                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Mini Statement')">
-                        <div class="service-icon"><i class="fa-solid fa-receipt"></i></div>
-                        <h3>Mini Statement</h3>
-                    </a>
-                </div>
-            </section>
-
-            <!-- Sección de Servicios de Utilidad -->
-            <section class="service-section">
-                <h2>Utility & Payments</h2>
-                <div class="service-grid">
-                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Mobile Recharge')">
-                        <div class="service-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
-                        <h3>Mobile Recharge</h3>
-                    </a>
-                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Money Transfer')">
-                        <div class="service-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
-                        <h3>Money Transfer</h3>
-                    </a>
-                     <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'DTH Recharge')">
-                        <div class="service-icon"><i class="fa-solid fa-satellite-dish"></i></div>
-                        <h3>DTH Recharge</h3>
-                    </a>
-                </div>
-            </section>
-            
-            <!-- Sección de Servicios BBPS -->
-             <section class="service-section">
-                <h2>BBPS Services</h2>
-                <div class="service-grid">
-                     <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Broadband')">
-                        <div class="service-icon"><i class="fa-solid fa-wifi"></i></div>
-                        <h3>Broadband</h3>
-                    </a>
-                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Cable TV')">
-                        <div class="service-icon"><i class="fa-solid fa-tv"></i></div>
-                        <h3>Cable TV</h3>
-                    </a>
-                    <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Electricity')">
-                        <div class="service-icon"><i class="fa-solid fa-bolt"></i></div>
-                        <h3>Electricity</h3>
-                    </a>
-                     
-                    <!-- ===== CÓDIGO MODIFICADO AQUÍ ===== -->
-                    <a href="all-services.html" class="service-card">
-                        <div class="service-icon"><i class="fa-solid fa-ellipsis"></i></div>
-                        <h3>View All</h3>
-                    </a>
-                    <!-- ===== FIN DE LA MODIFICACIÓN ===== -->
-
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- === FOOTER === -->
-    <footer class="footer">
-        <div class="container">
-            <a href="home.html" class="logo">Indian<span>Pay</span></a>
-            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
-        </div>
-    </footer>
 
     <!-- Contenedores para Overlays -->
     <div id="blocked-overlay" class="blocked-overlay"></div>
@@ -242,7 +276,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // El script de JavaScript no ha cambiado, ya que la modificación fue solo en el HTML.
         const firebaseConfig = { 
             apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", 
             authDomain: "indianpay425.firebaseapp.com",
@@ -255,6 +288,10 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+
+        // ===== SCRIPT MEIN MODIFICATION =====
+        const loader = document.getElementById('loader');
+        const mainContent = document.getElementById('main-content');
 
         const userNameEl = document.getElementById('user-name');
         const walletBalanceEl = document.getElementById('wallet-balance');
@@ -276,6 +313,12 @@
 
         auth.onAuthStateChanged(user => {
             if (user) {
+                // User is logged in.
+                
+                // Show content and hide loader
+                loader.style.display = 'none';
+                mainContent.style.display = 'block';
+
                 const userDocRef = db.collection('users').doc(user.uid);
                 userDocRef.onSnapshot(doc => {
                     if (doc.exists) {
@@ -299,10 +342,11 @@
                     }
                 }, error => { 
                     console.error("Firestore Error:", error); 
-                    showAlert("Error", "Could not fetch user data. Check security rules.");
+                    showAlert("Error", "Could not fetch user data.");
                     auth.signOut(); 
                 });
             } else { 
+                // No user is signed in. NOW it's safe to redirect.
                 window.location.href = 'index.html'; 
             }
         });
