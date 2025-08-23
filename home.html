@@ -9,11 +9,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* CSS में कोई बदलाव नहीं है */
-        :root { --primary-color: #00a884; --secondary-color: #1f2937; --text-color: #334155; --bg-color: #f8fafc; --card-bg: #ffffff; --danger-color: #ef4444; }
+        /* --- ESTILOS GENERALES Y VARIABLES --- */
+        :root {
+            --primary-color: #00a884;
+            --secondary-color: #1f2937;
+            --text-color: #334155;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --danger-color: #ef4444;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* --- HEADER Y NAVEGACIÓN --- */
         .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .navbar { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
@@ -21,24 +30,79 @@
         .nav-links { display: flex; align-items: center; gap: 1.5rem; }
         .nav-links .welcome-text { font-weight: 500; }
         .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease; }
+        .nav-links .logout-btn:hover { background-color: #dc2626; }
+        
+        /* --- ÁREA PRINCIPAL DEL DASHBOARD --- */
         main { padding: 3rem 0; }
-        .balance-card { background: linear-gradient(135deg, var(--secondary-color) 0%, #37475a 100%); color: white; padding: 2.5rem; border-radius: 16px; margin-bottom: 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        
+        /* --- TARJETA DE SALDO Y BIENVENIDA --- */
+        .balance-card {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #37475a 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
         .balance-card h1 { font-size: 1.5rem; font-weight: 500; opacity: 0.9; color: white; }
         .balance-display { font-size: 3.5rem; font-weight: 700; margin: 0.5rem 0 1.5rem; color: white; }
-        .action-buttons a { background-color: rgba(255, 255, 255, 0.1); color: white; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; margin-right: 1rem; transition: background-color 0.3s ease; }
+        .action-buttons a {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-right: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .action-buttons a:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+        /* --- SECCIONES DE SERVICIOS --- */
         .service-section { margin-bottom: 3rem; }
         .service-section h2 { font-size: 1.8rem; margin-bottom: 1.5rem; border-bottom: 3px solid var(--primary-color); display: inline-block; padding-bottom: 0.5rem; }
-        .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; }
-        .service-card { background: var(--card-bg); text-decoration: none; color: var(--text-color); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-align: center; border: 1px solid #e5e7eb; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
+        }
+        .service-card {
+            background: var(--card-bg);
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
         .service-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0, 168, 132, 0.1); }
         .service-icon { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem; }
         .service-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color); }
+        
+        /* --- FOOTER --- */
         .footer { background-color: var(--secondary-color); color: #e2e8f0; padding: 4rem 0 2rem; text-align: center; margin-top: 2rem; }
-        .blocked-overlay, .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 10000; }
-        .blocked-overlay { background-color: rgba(0,0,0,0.85); }
+        .footer .logo { color: white; margin-bottom: 1rem; }
+        .footer .copyright { font-size: 0.9rem; color: #94a3b8; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
+
+        /* --- SUPERPOSICIONES (OVERLAYS) --- */
+        .blocked-overlay, .custom-alert-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; justify-content: center; align-items: center;
+            z-index: 10000;
+        }
+        .blocked-overlay { background-color: rgba(0,0,0,0.85); color: white; flex-direction: column; text-align: center; }
         .custom-alert-overlay { background-color: rgba(0,0,0,0.5); }
-        .blocked-box, .custom-alert-box { background: var(--card-bg); color: var(--text-color); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 90%; max-width: 450px; text-align: center; }
-        .custom-alert-box h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .blocked-box, .custom-alert-box {
+            background: var(--card-bg); color: var(--text-color); padding: 2.5rem;
+            border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%; max-width: 450px; text-align: center;
+        }
+        .blocked-box h2 { font-size: 2rem; color: var(--danger-color); margin-bottom: 1rem; }
+        .blocked-box p { font-size: 1.1rem; margin-bottom: 2rem; }
+        .custom-alert-box h3 { font-size: 1.5rem; color: var(--secondary-color); margin-bottom: 1rem; }
+        .custom-alert-box p { font-size: 1rem; margin-bottom: 1.5rem; }
         .custom-alert-box button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
     </style>
 </head>
@@ -59,31 +123,41 @@
 
     <main>
         <div class="container">
-            <!-- Existing sections remain unchanged -->
             <section class="balance-card">
-                <!-- ... Balance Card content ... -->
+                <h1>Main Balance</h1>
+                <div class="balance-display" id="wallet-balance">₹--.--</div>
+                <div class="action-buttons">
+                    <a href="add-money.html"><i class="fas fa-plus-circle"></i> Add Money</a>
+                    <a href="reports.html"><i class="fas fa-chart-pie"></i> Reports</a>
+                    <a href="commission-chart.html"><i class="fas fa-percent"></i> Commission Chart</a>
+                </div>
             </section>
 
             <section class="service-section" id="aeps-section">
-                <!-- ... AEPS Services content ... -->
+                <h2>AEPS Services</h2>
+                <div class="service-grid">
+                    <a href="cash-withdrawal.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-money-bill-wave"></i></div><h3>Cash Withdrawal</h3></a>
+                    <a href="aadhaar-pay.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div><h3>Aadhaar Pay</h3></a>
+                    <a href="balance-inquiry.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-scale-balanced"></i></div><h3>Balance Inquiry</h3></a>
+                    <a href="mini-statement.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-receipt"></i></div><h3>Mini Statement</h3></a>
+                </div>
             </section>
 
             <section class="service-section" id="utility-section">
-                <!-- ... Utility & Payments content ... -->
+                <h2>Utility & Payments</h2>
+                <div class="service-grid">
+                    <a href="mobile-recharge.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-mobile-screen-button"></i></div><h3>Mobile Recharge</h3></a>
+                    <a href="money-transfer.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-money-bill-transfer"></i></div><h3>Money Transfer</h3></a>
+                    <a href="dth-recharge.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-satellite-dish"></i></div><h3>DTH Recharge</h3></a>
+                </div>
             </section>
             
-            <!-- ============================================= -->
-            <!-- ===== BBPS SECTION UPDATED AND EXPANDED ===== -->
-            <!-- ============================================= -->
             <section class="service-section" id="bbps-section">
                 <h2>BBPS Services</h2>
                 <div class="service-grid">
-                    <!-- Original Services -->
                     <a href="broadband.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-wifi"></i></div><h3>Broadband</h3></a>
                     <a href="electricity.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-bolt"></i></div><h3>Electricity</h3></a>
                     <a href="cable-tv.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-tv"></i></div><h3>Cable TV</h3></a>
-                    
-                    <!-- New Services from all-services.html -->
                     <a href="water-bill.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-droplet"></i></div><h3>Water Bill</h3></a>
                     <a href="gas-cylinder.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-fire-flame-simple"></i></div><h3>Gas Cylinder</h3></a>
                     <a href="landline.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-phone"></i></div><h3>Landline</h3></a>
@@ -93,36 +167,65 @@
                     <a href="credit-card-bill.html" class="service-card"><div class="service-icon"><i class="fa-regular fa-credit-card"></i></div><h3>Credit Card Bill</h3></a>
                     <a href="municipal-taxes.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-landmark"></i></div><h3>Municipal Taxes</h3></a>
                     <a href="education-fees.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Education Fees</h3></a>
-                    
-                    <!-- "View All" button has been REMOVED -->
                 </div>
             </section>
-            <!-- ======================================== -->
-            <!-- ===== END OF BBPS SECTION UPDATE ===== -->
-            <!-- ======================================== -->
             
-            <!-- Other service sections (Government Docs, Financial, etc.) remain unchanged -->
             <section class="service-section" id="govt-docs-section">
-                <!-- ... Government Documents content ... -->
+                <h2>Government Documents</h2>
+                <div class="service-grid">
+                    <a href="pan-card-services.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-address-card"></i></div><h3>PAN Card</h3></a>
+                    <a href="aadhaar-services.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div><h3>Aadhaar Services</h3></a>
+                    <a href="voter-id-card.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-check-to-slot"></i></div><h3>Voter ID Card</h3></a>
+                    <a href="driving-license.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-id-card"></i></div><h3>Driving License</h3></a>
+                    <a href="passport-seva.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-passport"></i></div><h3>Passport Seva</h3></a>
+                    <a href="birth-certificate.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-baby-carriage"></i></div><h3>Birth Certificate</h3></a>
+                    <a href="death-certificate.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-cross"></i></div><h3>Death Certificate</h3></a>
+                    <a href="land-records.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-map-location-dot"></i></div><h3>Land Records</h3></a>
+                </div>
             </section>
 
             <section class="service-section" id="financial-section">
-                <!-- ... Financial & Insurance content ... -->
+                <h2>Financial & Insurance</h2>
+                <div class="service-grid">
+                    <a href="itr-filing.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><h3>ITR Filing</h3></a>
+                    <a href="gst-services.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-landmark"></i></div><h3>GST Services</h3></a>
+                    <a href="life-insurance.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-heart-pulse"></i></div><h3>Life Insurance</h3></a>
+                    <a href="vehicle-insurance.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-car-burst"></i></div><h3>Vehicle Insurance</h3></a>
+                    <a href="fastag-services.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-car-on"></i></div><h3>FASTag Services</h3></a>
+                    <a href="loan-services.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><h3>Loan Services</h3></a>
+                    <a href="cibil-score.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-chart-line"></i></div><h3>CIBIL Score</h3></a>
+                    <a href="demat-account.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-chart-pie"></i></div><h3>Demat Account</h3></a>
+                </div>
             </section>
             
             <section class="service-section" id="schemes-section">
-                <!-- ... Government Schemes content ... -->
+                <h2>Government Schemes</h2>
+                <div class="service-grid">
+                    <a href="pm-kisan.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-tractor"></i></div><h3>PM-KISAN</h3></a>
+                    <a href="ayushman-bharat.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-notes-medical"></i></div><h3>Ayushman Bharat</h3></a>
+                    <a href="pradhan-mantri-fasal-bima.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-cloud-sun-rain"></i></div><h3>Fasal Bima Yojana</h3></a>
+                    <a href="e-shram-card.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-person-digging"></i></div><h3>e-SHRAM Card</h3></a>
+                </div>
             </section>
 
             <section class="service-section" id="travel-section">
-                <!-- ... Travel & Transport content ... -->
+                <h2>Travel & Transport</h2>
+                <div class="service-grid">
+                    <a href="train-tickets.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-train-subway"></i></div><h3>Train Tickets</h3></a>
+                    <a href="flight-tickets.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-plane-departure"></i></div><h3>Flight Tickets</h3></a>
+                    <a href="bus-tickets.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-bus"></i></div><h3>Bus Tickets</h3></a>
+                    <a href="hotel-booking.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-hotel"></i></div><h3>Hotel Booking</h3></a>
+                </div>
             </section>
 
         </div>
     </main>
 
     <footer class="footer">
-        <!-- ... Footer content ... -->
+        <div class="container">
+            <a href="home.html" class="logo">Indian<span>Pay</span></a>
+            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
+        </div>
     </footer>
 
     <div id="blocked-overlay" class="blocked-overlay"></div>
@@ -132,7 +235,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // NO CHANGES NEEDED IN JAVASCRIPT
         const firebaseConfig = { 
             apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", 
             authDomain: "indianpay425.firebaseapp.com",
@@ -156,15 +258,16 @@
             customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button onclick="closeAlert()">OK</button></div>`;
             customAlert.style.display = 'flex';
         }
-        function closeAlert() { customAlert.style.display = 'none'; }
+        function closeAlert() {
+            customAlert.style.display = 'none';
+        }
+
         logoutBtn.addEventListener('click', () => { auth.signOut(); });
 
         function controlServiceAccess(sectionId, isServiceActive) {
             if (!isServiceActive) {
                 const section = document.getElementById(sectionId);
-                // Note: The ":not(.no-block)" is no longer strictly needed for BBPS since we removed the button,
-                // but it doesn't hurt to leave it for future-proofing.
-                const serviceCards = section.querySelectorAll('.service-card:not(.no-block)');
+                const serviceCards = section.querySelectorAll('.service-card');
 
                 serviceCards.forEach(card => {
                     card.addEventListener('click', function(event) {
@@ -183,19 +286,40 @@
                         const userData = doc.data();
                         userNameEl.textContent = userData.fullName || 'User';
                         
-                        if (userData.isBlocked === true) { /* ... same as before ... */ return; }
+                        if (userData.isBlocked === true) {
+                            blockedOverlay.innerHTML = `<div class="blocked-box"><h2>Account Blocked</h2><p>Your account has been temporarily blocked. Please contact support.</p></div>`;
+                            blockedOverlay.style.display = 'flex';
+                            setTimeout(() => auth.signOut(), 5000);
+                            return;
+                        } else {
+                            blockedOverlay.style.display = 'none';
+                        }
                         
                         walletBalanceEl.textContent = `₹${(userData.walletBalance || 0).toFixed(2)}`;
 
+                        // Main Service Controls
                         controlServiceAccess('aeps-section', userData.moneytransfer === true);
                         controlServiceAccess('utility-section', userData.recharge === true);
-                        controlServiceAccess('bbps-section', userData.billpay === true); // This line now controls ALL BBPS cards automatically.
+                        controlServiceAccess('bbps-section', userData.billpay === true);
                         
+                        // Future Controls for CSC services (add new fields in Firestore to use these)
                         // controlServiceAccess('govt-docs-section', userData.govtServices === true);
-                        // ... and so on for other sections
-                    } else { auth.signOut(); }
+                        // controlServiceAccess('financial-section', userData.financialServices === true);
+                        // controlServiceAccess('schemes-section', userData.schemesServices === true);
+                        // controlServiceAccess('travel-section', userData.travelServices === true);
+
+                    } else { 
+                        showAlert("Error", "User data not found. Logging out.");
+                        auth.signOut(); 
+                    }
+                }, error => { 
+                    console.error("Firestore Error:", error); 
+                    showAlert("Error", "Could not fetch user data.");
+                    auth.signOut(); 
                 });
-            } else { window.location.href = 'index.html'; }
+            } else { 
+                window.location.href = 'index.html'; 
+            }
         });
     </script>
 </body>
