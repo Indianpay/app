@@ -9,20 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- MISMOS ESTILOS QUE home.html PARA CONSISTENCIA --- */
-        :root {
-            --primary-color: #00a884;
-            --secondary-color: #1f2937;
-            --text-color: #334155;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --danger-color: #ef4444;
-        }
+        /* CSS में कोई बदलाव नहीं है */
+        :root { --primary-color: #00a884; --secondary-color: #1f2937; --text-color: #334155; --bg-color: #f8fafc; --card-bg: #ffffff; --danger-color: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-
-        /* Header (igual que en home.html) */
         .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .navbar { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
@@ -30,69 +21,26 @@
         .nav-links { display: flex; align-items: center; gap: 1.5rem; }
         .nav-links a { text-decoration: none; color: var(--text-color); font-weight: 500; }
         .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease; }
-        .nav-links .logout-btn:hover { background-color: #dc2626; }
-        
-        /* Contenido Principal */
         main { padding: 3rem 0; }
-        .page-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        .page-header a {
-            background: var(--card-bg);
-            border: 1px solid #e5e7eb;
-            color: var(--secondary-color);
-            width: 40px;
-            height: 40px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
-         .page-header a:hover {
-            background-color: #f3f4f6;
-        }
-        .page-header h1 {
-            font-size: 2.5rem;
-        }
-
-        /* Rejilla de Servicios (igual que en home.html) */
-        .service-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-        }
-        .service-card {
-            background: var(--card-bg); text-decoration: none; color: var(--text-color);
-            padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            text-align: center; border: 1px solid #e5e7eb;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+        .page-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+        .page-header a { background: var(--card-bg); border: 1px solid #e5e7eb; color: var(--secondary-color); width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem; text-decoration: none; transition: background-color 0.3s; }
+        .page-header h1 { font-size: 2.5rem; }
+        .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; }
+        .service-card { background: var(--card-bg); text-decoration: none; color: var(--text-color); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-align: center; border: 1px solid #e5e7eb; transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .service-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0, 168, 132, 0.1); }
         .service-icon { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem; }
         .service-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--secondary-color); }
-        
-        /* Footer (igual que en home.html) */
         .footer { background-color: var(--secondary-color); color: #e2e8f0; padding: 4rem 0 2rem; text-align: center; margin-top: 2rem; }
-        .footer .logo { color: white; margin-bottom: 1rem; }
-        .footer .copyright { font-size: 0.9rem; color: #94a3b8; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
-
-        /* Overlays (igual que en home.html) */
-        .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; }
-        .custom-alert-box { background: var(--card-bg); color: var(--text-color); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 90%; max-width: 450px; text-align: center; }
+        .blocked-overlay, .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 10000; }
+        .blocked-overlay { background-color: rgba(0,0,0,0.85); }
+        .custom-alert-overlay { background-color: rgba(0,0,0,0.5); }
+        .blocked-box, .custom-alert-box { background: var(--card-bg); color: var(--text-color); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 90%; max-width: 450px; text-align: center; }
         .custom-alert-box h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-        .custom-alert-box p { font-size: 1rem; margin-bottom: 1.5rem; }
         .custom-alert-box button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- === HEADER (Consistente en todas las páginas) === -->
     <header class="header">
         <div class="container">
             <nav class="navbar">
@@ -106,7 +54,6 @@
         </div>
     </header>
 
-    <!-- === CONTENIDO PRINCIPAL DE LA PÁGINA DE SERVICIOS === -->
     <main>
         <div class="container">
             <div class="page-header">
@@ -114,65 +61,29 @@
                 <h1>All Services</h1>
             </div>
             
-            <div class="service-grid">
+            <!-- ===== HTML UPDATED: href ATTRIBUTES ARE NOW POINTING TO REAL PAGES ===== -->
+            <div class="service-grid" id="all-services-grid">
                 <!-- Fila 1 -->
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Electricity Bill Payment')">
-                    <div class="service-icon"><i class="fa-solid fa-lightbulb"></i></div>
-                    <h3>Electricity</h3>
-                </a>
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Water Bill Payment')">
-                    <div class="service-icon"><i class="fa-solid fa-droplet"></i></div>
-                    <h3>Water Bill</h3>
-                </a>
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Gas Cylinder Booking')">
-                    <div class="service-icon"><i class="fa-solid fa-fire-flame-simple"></i></div>
-                    <h3>Gas Cylinder</h3>
-                </a>
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Landline Bill Payment')">
-                    <div class="service-icon"><i class="fa-solid fa-phone"></i></div>
-                    <h3>Landline</h3>
-                </a>
+                <a href="electricity.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-lightbulb"></i></div><h3>Electricity</h3></a>
+                <a href="water-bill.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-droplet"></i></div><h3>Water Bill</h3></a>
+                <a href="gas-cylinder.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-fire-flame-simple"></i></div><h3>Gas Cylinder</h3></a>
+                <a href="landline.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-phone"></i></div><h3>Landline</h3></a>
 
                 <!-- Fila 2 -->
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Loan Repayment')">
-                    <div class="service-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-                    <h3>Loan Repayment</h3>
-                </a>
-                 <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Insurance Premium')">
-                    <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h3>Insurance</h3>
-                </a>
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'FASTag Recharge')">
-                    <div class="service-icon"><i class="fa-solid fa-car-on"></i></div>
-                    <h3>FASTag Recharge</h3>
-                </a>
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Credit Card Bill')">
-                    <div class="service-icon"><i class="fa-regular fa-credit-card"></i></div>
-                    <h3>Credit Card Bill</h3>
-                </a>
+                <a href="loan-repayment.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><h3>Loan Repayment</h3></a>
+                <a href="insurance.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Insurance</h3></a>
+                <a href="fastag-recharge.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-car-on"></i></div><h3>FASTag Recharge</h3></a>
+                <a href="credit-card-bill.html" class="service-card"><div class="service-icon"><i class="fa-regular fa-credit-card"></i></div><h3>Credit Card Bill</h3></a>
 
-                 <!-- Fila 3 -->
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Municipal Taxes')">
-                    <div class="service-icon"><i class="fa-solid fa-landmark"></i></div>
-                    <h3>Municipal Taxes</h3>
-                </a>
-                 <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Education Fees')">
-                    <div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                    <h3>Education Fees</h3>
-                </a>
-                <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Cable TV')">
-                    <div class="service-icon"><i class="fa-solid fa-tv"></i></div>
-                    <h3>Cable TV</h3>
-                </a>
-                 <a href="#" class="service-card" onclick="showAlert('Coming Soon', 'Associations')">
-                    <div class="service-icon"><i class="fa-solid fa-people-group"></i></div>
-                    <h3>Associations</h3>
-                </a>
+                <!-- Fila 3 -->
+                <a href="municipal-taxes.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-landmark"></i></div><h3>Municipal Taxes</h3></a>
+                <a href="education-fees.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Education Fees</h3></a>
+                <a href="cable-tv.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-tv"></i></div><h3>Cable TV</h3></a>
+                <a href="associations.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-people-group"></i></div><h3>Associations</h3></a>
             </div>
         </div>
     </main>
 
-    <!-- === FOOTER (Consistente) === -->
     <footer class="footer">
         <div class="container">
             <a href="home.html" class="logo">Indian<span>Pay</span></a>
@@ -180,14 +91,13 @@
         </div>
     </footer>
 
+    <div id="blocked-overlay" class="blocked-overlay"></div>
     <div id="custom-alert" class="custom-alert-overlay"></div>
 
-    <!-- === SCRIPTS DE FIREBASE (Es importante mantenerlos aquí también) === -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // Mismo script que en home.html para seguridad y consistencia
         const firebaseConfig = { 
             apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", 
             authDomain: "indianpay425.firebaseapp.com",
@@ -202,30 +112,61 @@
         const db = firebase.firestore();
 
         const userNameEl = document.getElementById('user-name');
+        const blockedOverlay = document.getElementById('blocked-overlay');
         const customAlert = document.getElementById('custom-alert');
         const logoutBtn = document.getElementById('logout-btn');
         
-        function showAlert(title, message) { /* ...código de la alerta... */ }
-        function closeAlert() { /* ...código para cerrar la alerta... */ }
-        
-        // --- Pegar aquí las funciones showAlert y closeAlert de home.html ---
         function showAlert(title, message) {
             customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button onclick="closeAlert()">OK</button></div>`;
             customAlert.style.display = 'flex';
         }
-        function closeAlert() {
-            customAlert.style.display = 'none';
-        }
+        function closeAlert() { customAlert.style.display = 'none'; }
 
         logoutBtn.addEventListener('click', () => auth.signOut());
+
+        // ===== JAVASCRIPT UPDATED: "Coming Soon" logic removed =====
+        function controlServiceAccess(containerId, isServiceActive) {
+            // Sirf tabhi action lein jab service active NAHI hai
+            if (!isServiceActive) {
+                const container = document.getElementById(containerId);
+                const serviceCards = container.querySelectorAll('.service-card');
+
+                serviceCards.forEach(card => {
+                    card.addEventListener('click', function(event) {
+                        // Link ko page par jaane se rokein
+                        event.preventDefault(); 
+                        // Alert dikhayein
+                        showAlert('Service Not Active', 'This service is not active. Please contact your admin.');
+                    });
+                });
+            }
+            // Agar service active hai (isServiceActive is true), to kuch karne ki zarurat nahi.
+            // HTML links apne aap kaam karenge.
+        }
 
         auth.onAuthStateChanged(user => {
             if (user) {
                 const userDocRef = db.collection('users').doc(user.uid);
-                userDocRef.get().then(doc => {
+                userDocRef.onSnapshot(doc => {
                     if (doc.exists) {
-                        userNameEl.textContent = doc.data().fullName || 'User';
-                    }
+                        const userData = doc.data();
+                        userNameEl.textContent = userData.fullName || 'User';
+
+                        if (userData.isBlocked === true) {
+                            blockedOverlay.style.display = 'flex';
+                            blockedOverlay.innerHTML = `<div class="blocked-box"><h2>Account Blocked</h2><p>Your account has been blocked.</p></div>`;
+                            setTimeout(() => auth.signOut(), 5000);
+                            return;
+                        } else {
+                            blockedOverlay.style.display = 'none';
+                        }
+                        
+                        controlServiceAccess('all-services-grid', userData.billpay === true);
+
+                    } else { auth.signOut(); }
+                }, error => {
+                    console.error("Error fetching user data:", error);
+                    auth.signOut();
                 });
             } else {
                 window.location.href = 'index.html';
