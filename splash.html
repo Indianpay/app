@@ -11,66 +11,57 @@
             --primary-color: #00a884; /* आपका फाइनल हरा रंग */
             --error-color: #FECACA;   /* हल्के लाल रंग का एरर */
         }
-        body, html { margin: 0; padding: 0; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #f4f5f7; font-family: 'Poppins', sans-serif; }
         
-        /* ===== यहाँ बैकग्राउंड में बदलाव किया गया है ===== */
-        .mobile-screen {
-            width: 375px; height: 100%; max-height: 812px;
-            background-color: var(--primary-color); /* बैकग्राउंड को हरा किया गया */
-            border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            position: relative; overflow: hidden; padding: 20px; text-align: center;
-        }
-
-        /* ===== लोगो को सफ़ेद किया गया है ===== */
-        .logo { 
-            font-size: 48px; 
-            font-weight: 700; 
-            letter-spacing: -1px; 
-            color: white; /* लोगो का रंग सफ़ेद */
+        /* ===== बॉडी और एचटीएमएल को पूरी ऊंचाई दी गई है ===== */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-color); /* बैकग्राउंड कलर को सीधे बॉडी पर सेट किया गया */
         }
         
-        /* ===== लोडर को सफ़ेद किया गया है ===== */
-        .loader-container { margin-top: 40px; }
-        .dot-loader { display: flex; justify-content: center; align-items: center; }
-        .dot {
-            width: 12px;
-            height: 12px;
-            background-color: white; /* लोडर का रंग सफ़ेद */
-            border-radius: 50%;
-            margin: 0 6px;
-            animation: dot-bounce 1.4s infinite ease-in-out both;
-        }
-        .dot.dot1 { animation-delay: -0.32s; }
-        .dot.dot2 { animation-delay: -0.16s; }
-        @keyframes dot-bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
+        /* ===== पूरी स्क्रीन पर लोडिंग कंटेनर ===== */
+        .loading-screen {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center; /* बीच में अलाइन करने के लिए */
+            align-items: center;     /* बीच में अलाइन करने के लिए */
+            text-align: center;
         }
 
-        /* ===== टेक्स्ट को सफ़ेद किया गया है ===== */
+        /* ===== स्टेटस टेक्स्ट को बड़ा और प्रमुख बनाया गया है ===== */
         #status-text {
-            color: rgba(255, 255, 255, 0.8); /* टेक्स्ट का रंग हल्का सफ़ेद */
-            margin-top: 25px;
-            font-size: 16px;
-            font-weight: 500;
+            color: white; /* टेक्स्ट का रंग सफ़ेद */
+            font-size: 36px; /* फ़ॉन्ट साइज़ को बड़ा किया गया */
+            font-weight: 600; /* फ़ॉन्ट को बोल्ड बनाया गया */
+            margin-top: 0; /* ऊपर से मार्जिन हटाया गया */
             transition: color 0.5s ease;
+            
+            /* टेक्स्ट के लिए एक सूक्ष्म एनिमेशन */
+            animation: pulse 2s infinite ease-in-out;
         }
+
         #status-text.error {
             color: var(--error-color); /* एरर का रंग हल्का लाल */
-            font-weight: 600;
+            animation: none; /* एरर आने पर एनिमेशन रोकें */
+        }
+
+        /* टेक्स्ट के लिए पल्स एनिमेशन */
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
         }
     </style>
 </head>
 <body>
-    <div class="mobile-screen">
-        <div class="logo">IndianPay</div>
-        <div class="loader-container">
-            <div class="dot-loader">
-                <div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div>
-            </div>
-        </div>
-        <p id="status-text">Authenticating...</p>
+    <!-- ===== स्क्रीन कंटेनर को बदला गया है ===== -->
+    <div class="loading-screen">
+        <!-- ===== लोगो और लोडर हटा दिए गए, केवल स्टेटस टेक्स्ट बचा है ===== -->
+        <p id="status-text">Loading...</p>
     </div>
 
     <!-- JavaScript में कोई बदलाव नहीं -->
