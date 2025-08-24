@@ -140,7 +140,8 @@
                     <label for="transaction-type-filter">Filter by Type:</label>
                     <select id="transaction-type-filter">
                         <option value="all">All Transactions</option>
-                        <option value="add_money_requests">Add Money Requests</option>
+                        <option value="add_money_requests_pending">Add Money Requests (Pending)</option>
+                        <option value="add_money_approved">Add Money (Approved)</option> <!-- नया विकल्प -->
                         <option value="mobile_recharge">Mobile Recharge</option>
                         <option value="dth_recharge">DTH Recharge</option>
                         <option value="money_transfer">Money Transfer</option>
@@ -354,14 +355,15 @@
             let allTransactions = [];
 
             try {
-                // 1. Add Money Requests से डेटा फ़ेच करें (pending, approved, rejected)
-                if (selectedType === 'all' || selectedType === 'add_money_requests') {
-                    const addMoneySnapshot = await db.collection('addMoneyRequests')
+                // 1. Add Money Requests से डेटा फ़ेच करें (केवल 'pending' के लिए)
+                if (selectedType === 'all' || selectedType === 'add_money_requests_pending') {
+                    const addMoneyPendingSnapshot = await db.collection('addMoneyRequests')
                         .where('userId', '==', currentUser.uid)
+                        .where('status', '==', 'pending') // केवल लंबित अनुरोध
                         .orderBy('timestamp', 'desc')
                         .limit(20) 
                         .get();
-                    addMoneySnapshot.forEach(doc => {
+                    addMoneyPendingSnapshot.forEach(doc => {
                         const data = doc.data();
                         allTransactions.push({
                             id: doc.id,
@@ -369,14 +371,15 @@
                             type: 'Add Money Request',
                             description: `UTR: ${data.utrNumber || 'N/A'}`,
                             amount: data.amount,
-                            status: data.status, 
+                            status: data.status, // pending
                             isCredit: true 
                         });
                     });
                 }
-
+                
                 // 2. Recharge and other General Transactions से डेटा फ़ेच करें
-                if (selectedType !== 'add_money_requests') { 
+                // इसमें स्वीकृत Add Money भी शामिल है
+                if (selectedType !== 'add_money_requests_pending') { 
                     let query = db.collection('transactions')
                         .where('userId', '==', currentUser.uid)
                         .orderBy('timestamp', 'desc')
@@ -384,12 +387,11 @@
 
                     if (selectedType !== 'all') {
                         const firebaseTransactionType = getFirebaseTransactionType(selectedType);
-                        if (firebaseTransactionType) { // सुनिश्चित करें कि टाइप खाली नहीं है
+                        if (firebaseTransactionType) { 
                             query = query.where('type', '==', firebaseTransactionType);
                         } else {
                             // यदि कोई मान्य मैपिंग नहीं है, तो उस फिल्टर के लिए क्वेरी न चलाएं
                             // या सभी लेनदेन दिखाएं और क्लाइंट-साइड पर फिल्टर करें।
-                            // अभी के लिए, हम उस विशिष्ट फिल्टर के लिए कोई ट्रांजैक्शन नहीं दिखाएंगे।
                         }
                     }
                     
@@ -415,7 +417,7 @@
 
             } catch (error) {
                 console.error("Error loading transactions: ", error);
-                showAlert("Error", "Could not load transaction history: " + error.message); // अधिक विस्तृत एरर मैसेज
+                showAlert("Error", "Could not load transaction history: " + error.message); 
                 transactionsTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Failed to load transactions.</td></tr>';
             } finally {
                 if (!transactionsInitialLoaded) {
@@ -427,20 +429,20 @@
 
         // Firebase 'type' वैल्यू प्राप्त करने के लिए हेल्पर फंक्शन
         function getFirebaseTransactionType(filterValue) {
-            // यह फ़ंक्शन 'select' के 'value' को Firebase में संग्रहीत वास्तविक 'type' नाम में मैप करेगा।
-            // आपको यह सुनिश्चित करना होगा कि ये Firebase में आपकी transaction collection के 'type' फ़ील्ड से मेल खाते हों।
             switch(filterValue) {
+                case 'add_money_approved': return 'Add Money (Approved)'; // नया फिल्टर
                 case 'mobile_recharge': return 'Mobile Recharge';
                 case 'dth_recharge': return 'DTH Recharge';
                 case 'money_transfer': return 'Money Transfer';
-                case 'broadband_bill': return 'Broadband Bill'; // Updated value
-                case 'electricity_bill': return 'Electricity Bill'; // Updated value
-                case 'cable_tv_bill': return 'Cable TV Bill'; // Updated value
+                case 'bill_payment_general': return 'Bill Payment'; // यदि आपके पास 'transactions' कलेक्शन में एक सामान्य 'Bill Payment' टाइप है
+                case 'broadband_bill': return 'Broadband Bill'; 
+                case 'electricity_bill': return 'Electricity Bill'; 
+                case 'cable_tv_bill': return 'Cable TV Bill'; 
                 case 'water_bill': return 'Water Bill';
                 case 'gas_cylinder': return 'Gas Cylinder';
-                case 'landline_bill': return 'Landline Bill'; // Updated value
+                case 'landline_bill': return 'Landline Bill'; 
                 case 'loan_repayment': return 'Loan Repayment';
-                case 'insurance_payment': return 'Insurance Payment'; // Updated value
+                case 'insurance_payment': return 'Insurance Payment'; 
                 case 'fastag_recharge': return 'FASTag Recharge';
                 case 'credit_card_bill': return 'Credit Card Bill';
                 case 'municipal_taxes': return 'Municipal Taxes';
@@ -463,8 +465,7 @@
                 case 'train_tickets': return 'Train Tickets';
                 case 'flight_tickets': return 'Flight Tickets';
                 case 'bus_tickets': return 'Bus Tickets';
-                case 'bill_payment_general': return 'Bill Payment'; // Generic type for all BBPS
-                default: return null; // यदि कोई मैच नहीं है तो null लौटाएं
+                default: return null; 
             }
         }
 
