@@ -222,7 +222,7 @@
                                     card.addEventListener('click', event => {
                                         event.preventDefault();
                                         showAlert('Service Not Active', 'This service is not active for your account.');
-                                    }, { once: true }); // Use { once: true } to avoid adding multiple listeners
+                                    }, { once: true });
                                 }
                             });
                         } else { auth.signOut(); }
