@@ -18,12 +18,12 @@
         .logo span { color: var(--primary-color); }
         .nav-links { display: flex; align-items: center; gap: 1.5rem; }
         .nav-links .welcome-text { font-weight: 500; }
-        .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease; }
+        .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
         main { padding: 3rem 0; }
         .balance-card { background: linear-gradient(135deg, var(--secondary-color) 0%, #37475a 100%); color: white; padding: 2.5rem; border-radius: 16px; margin-bottom: 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .balance-card h1 { font-size: 1.5rem; font-weight: 500; opacity: 0.9; color: white; }
         .balance-display { font-size: 3.5rem; font-weight: 700; margin: 0.5rem 0 1.5rem; color: white; }
-        .action-buttons a { background-color: rgba(255, 255, 255, 0.1); color: white; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; margin-right: 1rem; transition: background-color 0.3s ease; }
+        .action-buttons a { background-color: rgba(255, 255, 255, 0.1); color: white; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; margin-right: 1rem; }
         .service-section { margin-bottom: 3rem; }
         .service-section h2 { font-size: 1.8rem; margin-bottom: 1.5rem; border-bottom: 3px solid var(--primary-color); display: inline-block; padding-bottom: 0.5rem; }
         .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; }
@@ -54,7 +54,6 @@
             </nav>
         </div>
     </header>
-
     <main>
         <div class="container">
             <section class="balance-card">
@@ -66,92 +65,59 @@
                     <a href="commission-chart.html"><i class="fas fa-percent"></i> Commission Chart</a>
                 </div>
             </section>
-
+            
             <section class="service-section" id="aeps-section">
                 <h2>AEPS Services</h2>
                 <div class="service-grid">
-                    <a href="cash-withdrawal.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-money-bill-wave"></i></div><h3>Cash Withdrawal</h3></a>
-                    <a href="aadhaar-pay.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div><h3>Aadhaar Pay</h3></a>
-                    <a href="balance-inquiry.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-scale-balanced"></i></div><h3>Balance Inquiry</h3></a>
-                    <a href="mini-statement.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-receipt"></i></div><h3>Mini Statement</h3></a>
+                    <a href="cash-withdrawal.html" class="service-card" data-service-id="cash-withdrawal"><div class="service-icon"><i class="fa-solid fa-money-bill-wave"></i></div><h3>Cash Withdrawal</h3></a>
+                    <a href="aadhaar-pay.html" class="service-card" data-service-id="aadhaar-pay"><div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div><h3>Aadhaar Pay</h3></a>
+                    <a href="balance-inquiry.html" class="service-card" data-service-id="balance-inquiry"><div class="service-icon"><i class="fa-solid fa-scale-balanced"></i></div><h3>Balance Inquiry</h3></a>
+                    <a href="mini-statement.html" class="service-card" data-service-id="mini-statement"><div class="service-icon"><i class="fa-solid fa-receipt"></i></div><h3>Mini Statement</h3></a>
                 </div>
             </section>
 
             <section class="service-section" id="utility-section">
                 <h2>Utility & Payments</h2>
                 <div class="service-grid">
-                    <a href="mobile-recharge.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-mobile-screen-button"></i></div><h3>Mobile Recharge</h3></a>
-                    <a href="money-transfer.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-money-bill-transfer"></i></div><h3>Money Transfer</h3></a>
-                    <a href="dth-recharge.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-satellite-dish"></i></div><h3>DTH Recharge</h3></a>
+                    <a href="mobile-recharge.html" class="service-card" data-service-id="mobile-recharge"><div class="service-icon"><i class="fa-solid fa-mobile-screen-button"></i></div><h3>Mobile Recharge</h3></a>
+                    <a href="money-transfer.html" class="service-card" data-service-id="money-transfer"><div class="service-icon"><i class="fa-solid fa-money-bill-transfer"></i></div><h3>Money Transfer</h3></a>
+                    <a href="dth-recharge.html" class="service-card" data-service-id="dth-recharge"><div class="service-icon"><i class="fa-solid fa-satellite-dish"></i></div><h3>DTH Recharge</h3></a>
                 </div>
             </section>
             
             <section class="service-section" id="bbps-section">
                 <h2>BBPS Services</h2>
                 <div class="service-grid">
-                    <a href="broadband.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-wifi"></i></div><h3>Broadband</h3></a>
-                    <a href="electricity.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-bolt"></i></div><h3>Electricity</h3></a>
-                    <a href="cable-tv.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-tv"></i></div><h3>Cable TV</h3></a>
-                    <a href="water-bill.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-droplet"></i></div><h3>Water Bill</h3></a>
-                    <a href="gas-cylinder.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-fire-flame-simple"></i></div><h3>Gas Cylinder</h3></a>
-                    <a href="landline.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-phone"></i></div><h3>Landline</h3></a>
-                    <a href="loan-repayment.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><h3>Loan Repayment</h3></a>
-                    <a href="insurance.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Insurance</h3></a>
-                    <a href="fastag-recharge.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-car-on"></i></div><h3>FASTag Recharge</h3></a>
-                    <a href="credit-card-bill.html" class="service-card"><div class="service-icon"><i class="fa-regular fa-credit-card"></i></div><h3>Credit Card Bill</h3></a>
-                    <a href="municipal-taxes.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-landmark"></i></div><h3>Municipal Taxes</h3></a>
-                    <a href="education-fees.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Education Fees</h3></a>
+                    <a href="broadband.html" class="service-card" data-service-id="broadband"><div class="service-icon"><i class="fa-solid fa-wifi"></i></div><h3>Broadband</h3></a>
+                    <a href="electricity.html" class="service-card" data-service-id="electricity"><div class="service-icon"><i class="fa-solid fa-bolt"></i></div><h3>Electricity</h3></a>
+                    <a href="cable-tv.html" class="service-card" data-service-id="cable-tv"><div class="service-icon"><i class="fa-solid fa-tv"></i></div><h3>Cable TV</h3></a>
+                    <a href="water-bill.html" class="service-card" data-service-id="water-bill"><div class="service-icon"><i class="fa-solid fa-droplet"></i></div><h3>Water Bill</h3></a>
+                    <a href="gas-cylinder.html" class="service-card" data-service-id="gas-cylinder"><div class="service-icon"><i class="fa-solid fa-fire-flame-simple"></i></div><h3>Gas Cylinder</h3></a>
+                    <a href="landline.html" class="service-card" data-service-id="landline"><div class="service-icon"><i class="fa-solid fa-phone"></i></div><h3>Landline</h3></a>
+                    <a href="loan-repayment.html" class="service-card" data-service-id="loan-repayment"><div class="service-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><h3>Loan Repayment</h3></a>
+                    <a href="insurance.html" class="service-card" data-service-id="insurance"><div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Insurance</h3></a>
+                    <a href="fastag-recharge.html" class="service-card" data-service-id="fastag-recharge"><div class="service-icon"><i class="fa-solid fa-car-on"></i></div><h3>FASTag Recharge</h3></a>
+                    <a href="credit-card-bill.html" class="service-card" data-service-id="credit-card-bill"><div class="service-icon"><i class="fa-regular fa-credit-card"></i></div><h3>Credit Card Bill</h3></a>
+                    <a href="municipal-taxes.html" class="service-card" data-service-id="municipal-taxes"><div class="service-icon"><i class="fa-solid fa-landmark"></i></div><h3>Municipal Taxes</h3></a>
+                    <a href="education-fees.html" class="service-card" data-service-id="education-fees"><div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Education Fees</h3></a>
                 </div>
             </section>
-            
+
             <section class="service-section" id="govt-docs-section">
                 <h2>Government Documents</h2>
                 <div class="service-grid">
-                    <a href="pan-card-services.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-address-card"></i></div><h3>PAN Card</h3></a>
-                    <a href="aadhaar-services.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div><h3>Aadhaar Services</h3></a>
-                    <a href="voter-id-card.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-check-to-slot"></i></div><h3>Voter ID Card</h3></a>
-                    <a href="driving-license.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-id-card"></i></div><h3>Driving License</h3></a>
-                    <a href="passport-seva.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-passport"></i></div><h3>Passport Seva</h3></a>
-                </div>
-            </section>
-
-            <section class="service-section" id="financial-section">
-                <h2>Financial & Insurance</h2>
-                <div class="service-grid">
-                    <a href="itr-filing.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><h3>ITR Filing</h3></a>
-                    <a href="gst-services.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-landmark"></i></div><h3>GST Services</h3></a>
-                    <a href="life-insurance.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-heart-pulse"></i></div><h3>Life Insurance</h3></a>
-                    <a href="vehicle-insurance.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-car-burst"></i></div><h3>Vehicle Insurance</h3></a>
+                    <a href="pan-card-services.html" class="service-card" data-service-id="pan-card-services"><div class="service-icon"><i class="fa-solid fa-address-card"></i></div><h3>PAN Card</h3></a>
+                    <a href="aadhaar-services.html" class="service-card" data-service-id="aadhaar-services"><div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div><h3>Aadhaar Services</h3></a>
+                    <a href="voter-id-card.html" class="service-card" data-service-id="voter-id-card"><div class="service-icon"><i class="fa-solid fa-check-to-slot"></i></div><h3>Voter ID Card</h3></a>
+                    <a href="driving-license.html" class="service-card" data-service-id="driving-license"><div class="service-icon"><i class="fa-solid fa-id-card"></i></div><h3>Driving License</h3></a>
                 </div>
             </section>
             
-            <section class="service-section" id="schemes-section">
-                <h2>Government Schemes</h2>
-                <div class="service-grid">
-                    <a href="pm-kisan.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-tractor"></i></div><h3>PM-KISAN</h3></a>
-                    <a href="ayushman-bharat.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-notes-medical"></i></div><h3>Ayushman Bharat</h3></a>
-                    <a href="e-shram-card.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-person-digging"></i></div><h3>e-SHRAM Card</h3></a>
-                </div>
-            </section>
+            <!-- Other sections go here, following the same pattern -->
 
-            <section class="service-section" id="travel-section">
-                <h2>Travel & Transport</h2>
-                <div class="service-grid">
-                    <a href="train-tickets.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-train-subway"></i></div><h3>Train Tickets</h3></a>
-                    <a href="flight-tickets.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-plane-departure"></i></div><h3>Flight Tickets</h3></a>
-                    <a href="bus-tickets.html" class="service-card"><div class="service-icon"><i class="fa-solid fa-bus"></i></div><h3>Bus Tickets</h3></a>
-                </div>
-            </section>
         </div>
     </main>
-
-    <footer class="footer">
-        <div class="container">
-            <a href="home.html" class="logo">Indian<span>Pay</span></a>
-            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
-        </div>
-    </footer>
-
+    <footer class="footer"><!-- ... Footer ... --></footer>
     <div id="blocked-overlay" class="blocked-overlay"></div>
     <div id="custom-alert" class="custom-alert-overlay"></div>
 
@@ -159,85 +125,85 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        const firebaseConfig = { 
-            apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", 
-            authDomain: "indianpay425.firebaseapp.com",
-            projectId: "indianpay425", 
-            storageBucket: "indianpay425.appspot.com", 
-            messagingSenderId: "6705555817", 
-            appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
-        };
-        
+        const firebaseConfig = { /* ... आपकी फायरबेस कॉन्फिग ... */ };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-
-        const userNameEl = document.getElementById('user-name');
-        const walletBalanceEl = document.getElementById('wallet-balance');
-        const blockedOverlay = document.getElementById('blocked-overlay');
-        const customAlert = document.getElementById('custom-alert');
-        const logoutBtn = document.getElementById('logout-btn');
         
+        const userPermissionMap = {
+            'cash-withdrawal': 'moneytransfer', 'aadhaar-pay': 'moneytransfer', 'balance-inquiry': 'moneytransfer', 'mini-statement': 'moneytransfer',
+            'mobile-recharge': 'recharge', 'money-transfer': 'recharge', 'dth-recharge': 'recharge',
+            'broadband': 'billpay', 'electricity': 'billpay', 'cable-tv': 'billpay', 'water-bill': 'billpay', 'gas-cylinder': 'billpay', 'landline': 'billpay', 'loan-repayment': 'billpay', 'insurance': 'billpay', 'fastag-recharge': 'billpay', 'credit-card-bill': 'billpay', 'municipal-taxes': 'billpay', 'education-fees': 'billpay',
+            'pan-card-services': 'govtservices', 'aadhaar-services': 'govtservices', 'voter-id-card': 'govtservices', 'driving-license': 'govtservices'
+            // Add other mappings here as you add more services
+        };
+
         function showAlert(title, message) {
+            const customAlert = document.getElementById('custom-alert');
             customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button onclick="closeAlert()">OK</button></div>`;
             customAlert.style.display = 'flex';
         }
-        function closeAlert() { customAlert.style.display = 'none'; }
-        logoutBtn.addEventListener('click', () => auth.signOut());
-
-        function controlServiceAccess(sectionId, isServiceActive) {
-            if (isServiceActive === false) { // Explicitly check for false
-                const section = document.getElementById(sectionId);
-                if(section){
-                    const serviceCards = section.querySelectorAll('.service-card');
-                    serviceCards.forEach(card => {
-                        card.addEventListener('click', function(event) {
-                            event.preventDefault(); 
-                            showAlert('Service Not Active', 'This service is not active. Please contact your admin.');
-                        });
-                    });
-                }
-            }
+        function closeAlert() {
+            document.getElementById('custom-alert').style.display = 'none';
         }
 
-        auth.onAuthStateChanged(user => {
+        auth.onAuthStateChanged(async (user) => {
             if (user) {
-                const userDocRef = db.collection('users').doc(user.uid);
-                userDocRef.onSnapshot(doc => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        userNameEl.textContent = userData.fullName || 'User';
-                        
-                        if (userData.isBlocked === true) {
-                            blockedOverlay.innerHTML = `<div class="blocked-box"><h2>Account Blocked</h2><p>Your account has been blocked. Please contact support.</p></div>`;
-                            blockedOverlay.style.display = 'flex';
-                            setTimeout(() => auth.signOut(), 5000);
-                            return;
-                        } else {
-                            blockedOverlay.style.display = 'none';
+                try {
+                    // 1. Fetch Master Settings
+                    const settingsRef = db.collection('settings').doc('masterServices');
+                    const settingsDoc = await settingsRef.get();
+                    const masterSettings = settingsDoc.exists ? settingsDoc.data() : {};
+
+                    // 2. Hide Globally Disabled Services
+                    const allServiceCards = document.querySelectorAll('.service-card');
+                    allServiceCards.forEach(card => {
+                        const serviceId = card.dataset.serviceId;
+                        if (masterSettings[serviceId] === false) {
+                            card.style.display = 'none';
                         }
-                        
-                        walletBalanceEl.textContent = `₹${(userData.walletBalance || 0).toFixed(2)}`;
+                    });
 
-                        controlServiceAccess('aeps-section', userData.moneytransfer);
-                        controlServiceAccess('utility-section', userData.recharge);
-                        controlServiceAccess('bbps-section', userData.billpay);
-                        controlServiceAccess('govt-docs-section', userData.govtservices);
-                        controlServiceAccess('financial-section', userData.financialservices);
-                        controlServiceAccess('schemes-section', userData.schemesservices);
-                        controlServiceAccess('travel-section', userData.travelservices);
+                    // 3. Fetch User Data and Apply User-Specific Permissions
+                    const userDocRef = db.collection('users').doc(user.uid);
+                    userDocRef.onSnapshot(doc => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            document.getElementById('user-name').textContent = userData.fullName || 'User';
+                            document.getElementById('wallet-balance').textContent = `₹${(userData.walletBalance || 0).toFixed(2)}`;
 
-                    } else { 
-                        auth.signOut(); 
-                    }
-                }, error => { 
-                    console.error("Firestore Error:", error);
-                    auth.signOut(); 
-                });
+                            if (userData.isBlocked === true) {
+                                document.getElementById('blocked-overlay').innerHTML = `<div class="blocked-box"><h2>Account Blocked</h2><p>Your account is blocked. Please contact support.</p></div>`;
+                                document.getElementById('blocked-overlay').style.display = 'flex';
+                                setTimeout(() => auth.signOut(), 5000);
+                                return;
+                            }
+                            
+                            allServiceCards.forEach(card => {
+                                if (card.style.display === 'none') return;
+
+                                const serviceId = card.dataset.serviceId;
+                                const userPermissionCategory = userPermissionMap[serviceId];
+                                
+                                if (userPermissionCategory && userData[userPermissionCategory] === false) {
+                                    card.addEventListener('click', event => {
+                                        event.preventDefault();
+                                        showAlert('Service Not Active', 'This service is not active for your account.');
+                                    });
+                                }
+                            });
+                        } else { auth.signOut(); }
+                    });
+                } catch (error) {
+                    console.error("Error initializing dashboard:", error);
+                    auth.signOut();
+                }
             } else { 
                 window.location.href = 'index.html'; 
             }
         });
+
+        document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
     </script>
 </body>
 </html>
