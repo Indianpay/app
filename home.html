@@ -16,9 +16,25 @@
         .navbar { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
         .logo span { color: var(--primary-color); }
-        .nav-links { display: flex; align-items: center; gap: 1.5rem; }
-        .nav-links .welcome-text { font-weight: 500; }
-        .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .nav-links { display: flex; align-items: center; gap: 1rem; }
+        .nav-links .welcome-text { font-weight: 500; margin-right: 0.5rem; }
+        
+        /* FIX: PROFILE BUTTON DESIGN */
+        .profile-btn {
+            text-decoration: none;
+            background-color: #f1f5f9;
+            color: var(--secondary-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .profile-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        
         main { padding: 3rem 0; }
         .balance-card { background: linear-gradient(135deg, var(--secondary-color) 0%, #37475a 100%); color: white; padding: 2.5rem; border-radius: 16px; margin-bottom: 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .balance-card h1 { font-size: 1.5rem; font-weight: 500; opacity: 0.9; color: white; }
@@ -48,7 +64,8 @@
                 <a href="home.html" class="logo">Indian<span>Pay</span></a>
                 <div class="nav-links">
                     <span class="welcome-text">Welcome, <strong id="user-name">User</strong></span>
-                    <a href="profile.html">Profile</a>
+                    <!-- FIX: PROFILE BUTTON DESIGN -->
+                    <a href="profile.html" class="profile-btn">Profile</a>
                     <button id="logout-btn" class="logout-btn">Logout</button>
                 </div>
             </nav>
@@ -178,63 +195,86 @@
         }
         function closeAlert() { document.getElementById('custom-alert').style.display = 'none'; }
 
-        auth.onAuthStateChanged(async (user) => {
+        // FIX: RELIABLE DATA LOADING LOGIC
+        auth.onAuthStateChanged(user => {
             if (user) {
-                try {
-                    // 1. Fetch Master Settings
-                    const settingsRef = db.collection('settings').doc('masterServices');
-                    const settingsDoc = await settingsRef.get();
-                    const masterSettings = settingsDoc.exists ? settingsDoc.data() : {};
+                // First, set up the real-time listener for user data
+                const userDocRef = db.collection('users').doc(user.uid);
+                const unsubscribe = userDocRef.onSnapshot(userDoc => {
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        
+                        // 1. Display user name and wallet balance immediately
+                        document.getElementById('user-name').textContent = userData.fullName || 'User';
+                        document.getElementById('wallet-balance').textContent = `₹${(userData.walletBalance || 0).toFixed(2)}`;
 
-                    // 2. Hide Globally Disabled Services
-                    const allServiceCards = document.querySelectorAll('.service-card');
-                    allServiceCards.forEach(card => {
-                        const serviceId = card.dataset.serviceId;
-                        if (masterSettings[serviceId] === false) {
-                            card.style.display = 'none';
+                        // 2. Check if the user is blocked
+                        if (userData.isBlocked === true) {
+                            document.getElementById('blocked-overlay').innerHTML = `<div class="blocked-box"><h2>Account Blocked</h2><p>Your account is blocked. Please contact support.</p></div>`;
+                            document.getElementById('blocked-overlay').style.display = 'flex';
+                            setTimeout(() => auth.signOut(), 5000);
+                            return; // Stop further processing for this user
+                        } else {
+                            document.getElementById('blocked-overlay').style.display = 'none';
                         }
-                    });
+                        
+                        // 3. After displaying user data, fetch master settings and apply all permissions
+                        applyServicePermissions(userData);
 
-                    // 3. Fetch User Data and Apply User-Specific Permissions
-                    const userDocRef = db.collection('users').doc(user.uid);
-                    userDocRef.onSnapshot(doc => {
-                        if (doc.exists) {
-                            const userData = doc.data();
-                            
-                            // FIX: Display user name and wallet balance
-                            document.getElementById('user-name').textContent = userData.fullName || 'User';
-                            document.getElementById('wallet-balance').textContent = `₹${(userData.walletBalance || 0).toFixed(2)}`;
-
-                            if (userData.isBlocked === true) {
-                                document.getElementById('blocked-overlay').innerHTML = `<div class="blocked-box"><h2>Account Blocked</h2><p>Your account is blocked. Please contact support.</p></div>`;
-                                document.getElementById('blocked-overlay').style.display = 'flex';
-                                setTimeout(() => auth.signOut(), 5000);
-                                return;
-                            } else {
-                                document.getElementById('blocked-overlay').style.display = 'none';
-                            }
-                            
-                            allServiceCards.forEach(card => {
-                                if (card.style.display === 'none') return;
-                                const serviceId = card.dataset.serviceId;
-                                const userPermissionCategory = userPermissionMap[serviceId];
-                                if (userPermissionCategory && userData[userPermissionCategory] === false) {
-                                    card.addEventListener('click', event => {
-                                        event.preventDefault();
-                                        showAlert('Service Not Active', 'This service is not active for your account.');
-                                    }, { once: true });
-                                }
-                            });
-                        } else { auth.signOut(); }
-                    });
-                } catch (error) {
-                    console.error("Error initializing dashboard:", error);
+                    } else {
+                        // User is authenticated but doesn't exist in Firestore
+                        alert("User data not found. Logging out.");
+                        auth.signOut();
+                    }
+                }, error => {
+                    console.error("Error listening to user data:", error);
+                    alert("Could not fetch user data.");
                     auth.signOut();
-                }
+                });
             } else { 
                 window.location.href = 'index.html'; 
             }
         });
+
+        async function applyServicePermissions(userData) {
+            try {
+                // Fetch Master Settings
+                const settingsRef = db.collection('settings').doc('masterServices');
+                const settingsDoc = await settingsRef.get();
+                const masterSettings = settingsDoc.exists ? settingsDoc.data() : {};
+
+                const allServiceCards = document.querySelectorAll('.service-card');
+
+                allServiceCards.forEach(card => {
+                    const serviceId = card.dataset.serviceId;
+                    
+                    // A. Master Control: Hide the service if globally disabled
+                    if (masterSettings[serviceId] === false) {
+                        card.style.display = 'none';
+                        return; // No need to check user permissions if it's globally off
+                    } else {
+                        card.style.display = ''; // Ensure it's visible if globally enabled
+                    }
+
+                    // B. User Control: Disable click if user-specific permission is off
+                    const userPermissionCategory = userPermissionMap[serviceId];
+                    if (userPermissionCategory && userData[userPermissionCategory] === false) {
+                        // Clone and replace the node to remove any old event listeners
+                        const oldCard = card;
+                        const newCard = oldCard.cloneNode(true);
+                        oldCard.parentNode.replaceChild(newCard, oldCard);
+                        
+                        newCard.addEventListener('click', event => {
+                            event.preventDefault();
+                            showAlert('Service Not Active', 'This service is not active for your account.');
+                        });
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error applying service permissions:", error);
+            }
+        }
 
         document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
     </script>
