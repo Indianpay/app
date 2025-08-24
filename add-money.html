@@ -208,7 +208,6 @@
             setTimeout(() => { loaderOverlay.style.display = 'none'; }, 500);
         }
 
-        // यह फंक्शन जांचता है कि दोनों महत्वपूर्ण डेटा लोड हो गए हैं या नहीं
         function checkAndHideLoader() {
             if (userDataInitialLoaded && appSettingsInitialLoaded) {
                 hideLoader();
@@ -223,10 +222,10 @@
         } catch (e) {
             console.error("Error initializing Firebase:", e);
             showAlert("Error", "Firebase initialization failed. Please try again or contact support.");
-            hideLoader(); // Firebase init fail पर लोडर छिपाएं
-            // userDataInitialLoaded = true; // Error पर भी इसे true मानें ताकि लोडर छिप सके
-            // appSettingsInitialLoaded = true; // Error पर भी इसे true मानें ताकि लोडर छिप सके
-            // checkAndHideLoader();
+            // Ensure loader hides even on Firebase init error
+            userDataInitialLoaded = true;
+            appSettingsInitialLoaded = true;
+            checkAndHideLoader();
         }
         
         const auth = firebase.auth();
@@ -270,6 +269,7 @@
             }
 
             const upiId = appSettings.paymentUpiId; 
+            // Note: Uid को transaction note में जोड़ना एक अच्छा अभ्यास है ताकि admin पहचान सके
             const paymentUrl = `upi://pay?pa=${upiId}&pn=IndianPay&am=${amountToAdd}&cu=INR&tn=AddMoney_${currentUser.uid}`; 
             
             qrAmountDisplay.textContent = `₹${amountToAdd.toFixed(2)}`;
@@ -335,7 +335,10 @@
         // Logout
         logoutBtn.addEventListener('click', () => {
             auth.signOut().then(() => {
-                window.location.href = 'index.html'; // Logout पर index.html पर रीडायरेक्ट करें
+                window.location.href = 'index.html'; 
+            }).catch(error => {
+                console.error("Error signing out: ", error);
+                showAlert("Logout Error", "Could not log out. Please try again.");
             });
         });
 
@@ -359,7 +362,7 @@
                         showAlert("Error", "User data not found. Logging out.", () => {
                             auth.signOut();
                         });
-                        if (!userDataInitialLoaded) { // User doc exist नहीं करता पर फिर भी loader हटाओ
+                        if (!userDataInitialLoaded) { 
                             userDataInitialLoaded = true;
                             checkAndHideLoader();
                         }
@@ -369,7 +372,7 @@
                     showAlert("Error", "Could not fetch user data. Logging out.", () => {
                         auth.signOut();
                     });
-                    if (!userDataInitialLoaded) { // Snapshot error पर भी loader हटाओ
+                    if (!userDataInitialLoaded) { 
                         userDataInitialLoaded = true;
                         checkAndHideLoader();
                     }
@@ -390,14 +393,14 @@
                 }).catch(error => {
                     console.error("Firestore Error fetching app settings! ", error);
                     showAlert("Error", "Error fetching payment configuration. Please try again later.");
-                    if (!appSettingsInitialLoaded) { // App settings fetch error पर भी loader हटाओ
+                    if (!appSettingsInitialLoaded) { 
                         appSettingsInitialLoaded = true;
                         checkAndHideLoader();
                     }
                 });
 
             } else {
-                hideLoader(); // user लॉग इन नहीं है तो loader हटाओ
+                hideLoader(); 
                 window.location.href = 'index.html'; 
             }
         });
