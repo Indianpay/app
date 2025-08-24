@@ -173,7 +173,15 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        const firebaseConfig = { /* ... आपकी फायरबेस कॉन्फिग ... */ };
+        // Recharge.html से प्राप्त Firebase कॉन्फ़िग को यहाँ कॉपी किया गया है
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
+            authDomain: "indianpay425.firebaseapp.com",
+            projectId: "indianpay425",
+            storageBucket: "indianpay425.appspot.com",
+            messagingSenderId: "6705555817",
+            appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
+        };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -195,7 +203,7 @@
         }
         function closeAlert() { document.getElementById('custom-alert').style.display = 'none'; }
 
-        // FIX: RELIABLE DATA LOADING LOGIC
+        // FIX: RELIABLE DATA LOADING LOGIC (यह कोड पहले से ही सही था, बस firebaseConfig की कमी थी)
         auth.onAuthStateChanged(user => {
             if (user) {
                 // First, set up the real-time listener for user data
