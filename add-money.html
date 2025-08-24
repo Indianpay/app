@@ -166,7 +166,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // आपके recharge.html और home.html से प्राप्त Firebase कॉन्फ़िग
         const firebaseConfig = { 
             apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
             authDomain: "indianpay425.firebaseapp.com",
@@ -176,10 +175,6 @@
             appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
         };
         
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
         // DOM Elements
         const userNameEl = document.getElementById('user-name');
         const currentWalletBalanceEl = document.getElementById('current-wallet-balance');
@@ -193,7 +188,8 @@
         const qrAmountDisplay = document.getElementById('qr-amount-display');
         const qrUpiIdDisplay = document.getElementById('qr-upi-id-display');
         const utrInput = document.getElementById('utr-input');
-        
+        const customAlert = document.getElementById('custom-alert');
+
         let currentUser = null; 
         let currentUserData = null; 
         let appSettings = null; 
@@ -201,17 +197,6 @@
         // Flags to ensure loader hides after all critical data is fetched
         let userDataInitialLoaded = false;
         let appSettingsInitialLoaded = false;
-
-        // कस्टम अलर्ट के फंक्शन
-        const customAlert = document.getElementById('custom-alert');
-        function showAlert(title, message, callback) { 
-            customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button id="alert-ok-btn-dynamic">OK</button></div>`; 
-            customAlert.style.display = 'flex'; 
-            document.getElementById('alert-ok-btn-dynamic').addEventListener('click', () => { 
-                customAlert.style.display = 'none'; 
-                if (typeof callback === 'function') callback(); 
-            }); 
-        }
 
         // लोडर फंक्शंस
         function showLoader() {
@@ -228,6 +213,34 @@
             if (userDataInitialLoaded && appSettingsInitialLoaded) {
                 hideLoader();
             }
+        }
+        
+        // स्क्रिप्ट लोड होते ही लोडर दिखाएं
+        showLoader();
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+        } catch (e) {
+            console.error("Error initializing Firebase:", e);
+            showAlert("Error", "Firebase initialization failed. Please try again or contact support.");
+            hideLoader(); // Firebase init fail पर लोडर छिपाएं
+            // userDataInitialLoaded = true; // Error पर भी इसे true मानें ताकि लोडर छिप सके
+            // appSettingsInitialLoaded = true; // Error पर भी इसे true मानें ताकि लोडर छिप सके
+            // checkAndHideLoader();
+        }
+        
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+
+        // कस्टम अलर्ट के फंक्शन
+        function showAlert(title, message, callback) { 
+            customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button id="alert-ok-btn-dynamic">OK</button></div>`; 
+            customAlert.style.display = 'flex'; 
+            document.getElementById('alert-ok-btn-dynamic').addEventListener('click', () => { 
+                customAlert.style.display = 'none'; 
+                if (typeof callback === 'function') callback(); 
+            }); 
         }
 
         // भुगतान ओवरले फंक्शंस
@@ -257,7 +270,6 @@
             }
 
             const upiId = appSettings.paymentUpiId; 
-            // Note: Uid को transaction note में जोड़ना एक अच्छा अभ्यास है ताकि admin पहचान सके
             const paymentUrl = `upi://pay?pa=${upiId}&pn=IndianPay&am=${amountToAdd}&cu=INR&tn=AddMoney_${currentUser.uid}`; 
             
             qrAmountDisplay.textContent = `₹${amountToAdd.toFixed(2)}`;
@@ -296,7 +308,6 @@
             showLoader(); 
 
             try {
-                // 'addMoneyRequests' कलेक्शन में अनुरोध को सहेजें
                 await db.collection('addMoneyRequests').add({
                     userId: currentUser.uid,
                     userName: currentUserData.fullName || 'Unknown User',
@@ -322,7 +333,11 @@
         }
 
         // Logout
-        logoutBtn.addEventListener('click', () => auth.signOut());
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html'; // Logout पर index.html पर रीडायरेक्ट करें
+            });
+        });
 
         // Login की जाँच और डेटा लोड करना
         auth.onAuthStateChanged(user => {
@@ -344,14 +359,17 @@
                         showAlert("Error", "User data not found. Logging out.", () => {
                             auth.signOut();
                         });
+                        if (!userDataInitialLoaded) { // User doc exist नहीं करता पर फिर भी loader हटाओ
+                            userDataInitialLoaded = true;
+                            checkAndHideLoader();
+                        }
                     }
                 }, error => {
                     console.error("Error listening to user data:", error);
                     showAlert("Error", "Could not fetch user data. Logging out.", () => {
                         auth.signOut();
                     });
-                    // Error occurred, but we still consider user data "attempted" to load for loader purposes
-                    if (!userDataInitialLoaded) {
+                    if (!userDataInitialLoaded) { // Snapshot error पर भी loader हटाओ
                         userDataInitialLoaded = true;
                         checkAndHideLoader();
                     }
@@ -372,15 +390,14 @@
                 }).catch(error => {
                     console.error("Firestore Error fetching app settings! ", error);
                     showAlert("Error", "Error fetching payment configuration. Please try again later.");
-                    // Error occurred, but we still consider app settings "attempted" to load for loader purposes
-                    if (!appSettingsInitialLoaded) {
+                    if (!appSettingsInitialLoaded) { // App settings fetch error पर भी loader हटाओ
                         appSettingsInitialLoaded = true;
                         checkAndHideLoader();
                     }
                 });
 
-
             } else {
+                hideLoader(); // user लॉग इन नहीं है तो loader हटाओ
                 window.location.href = 'index.html'; 
             }
         });
