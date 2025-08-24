@@ -145,20 +145,20 @@
                         <option value="dth_recharge">DTH Recharge</option>
                         <option value="money_transfer">Money Transfer</option>
                         <!-- अन्य सेवाओं के लिए यहाँ विकल्प जोड़ें -->
-                        <option value="bill_payment">Bill Payments (General)</option>
+                        <option value="bill_payment_general">Bill Payments (General)</option>
                         <option value="cash_withdrawal">Cash Withdrawal (AEPS)</option>
                         <option value="balance_inquiry">Balance Inquiry (AEPS)</option>
                         <option value="mini_statement">Mini Statement (AEPS)</option>
                         <option value="aadhaar_pay">Aadhaar Pay (AEPS)</option>
                         <!-- BBPS सेवाओं के लिए विशिष्ट विकल्प -->
-                        <option value="broadband">Broadband Bill</option>
-                        <option value="electricity">Electricity Bill</option>
-                        <option value="cable_tv">Cable TV Bill</option>
+                        <option value="broadband_bill">Broadband Bill</option>
+                        <option value="electricity_bill">Electricity Bill</option>
+                        <option value="cable_tv_bill">Cable TV Bill</option>
                         <option value="water_bill">Water Bill</option>
                         <option value="gas_cylinder">Gas Cylinder</option>
-                        <option value="landline">Landline Bill</option>
+                        <option value="landline_bill">Landline Bill</option>
                         <option value="loan_repayment">Loan Repayment</option>
-                        <option value="insurance">Insurance Payment</option>
+                        <option value="insurance_payment">Insurance Payment</option>
                         <option value="fastag_recharge">FASTag Recharge</option>
                         <option value="credit_card_bill">Credit Card Bill</option>
                         <option value="municipal_taxes">Municipal Taxes</option>
@@ -265,7 +265,6 @@
         } catch (e) {
             console.error("Error initializing Firebase:", e);
             showAlert("Error", "Firebase initialization failed. Please try again or contact support.");
-            // Ensure loader hides even on Firebase init error
             userDataInitialLoaded = true;
             transactionsInitialLoaded = true;
             checkAndHideLoader();
@@ -360,7 +359,7 @@
                     const addMoneySnapshot = await db.collection('addMoneyRequests')
                         .where('userId', '==', currentUser.uid)
                         .orderBy('timestamp', 'desc')
-                        .limit(20) // नवीनतम 20 अनुरोध
+                        .limit(20) 
                         .get();
                     addMoneySnapshot.forEach(doc => {
                         const data = doc.data();
@@ -370,38 +369,27 @@
                             type: 'Add Money Request',
                             description: `UTR: ${data.utrNumber || 'N/A'}`,
                             amount: data.amount,
-                            status: data.status, // pending, approved, rejected
-                            isCredit: true // यह क्रेडिट है
+                            status: data.status, 
+                            isCredit: true 
                         });
                     });
                 }
 
-                // 2. Recharge and other General Transactions से डेटा फ़eच करें
-                // यह कलेक्शन 'transactions' कहलाता है और इसमें सभी प्रकार के सफल/विफल लेनदेन होते हैं
+                // 2. Recharge and other General Transactions से डेटा फ़ेच करें
                 if (selectedType !== 'add_money_requests') { 
                     let query = db.collection('transactions')
                         .where('userId', '==', currentUser.uid)
                         .orderBy('timestamp', 'desc')
-                        .limit(50); // नवीनतम 50 लेनदेन
+                        .limit(50); 
 
                     if (selectedType !== 'all') {
-                        // यदि अन्य फ़िल्टर लागू है, तो 'type' फ़ील्ड के आधार पर फ़िल्टर करें
-                        // Note: आपको अपनी Firebase Firestore 'transactions' कलेक्शन में 'type' फ़ील्ड का नाम सही रखना होगा।
-                        // जैसे 'Mobile Recharge', 'DTH Recharge', 'Broadband Bill', आदि।
-                        // यहां हम select option values को Firebase 'type' values के रूप में मानते हैं।
-                        // कुछ मामलों में आपको mapping की आवश्यकता हो सकती है।
-                        
-                        // bill_payment के लिए, हमें कई प्रकारों को इकट्ठा करना पड़ सकता है।
-                        // इस उदाहरण में, हम एक विशिष्ट 'type' के लिए फ़िल्टर कर रहे हैं।
-                        // एक अधिक उन्नत दृष्टिकोण में, 'bill_payment' को कई प्रकारों में मैप किया जा सकता है
-                        // या 'transactions' में 'category' फ़ील्ड हो सकती है।
-                        if (selectedType === 'bill_payment') {
-                             // Complex filter for multiple bill types if 'type' is very specific.
-                             // For now, let's assume a generic 'Bill Payment' type or handle it broadly.
-                             // For this simple example, we'll let it pass as 'all' transactions for non-specific bill_payment
-                             // if 'bill_payment' doesn't exactly match a single type in Firestore.
+                        const firebaseTransactionType = getFirebaseTransactionType(selectedType);
+                        if (firebaseTransactionType) { // सुनिश्चित करें कि टाइप खाली नहीं है
+                            query = query.where('type', '==', firebaseTransactionType);
                         } else {
-                            query = query.where('type', '==', getFirebaseTransactionType(selectedType));
+                            // यदि कोई मान्य मैपिंग नहीं है, तो उस फिल्टर के लिए क्वेरी न चलाएं
+                            // या सभी लेनदेन दिखाएं और क्लाइंट-साइड पर फिल्टर करें।
+                            // अभी के लिए, हम उस विशिष्ट फिल्टर के लिए कोई ट्रांजैक्शन नहीं दिखाएंगे।
                         }
                     }
                     
@@ -427,7 +415,7 @@
 
             } catch (error) {
                 console.error("Error loading transactions: ", error);
-                showAlert("Error", "Could not load transaction history.");
+                showAlert("Error", "Could not load transaction history: " + error.message); // अधिक विस्तृत एरर मैसेज
                 transactionsTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Failed to load transactions.</td></tr>';
             } finally {
                 if (!transactionsInitialLoaded) {
@@ -445,14 +433,14 @@
                 case 'mobile_recharge': return 'Mobile Recharge';
                 case 'dth_recharge': return 'DTH Recharge';
                 case 'money_transfer': return 'Money Transfer';
-                case 'broadband': return 'Broadband Bill';
-                case 'electricity': return 'Electricity Bill';
-                case 'cable_tv': return 'Cable TV Bill';
+                case 'broadband_bill': return 'Broadband Bill'; // Updated value
+                case 'electricity_bill': return 'Electricity Bill'; // Updated value
+                case 'cable_tv_bill': return 'Cable TV Bill'; // Updated value
                 case 'water_bill': return 'Water Bill';
                 case 'gas_cylinder': return 'Gas Cylinder';
-                case 'landline': return 'Landline Bill';
+                case 'landline_bill': return 'Landline Bill'; // Updated value
                 case 'loan_repayment': return 'Loan Repayment';
-                case 'insurance': return 'Insurance Payment';
+                case 'insurance_payment': return 'Insurance Payment'; // Updated value
                 case 'fastag_recharge': return 'FASTag Recharge';
                 case 'credit_card_bill': return 'Credit Card Bill';
                 case 'municipal_taxes': return 'Municipal Taxes';
@@ -475,8 +463,8 @@
                 case 'train_tickets': return 'Train Tickets';
                 case 'flight_tickets': return 'Flight Tickets';
                 case 'bus_tickets': return 'Bus Tickets';
-                case 'bill_payment': return 'Bill Payment'; 
-                default: return filterValue; 
+                case 'bill_payment_general': return 'Bill Payment'; // Generic type for all BBPS
+                default: return null; // यदि कोई मैच नहीं है तो null लौटाएं
             }
         }
 
