@@ -189,14 +189,18 @@
         const paymentOverlay = document.getElementById('payment-overlay');
         const qrPaymentBox = document.getElementById('qr-payment-box');
         const utrInputBox = document.getElementById('utr-input-box');
-        const paymentQrCodeDiv = document.getElementById('payment-qr-code'); // ID बदला गया
+        const paymentQrCodeDiv = document.getElementById('payment-qr-code'); 
         const qrAmountDisplay = document.getElementById('qr-amount-display');
         const qrUpiIdDisplay = document.getElementById('qr-upi-id-display');
         const utrInput = document.getElementById('utr-input');
         
-        let currentUser = null; // Logged in user object
-        let currentUserData = null; // Store user data for fullName
-        let appSettings = null; // app_settings से UPI ID के लिए
+        let currentUser = null; 
+        let currentUserData = null; 
+        let appSettings = null; 
+
+        // Flags to ensure loader hides after all critical data is fetched
+        let userDataInitialLoaded = false;
+        let appSettingsInitialLoaded = false;
 
         // कस्टम अलर्ट के फंक्शन
         const customAlert = document.getElementById('custom-alert');
@@ -219,11 +223,18 @@
             setTimeout(() => { loaderOverlay.style.display = 'none'; }, 500);
         }
 
+        // यह फंक्शन जांचता है कि दोनों महत्वपूर्ण डेटा लोड हो गए हैं या नहीं
+        function checkAndHideLoader() {
+            if (userDataInitialLoaded && appSettingsInitialLoaded) {
+                hideLoader();
+            }
+        }
+
         // भुगतान ओवरले फंक्शंस
         function hidePaymentOverlay() {
             paymentOverlay.style.display = 'none';
-            paymentQrCodeDiv.innerHTML = ''; // QR कोड div को साफ करें
-            utrInput.value = ''; // UTR इनपुट क्लियर करें
+            paymentQrCodeDiv.innerHTML = ''; 
+            utrInput.value = ''; 
         }
 
         function showQrPaymentScreen() { 
@@ -236,21 +247,22 @@
             const amountToAdd = parseFloat(document.getElementById('amount').value);
             if (isNaN(amountToAdd) || amountToAdd <= 0) {
                 showAlert('Invalid Amount', 'Please enter a valid amount greater than zero.');
-                hidePaymentOverlay(); // अगर राशि अमान्य है तो ओवरले छिपा दें
+                hidePaymentOverlay(); 
                 return;
             }
-            if (amountToAdd < 10) { // उदाहरण के लिए न्यूनतम राशि
+            if (amountToAdd < 10) { 
                 showAlert('Minimum Amount', 'Minimum amount to add is ₹10.');
                 hidePaymentOverlay();
                 return;
             }
 
             const upiId = appSettings.paymentUpiId; 
+            // Note: Uid को transaction note में जोड़ना एक अच्छा अभ्यास है ताकि admin पहचान सके
             const paymentUrl = `upi://pay?pa=${upiId}&pn=IndianPay&am=${amountToAdd}&cu=INR&tn=AddMoney_${currentUser.uid}`; 
             
             qrAmountDisplay.textContent = `₹${amountToAdd.toFixed(2)}`;
             qrUpiIdDisplay.textContent = upiId;
-            paymentQrCodeDiv.innerHTML = ''; // पुराने QR कोड को साफ करें
+            paymentQrCodeDiv.innerHTML = ''; 
             new QRCode(paymentQrCodeDiv, { text: paymentUrl, width: 200, height: 200 }); 
             
             qrPaymentBox.style.display = 'block';
@@ -261,11 +273,11 @@
         function showUtrInputScreen() {
             qrPaymentBox.style.display = 'none';
             utrInputBox.style.display = 'block';
-            utrInput.value = ''; // UTR इनपुट को क्लियर करें
+            utrInput.value = ''; 
         }
 
         async function submitUtrForVerification() { 
-            const amountToAdd = parseFloat(document.getElementById('amount').value); // फिर से राशि प्राप्त करें
+            const amountToAdd = parseFloat(document.getElementById('amount').value); 
             const utrNumber = utrInput.value.trim();
 
             if (isNaN(amountToAdd) || amountToAdd <= 0) {
@@ -281,7 +293,7 @@
                 return;
             }
 
-            showLoader(); // लोडर दिखाएँ
+            showLoader(); 
 
             try {
                 // 'addMoneyRequests' कलेक्शन में अनुरोध को सहेजें
@@ -292,14 +304,14 @@
                     mobileNumber: currentUserData.mobileNumber || 'N/A',
                     amount: amountToAdd,
                     utrNumber: utrNumber,
-                    status: 'pending', // मैन्युअल सत्यापन के लिए लंबित
+                    status: 'pending', 
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
                 hideLoader();
                 hidePaymentOverlay();
                 showAlert('Request Submitted', 'Your add money request has been submitted successfully and is awaiting admin approval. Your wallet balance will be updated after verification.');
-                addMoneyForm.reset(); // फॉर्म को रीसेट करें
+                addMoneyForm.reset(); 
 
             } catch (error) {
                 hideLoader();
@@ -321,17 +333,28 @@
                 // रियल-टाइम लिसनर ताकि बैलेंस और नाम तुरंत अपडेट हो
                 userDocRef.onSnapshot(doc => {
                     if (doc.exists) {
-                        currentUserData = doc.data(); // user data को स्टोर करें
+                        currentUserData = doc.data(); 
                         userNameEl.textContent = currentUserData.fullName || 'User';
                         currentWalletBalanceEl.textContent = `₹${(currentUserData.walletBalance || 0).toFixed(2)}`;
+                        if (!userDataInitialLoaded) {
+                            userDataInitialLoaded = true;
+                            checkAndHideLoader();
+                        }
                     } else {
-                        showAlert("Error", "User data not found. Logging out.");
-                        auth.signOut();
+                        showAlert("Error", "User data not found. Logging out.", () => {
+                            auth.signOut();
+                        });
                     }
                 }, error => {
                     console.error("Error listening to user data:", error);
-                    showAlert("Error", "Could not fetch user data. Logging out.");
-                    auth.signOut();
+                    showAlert("Error", "Could not fetch user data. Logging out.", () => {
+                        auth.signOut();
+                    });
+                    // Error occurred, but we still consider user data "attempted" to load for loader purposes
+                    if (!userDataInitialLoaded) {
+                        userDataInitialLoaded = true;
+                        checkAndHideLoader();
+                    }
                 });
 
                 // app_settings से UPI ID लोड करें
@@ -342,14 +365,23 @@
                         console.error("Error: 'app_settings/config' document or 'paymentUpiId' field not found!");
                         showAlert("Configuration Error", "Admin needs to set up UPI ID in Firestore settings for Add Money.");
                     }
+                    if (!appSettingsInitialLoaded) {
+                        appSettingsInitialLoaded = true;
+                        checkAndHideLoader();
+                    }
                 }).catch(error => {
                     console.error("Firestore Error fetching app settings! ", error);
                     showAlert("Error", "Error fetching payment configuration. Please try again later.");
+                    // Error occurred, but we still consider app settings "attempted" to load for loader purposes
+                    if (!appSettingsInitialLoaded) {
+                        appSettingsInitialLoaded = true;
+                        checkAndHideLoader();
+                    }
                 });
 
 
             } else {
-                window.location.href = 'index.html'; // अगर लॉग इन नहीं है तो लॉग इन पेज पर रीडायरेक्ट करें
+                window.location.href = 'index.html'; 
             }
         });
 
@@ -364,7 +396,7 @@
                 showAlert('Invalid Amount', 'Please enter a valid amount greater than zero.');
                 return;
             }
-            if (amount < 10) { // उदाहरण के लिए न्यूनतम राशि
+            if (amount < 10) { 
                 showAlert('Minimum Amount', 'Minimum amount to add is ₹10.');
                 return;
             }
