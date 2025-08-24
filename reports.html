@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History - Indian Pay</title>
+    <!-- Fonts और Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- बाकी पेजों जैसा ही CSS --- */
+        :root { --primary-color: #00a884; --secondary-color: #1f2937; --text-color: #334155; --bg-color: #f8fafc; --card-bg: #ffffff; --danger-color: #ef4444; --success-color: #28a745; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        h1, h2, h3 { color: var(--secondary-color); font-weight: 700; }
+        
+        /* Header */
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-links .welcome-text { font-weight: 500; }
+        .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease; }
+        
+        /* Main Content */
+        main { padding: 3rem 0; }
+        .page-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+        .page-header a { background: var(--card-bg); border: 1px solid #e5e7eb; color: var(--secondary-color); width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem; text-decoration: none; transition: background-color 0.3s; }
+        .page-header a:hover { background-color: #f3f4f6; }
+        .page-header h1 { font-size: 2.5rem; }
+
+        .current-balance-display {
+            background-color: #e0f2f1; /* Light primary color */
+            color: var(--secondary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        .current-balance-display span {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .transactions-section {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+        }
+
+        .filter-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap; /* मोबाइल के लिए रैप */
+        }
+        .filter-controls label {
+            font-weight: 600;
+        }
+        .filter-controls select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            min-width: 180px;
+        }
+        .filter-controls select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15);
+        }
+
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 12px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background-color: #f9fafb; font-weight: 600; }
+        tr:last-child td { border-bottom: none; }
+
+        .status-success { color: var(--success-color); font-weight: 600; }
+        .status-failed { color: var(--danger-color); font-weight: 600; }
+        .status-pending { color: orange; font-weight: 600; }
+        .status-approved { color: var(--success-color); font-weight: 600; }
+        .status-rejected { color: var(--danger-color); font-weight: 600; }
+        
+        /* Footer & Alerts (पहले जैसा) */
+        .footer { background-color: var(--secondary-color); color: #e2e8f0; padding: 4rem 0 2rem; text-align: center; margin-top: 3rem; }
+        .footer .logo { color: white; }
+        .footer .copyright { font-size: 0.9rem; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
+        
+        /* Custom Alert from other pages */
+        .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; }
+        .custom-alert-box { background: var(--card-bg); color: var(--text-color); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 90%; max-width: 450px; text-align: center; }
+        .custom-alert-box h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .custom-alert-box button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+
+        /* Loader Overlay */
+        #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
+        .loader-spinner { border: 8px solid #f3f3f3; border-top: 8px solid var(--primary-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1.5s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div id="loader-overlay"><div class="loader-spinner"></div></div>
+
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="home.html" class="logo">Indian<span>Pay</span></a>
+                <div class="nav-links">
+                    <span class="welcome-text">Welcome, <strong id="user-name">User</strong></span>
+                    <button id="logout-btn" class="logout-btn">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <a href="home.html" title="Back to Dashboard"><i class="fa-solid fa-arrow-left"></i></a>
+                <h1>Transaction History</h1>
+            </div>
+
+            <div class="current-balance-display">
+                Current Wallet Balance: <span id="current-wallet-balance">₹--.--</span>
+            </div>
+
+            <section class="transactions-section">
+                <div class="filter-controls">
+                    <label for="transaction-type-filter">Filter by Type:</label>
+                    <select id="transaction-type-filter">
+                        <option value="all">All Transactions</option>
+                        <option value="add_money_requests">Add Money Requests</option>
+                        <option value="mobile_recharge">Mobile Recharge</option>
+                        <option value="dth_recharge">DTH Recharge</option>
+                        <option value="money_transfer">Money Transfer</option>
+                        <!-- अन्य सेवाओं के लिए यहाँ विकल्प जोड़ें -->
+                        <option value="bill_payment">Bill Payments (General)</option>
+                        <option value="cash_withdrawal">Cash Withdrawal (AEPS)</option>
+                        <option value="balance_inquiry">Balance Inquiry (AEPS)</option>
+                        <option value="mini_statement">Mini Statement (AEPS)</option>
+                        <option value="aadhaar_pay">Aadhaar Pay (AEPS)</option>
+                        <!-- BBPS सेवाओं के लिए विशिष्ट विकल्प -->
+                        <option value="broadband">Broadband Bill</option>
+                        <option value="electricity">Electricity Bill</option>
+                        <option value="cable_tv">Cable TV Bill</option>
+                        <option value="water_bill">Water Bill</option>
+                        <option value="gas_cylinder">Gas Cylinder</option>
+                        <option value="landline">Landline Bill</option>
+                        <option value="loan_repayment">Loan Repayment</option>
+                        <option value="insurance">Insurance Payment</option>
+                        <option value="fastag_recharge">FASTag Recharge</option>
+                        <option value="credit_card_bill">Credit Card Bill</option>
+                        <option value="municipal_taxes">Municipal Taxes</option>
+                        <option value="education_fees">Education Fees</option>
+                        <!-- Government Docs & Financial -->
+                        <option value="pan_card_services">PAN Card Services</option>
+                        <option value="aadhaar_services">Aadhaar Services</option>
+                        <option value="voter_id_card">Voter ID Card</option>
+                        <option value="driving_license">Driving License</option>
+                        <option value="itr_filing">ITR Filing</option>
+                        <option value="gst_services">GST Services</option>
+                        <option value="life_insurance">Life Insurance</option>
+                        <option value="vehicle_insurance">Vehicle Insurance</option>
+                        <!-- Government Schemes -->
+                        <option value="pm_kisan">PM-KISAN</option>
+                        <option value="ayushman_bharat">Ayushman Bharat</option>
+                        <option value="e_shram_card">e-SHRAM Card</option>
+                        <!-- Travel -->
+                        <option value="train_tickets">Train Tickets</option>
+                        <option value="flight_tickets">Flight Tickets</option>
+                        <option value="bus_tickets">Bus Tickets</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="transaction-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-tbody">
+                            <tr><td colspan="5" style="text-align:center;">Loading transactions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <a href="home.html" class="logo">Indian<span>Pay</span></a>
+            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="custom-alert" class="custom-alert-overlay"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
+            authDomain: "indianpay425.firebaseapp.com",
+            projectId: "indianpay425",
+            storageBucket: "indianpay425.appspot.com",
+            messagingSenderId: "6705555817",
+            appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
+        };
+        
+        // DOM Elements
+        const userNameEl = document.getElementById('user-name');
+        const currentWalletBalanceEl = document.getElementById('current-wallet-balance');
+        const logoutBtn = document.getElementById('logout-btn');
+        const transactionsTbody = document.getElementById('transactions-tbody');
+        const transactionTypeFilter = document.getElementById('transaction-type-filter');
+        const loaderOverlay = document.getElementById('loader-overlay');
+        const customAlert = document.getElementById('custom-alert');
+
+        let currentUser = null; 
+        let currentUserData = null; 
+
+        // Flags to ensure loader hides after all critical data is fetched
+        let userDataInitialLoaded = false;
+        let transactionsInitialLoaded = false; 
+
+        // लोडर फंक्शंस
+        function showLoader() {
+            loaderOverlay.style.display = 'flex';
+            loaderOverlay.style.opacity = '1';
+        }
+        function hideLoader() {
+            loaderOverlay.style.opacity = '0';
+            setTimeout(() => { loaderOverlay.style.display = 'none'; }, 500);
+        }
+
+        function checkAndHideLoader() {
+            if (userDataInitialLoaded && transactionsInitialLoaded) {
+                hideLoader();
+            }
+        }
+        
+        // स्क्रिप्ट लोड होते ही लोडर दिखाएं
+        showLoader();
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+        } catch (e) {
+            console.error("Error initializing Firebase:", e);
+            showAlert("Error", "Firebase initialization failed. Please try again or contact support.");
+            // Ensure loader hides even on Firebase init error
+            userDataInitialLoaded = true;
+            transactionsInitialLoaded = true;
+            checkAndHideLoader();
+        }
+        
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // कस्टम अलर्ट फंक्शंस
+        function showAlert(title, message, callback) { 
+            customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button id="alert-ok-btn-dynamic">OK</button></div>`; 
+            customAlert.style.display = 'flex'; 
+            document.getElementById('alert-ok-btn-dynamic').addEventListener('click', () => { 
+                customAlert.style.display = 'none'; 
+                if (typeof callback === 'function') callback(); 
+            }); 
+        }
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html'; 
+            }).catch(error => {
+                console.error("Error signing out: ", error);
+                showAlert("Logout Error", "Could not log out. Please try again.");
+            });
+        });
+
+        // Login की जाँच और डेटा लोड करना
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                const userDocRef = db.collection('users').doc(user.uid);
+
+                // रियल-टाइम लिसनर ताकि बैलेंस और नाम तुरंत अपडेट हो
+                userDocRef.onSnapshot(doc => {
+                    if (doc.exists) {
+                        currentUserData = doc.data(); 
+                        userNameEl.textContent = currentUserData.fullName || 'User';
+                        currentWalletBalanceEl.textContent = `₹${(currentUserData.walletBalance || 0).toFixed(2)}`;
+                        if (!userDataInitialLoaded) {
+                            userDataInitialLoaded = true;
+                            checkAndHideLoader();
+                        }
+                    } else {
+                        showAlert("Error", "User data not found. Logging out.", () => {
+                            auth.signOut();
+                        });
+                        if (!userDataInitialLoaded) { 
+                            userDataInitialLoaded = true;
+                            checkAndHideLoader();
+                        }
+                    }
+                }, error => {
+                    console.error("Error listening to user data:", error);
+                    showAlert("Error", "Could not fetch user data. Logging out.", () => {
+                        auth.signOut();
+                    });
+                    if (!userDataInitialLoaded) { 
+                        userDataInitialLoaded = true;
+                        checkAndHideLoader();
+                    }
+                });
+
+                // लेनदेन लोड करें
+                loadTransactions();
+
+            } else {
+                hideLoader(); 
+                window.location.href = 'index.html'; 
+            }
+        });
+
+        // लेनदेन लोड करने और प्रदर्शित करने का फंक्शन
+        async function loadTransactions() {
+            if (!currentUser) {
+                showAlert("Error", "User not authenticated to load transactions.");
+                transactionsTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Please log in to view transactions.</td></tr>';
+                if (!transactionsInitialLoaded) {
+                    transactionsInitialLoaded = true;
+                    checkAndHideLoader();
+                }
+                return;
+            }
+
+            const selectedType = transactionTypeFilter.value;
+            let allTransactions = [];
+
+            try {
+                // 1. Add Money Requests से डेटा फ़ेच करें (pending, approved, rejected)
+                if (selectedType === 'all' || selectedType === 'add_money_requests') {
+                    const addMoneySnapshot = await db.collection('addMoneyRequests')
+                        .where('userId', '==', currentUser.uid)
+                        .orderBy('timestamp', 'desc')
+                        .limit(20) // नवीनतम 20 अनुरोध
+                        .get();
+                    addMoneySnapshot.forEach(doc => {
+                        const data = doc.data();
+                        allTransactions.push({
+                            id: doc.id,
+                            date: data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date(),
+                            type: 'Add Money Request',
+                            description: `UTR: ${data.utrNumber || 'N/A'}`,
+                            amount: data.amount,
+                            status: data.status, // pending, approved, rejected
+                            isCredit: true // यह क्रेडिट है
+                        });
+                    });
+                }
+
+                // 2. Recharge and other General Transactions से डेटा फ़eच करें
+                // यह कलेक्शन 'transactions' कहलाता है और इसमें सभी प्रकार के सफल/विफल लेनदेन होते हैं
+                if (selectedType !== 'add_money_requests') { 
+                    let query = db.collection('transactions')
+                        .where('userId', '==', currentUser.uid)
+                        .orderBy('timestamp', 'desc')
+                        .limit(50); // नवीनतम 50 लेनदेन
+
+                    if (selectedType !== 'all') {
+                        // यदि अन्य फ़िल्टर लागू है, तो 'type' फ़ील्ड के आधार पर फ़िल्टर करें
+                        // Note: आपको अपनी Firebase Firestore 'transactions' कलेक्शन में 'type' फ़ील्ड का नाम सही रखना होगा।
+                        // जैसे 'Mobile Recharge', 'DTH Recharge', 'Broadband Bill', आदि।
+                        // यहां हम select option values को Firebase 'type' values के रूप में मानते हैं।
+                        // कुछ मामलों में आपको mapping की आवश्यकता हो सकती है।
+                        
+                        // bill_payment के लिए, हमें कई प्रकारों को इकट्ठा करना पड़ सकता है।
+                        // इस उदाहरण में, हम एक विशिष्ट 'type' के लिए फ़िल्टर कर रहे हैं।
+                        // एक अधिक उन्नत दृष्टिकोण में, 'bill_payment' को कई प्रकारों में मैप किया जा सकता है
+                        // या 'transactions' में 'category' फ़ील्ड हो सकती है।
+                        if (selectedType === 'bill_payment') {
+                             // Complex filter for multiple bill types if 'type' is very specific.
+                             // For now, let's assume a generic 'Bill Payment' type or handle it broadly.
+                             // For this simple example, we'll let it pass as 'all' transactions for non-specific bill_payment
+                             // if 'bill_payment' doesn't exactly match a single type in Firestore.
+                        } else {
+                            query = query.where('type', '==', getFirebaseTransactionType(selectedType));
+                        }
+                    }
+                    
+                    const transactionsSnapshot = await query.get();
+                    transactionsSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        allTransactions.push({
+                            id: doc.id,
+                            date: data.timestamp ? new Date(data.timestamp.seconds * 1000) : new Date(),
+                            type: data.type || 'General Transaction', 
+                            description: data.description || 'N/A',
+                            amount: data.amount,
+                            status: data.status, 
+                            isCredit: data.isCredit || false 
+                        });
+                    });
+                }
+
+                // तारीख के अनुसार सभी लेनदेन को सॉर्ट करें (सबसे नया पहले)
+                allTransactions.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+                renderTransactions(allTransactions);
+
+            } catch (error) {
+                console.error("Error loading transactions: ", error);
+                showAlert("Error", "Could not load transaction history.");
+                transactionsTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Failed to load transactions.</td></tr>';
+            } finally {
+                if (!transactionsInitialLoaded) {
+                    transactionsInitialLoaded = true;
+                    checkAndHideLoader();
+                }
+            }
+        }
+
+        // Firebase 'type' वैल्यू प्राप्त करने के लिए हेल्पर फंक्शन
+        function getFirebaseTransactionType(filterValue) {
+            // यह फ़ंक्शन 'select' के 'value' को Firebase में संग्रहीत वास्तविक 'type' नाम में मैप करेगा।
+            // आपको यह सुनिश्चित करना होगा कि ये Firebase में आपकी transaction collection के 'type' फ़ील्ड से मेल खाते हों।
+            switch(filterValue) {
+                case 'mobile_recharge': return 'Mobile Recharge';
+                case 'dth_recharge': return 'DTH Recharge';
+                case 'money_transfer': return 'Money Transfer';
+                case 'broadband': return 'Broadband Bill';
+                case 'electricity': return 'Electricity Bill';
+                case 'cable_tv': return 'Cable TV Bill';
+                case 'water_bill': return 'Water Bill';
+                case 'gas_cylinder': return 'Gas Cylinder';
+                case 'landline': return 'Landline Bill';
+                case 'loan_repayment': return 'Loan Repayment';
+                case 'insurance': return 'Insurance Payment';
+                case 'fastag_recharge': return 'FASTag Recharge';
+                case 'credit_card_bill': return 'Credit Card Bill';
+                case 'municipal_taxes': return 'Municipal Taxes';
+                case 'education_fees': return 'Education Fees';
+                case 'cash_withdrawal': return 'Cash Withdrawal (AEPS)'; 
+                case 'balance_inquiry': return 'Balance Inquiry (AEPS)';
+                case 'mini_statement': return 'Mini Statement (AEPS)';
+                case 'aadhaar_pay': return 'Aadhaar Pay (AEPS)';
+                case 'pan_card_services': return 'PAN Card Services';
+                case 'aadhaar_services': return 'Aadhaar Services';
+                case 'voter_id_card': return 'Voter ID Card';
+                case 'driving_license': return 'Driving License';
+                case 'itr_filing': return 'ITR Filing';
+                case 'gst_services': return 'GST Services';
+                case 'life_insurance': return 'Life Insurance';
+                case 'vehicle_insurance': return 'Vehicle Insurance';
+                case 'pm_kisan': return 'PM-KISAN';
+                case 'ayushman_bharat': return 'Ayushman Bharat';
+                case 'e_shram_card': return 'e-SHRAM Card';
+                case 'train_tickets': return 'Train Tickets';
+                case 'flight_tickets': return 'Flight Tickets';
+                case 'bus_tickets': return 'Bus Tickets';
+                case 'bill_payment': return 'Bill Payment'; 
+                default: return filterValue; 
+            }
+        }
+
+
+        // लेनदेन को HTML में रेंडर करें
+        function renderTransactions(transactions) {
+            transactionsTbody.innerHTML = ''; 
+            if (transactions.length === 0) {
+                transactionsTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No transactions found for the selected filter.</td></tr>';
+                return;
+            }
+
+            transactions.forEach(transaction => {
+                const dateString = transaction.date.toLocaleString();
+                let statusClass = '';
+                if (transaction.status === 'pending') {
+                    statusClass = 'status-pending';
+                } else if (transaction.status === 'approved' || transaction.status === 'Success') {
+                    statusClass = 'status-success';
+                } else if (transaction.status === 'rejected' || transaction.status === 'Failed') {
+                    statusClass = 'status-rejected'; 
+                }
+
+                transactionsTbody.innerHTML += `
+                    <tr>
+                        <td>${dateString}</td>
+                        <td>${transaction.type}</td>
+                        <td>${transaction.description}</td>
+                        <td style="color: ${transaction.isCredit ? 'var(--success-color)' : 'var(--secondary-color)'}; font-weight: 600;">
+                            ${transaction.isCredit ? '+' : '-'} ₹${transaction.amount.toFixed(2)}
+                        </td>
+                        <td><span class="${statusClass}">${transaction.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // फ़िल्टर बदलने पर लेनदेन को फिर से लोड करें
+        transactionTypeFilter.addEventListener('change', loadTransactions);
+
+    </script>
+</body>
+</html>
