@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Transfer - Indian Pay</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary-color: #00a884; 
+            --secondary-color: #1f2937; 
+            --text-color: #334155; 
+            --bg-color: #f8fafc; 
+            --card-bg: #ffffff; 
+            --border-color: #d1d5db;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .back-link i { margin-right: 0.5rem; }
+        .service-form-card { background: var(--card-bg); padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .card-header h1 { font-size: 1.8rem; color: var(--secondary-color); margin: 0; display: flex; align-items: center; gap: 1rem; }
+        .add-btn { background-color: var(--primary-color); color: white; border: none; padding: 0.7rem 1.4rem; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem; }
+        .add-btn i { margin-right: 0.5rem; }
+        
+        #account-list { margin-top: 1rem; }
+        .account-card { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 1rem; }
+        .account-info { display: flex; align-items: center; gap: 1rem; text-align: left; }
+        .bank-icon { font-size: 2rem; color: var(--primary-color); width: 40px; text-align: center; }
+        .account-details h3 { margin: 0 0 0.25rem; font-size: 1.1rem; }
+        .account-details p { margin: 0; color: #6b7280; font-size: 0.9rem; }
+        #no-accounts-msg { color: #6b7280; text-align: center; padding: 2rem 0; }
+        
+        .transfer-btn-active { background-color: var(--primary-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+        .transfer-btn-active:hover { background-color: #008a6e; }
+        
+        /* Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 500px; text-align: center;}
+        .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; text-align: left; }
+        .modal-header h2 { margin: 0; font-size: 1.5rem; }
+        .modal-header p { margin: 0.25rem 0 0; color: #6b7280; }
+        .close-btn { font-size: 1.5rem; cursor: pointer; border: none; background: none; line-height: 1; }
+        .form-group { margin-bottom: 1.5rem; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .modal-actions { display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; }
+        .modal-actions button { flex: 1; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 1rem;}
+        .btn-proceed, .btn-save { background-color: var(--primary-color); color: white; }
+        .btn-cancel { background-color: #e5e7eb; color: var(--text-color); }
+        
+        /* Searchable Bank Select Styles */
+        .searchable-select-container { position: relative; }
+        .selected-bank-display { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+        .options-container { display: none; position: absolute; top: 105%; left: 0; width: 100%; max-height: 250px; overflow-y: auto; background: white; border: 1px solid var(--border-color); border-radius: 8px; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .search-input { width: 100%; padding: 0.8rem; border: none; border-bottom: 1px solid var(--border-color); outline: none; }
+        .options-list .option { padding: 0.8rem 1rem; cursor: pointer; text-align: left; }
+        .options-list .option:hover { background-color: #f1f5f9; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav>
+    </header>
+
+    <main class="container">
+        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="service-form-card">
+            <div class="card-header">
+                <h1><i class="fa-solid fa-money-bill-transfer"></i> Money Transfer</h1>
+                <button id="add-account-btn" class="add-btn"><i class="fas fa-plus"></i> Add Bank Account</button>
+            </div>
+            <div id="account-list">
+                <p id="no-accounts-msg">No bank accounts added yet. Click 'Add Bank Account' to get started.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Bank Account Modal -->
+    <div id="account-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Bank Account</h2>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <form id="account-form">
+                <div class="form-group">
+                    <label>Bank Name</label>
+                    <div class="searchable-select-container">
+                        <div class="selected-bank-display" id="selected-bank">Select a Bank <i class="fas fa-chevron-down"></i></div>
+                        <div class="options-container">
+                            <input type="text" class="search-input" placeholder="Search for a bank...">
+                            <div class="options-list"></div>
+                        </div>
+                        <input type="hidden" id="bank-name" name="bank-name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="acc-holder-name">Account Holder Name</label>
+                    <input type="text" id="acc-holder-name" placeholder="Enter name as per bank records" required>
+                </div>
+                <div class="form-group">
+                    <label for="acc-number">Account Number</label>
+                    <input type="text" id="acc-number" placeholder="Enter bank account number" required>
+                </div>
+                <div class="form-group">
+                    <label for="ifsc-code">IFSC Code</label>
+                    <input type="text" id="ifsc-code" placeholder="Enter bank IFSC code" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-save">Save Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Custom Transfer Amount Modal -->
+    <div id="transfer-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="transfer-modal-title">Money Transfer</h2>
+                    <p id="transfer-beneficiary-info"></p>
+                </div>
+                <button id="transfer-modal-close" class="close-btn">&times;</button>
+            </div>
+            <form id="transfer-form">
+                <div class="form-group">
+                    <label for="transfer-amount-input">Enter Amount (₹)</label>
+                    <input type="number" id="transfer-amount-input" placeholder="0.00" required min="1">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-transfer-btn" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-proceed">Proceed</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        const indianBankList = [ "Abhyudaya Cooperative Bank", "Ahmedabad Mercantile Cooperative Bank", "Airtel Payments Bank", "Allahabad Bank", "Andhra Bank", "Axis Bank", "Bandhan Bank", "Bank of Baroda", "Bank of India", "Bank of Maharashtra", "Canara Bank", "Capital Small Finance Bank", "Central Bank of India", "City Union Bank", "Corporation Bank", "Cosmos Bank", "DCB Bank", "Dena Bank", "Dhanlaxmi Bank", "Equitas Small Finance Bank", "ESAF Small Finance Bank", "Federal Bank", "Fino Payments Bank", "HDFC Bank", "ICICI Bank", "IDBI Bank", "IDFC First Bank", "Indian Bank", "Indian Overseas Bank", "IndusInd Bank", "India Post Payments Bank", "Jammu & Kashmir Bank", "Jana Small Finance Bank", "Jio Payments Bank", "Karnataka Bank", "Karur Vysya Bank", "Kotak Mahindra Bank", "Lakshmi Vilas Bank", "NSDL Payments Bank", "Oriental Bank of Commerce", "Paytm Payments Bank", "Punjab National Bank", "Punjab & Sind Bank", "RBL Bank", "Saraswat Bank", "South Indian Bank", "State Bank of India", "Suryoday Small Finance Bank", "Syndicate Bank", "Tamilnad Mercantile Bank", "TJSB Sahakari Bank", "UCO Bank", "Ujjivan Small Finance Bank", "Union Bank of India", "United Bank of India", "Utkarsh Small Finance Bank", "Vijaya Bank", "Yes Bank" ];
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+
+        // Get all elements
+        const addAccountModal = document.getElementById('account-modal');
+        const transferModal = document.getElementById('transfer-modal');
+        const accountList = document.getElementById('account-list');
+        const noAccountsMsg = document.getElementById('no-accounts-msg');
+        
+        // --- Add Account Modal Logic ---
+        document.getElementById('add-account-btn').onclick = () => {
+            document.getElementById('account-form').reset();
+            document.getElementById('selected-bank').innerHTML = `Select a Bank <i class="fas fa-chevron-down"></i>`;
+            addAccountModal.style.display = 'flex';
+        }
+        document.getElementById('close-modal-btn').onclick = () => addAccountModal.style.display = 'none';
+
+        // --- Searchable Bank Select Logic ---
+        const selectContainer = document.querySelector('.searchable-select-container');
+        const selectedDisplay = document.getElementById('selected-bank');
+        const optionsContainer = document.querySelector('.options-container');
+        const searchInput = document.querySelector('.search-input');
+        const optionsList = document.querySelector('.options-list');
+        const hiddenBankInput = document.getElementById('bank-name');
+        function populateBanks(filter = '') {
+            optionsList.innerHTML = '';
+            const filteredBanks = indianBankList.filter(bank => bank.toLowerCase().includes(filter.toLowerCase()));
+            filteredBanks.forEach(bank => {
+                const option = document.createElement('div');
+                option.classList.add('option');
+                option.textContent = bank;
+                option.addEventListener('click', () => {
+                    selectedDisplay.innerHTML = `${bank} <i class="fas fa-chevron-down"></i>`;
+                    hiddenBankInput.value = bank;
+                    optionsContainer.style.display = 'none';
+                });
+                optionsList.appendChild(option);
+            });
+        }
+        selectedDisplay.addEventListener('click', () => {
+            const isDisplayed = optionsContainer.style.display === 'block';
+            optionsContainer.style.display = isDisplayed ? 'none' : 'block';
+            if (!isDisplayed) { populateBanks(); searchInput.value = ''; searchInput.focus(); }
+        });
+        searchInput.addEventListener('keyup', () => populateBanks(searchInput.value));
+        document.addEventListener('click', (e) => { if (!selectContainer.contains(e.target)) { optionsContainer.style.display = 'none'; } });
+
+        // --- Transfer Amount Modal Logic ---
+        const transferModalCloseBtn = document.getElementById('transfer-modal-close');
+        const transferCancelBtn = document.getElementById('cancel-transfer-btn');
+        const transferForm = document.getElementById('transfer-form');
+        const transferAmountInput = document.getElementById('transfer-amount-input');
+        const beneficiaryInfo = document.getElementById('transfer-beneficiary-info');
+        function showTransferModal(holderName, accountInfo) {
+            beneficiaryInfo.textContent = `To: ${holderName} (${accountInfo})`;
+            transferModal.style.display = 'flex';
+            transferAmountInput.focus();
+        }
+        function hideTransferModal() {
+            transferModal.style.display = 'none';
+            transferForm.reset();
+        }
+        transferModalCloseBtn.onclick = hideTransferModal;
+        transferCancelBtn.onclick = hideTransferModal;
+        transferForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseFloat(transferAmountInput.value);
+            if (!isNaN(amount) && amount > 0) {
+                hideTransferModal();
+                alert('please contact your admin');
+            } else {
+                alert("Please enter a valid amount.");
+            }
+        });
+        
+        // --- Logic to Add Saved Account to List ---
+        document.getElementById('account-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!hiddenBankInput.value) { alert('Please select a bank from the list.'); return; }
+            
+            const bankName = hiddenBankInput.value;
+            const holderName = document.getElementById('acc-holder-name').value;
+            const accNumber = document.getElementById('acc-number').value;
+
+            if (noAccountsMsg) noAccountsMsg.style.display = 'none';
+            
+            const accountCard = document.createElement('div');
+            accountCard.classList.add('account-card');
+            
+            const maskedAccNumber = '**** **** ' + accNumber.slice(-4);
+            const accountInfoText = `${bankName} - ${maskedAccNumber}`;
+            accountCard.innerHTML = `
+                <div class="account-info">
+                    <div class="bank-icon"><i class="fas fa-university"></i></div>
+                    <div class="account-details">
+                        <h3>${holderName}</h3>
+                        <p>${accountInfoText}</p>
+                    </div>
+                </div>
+                <button class="transfer-btn-active">Transfer</button>
+            `;
+            accountList.appendChild(accountCard);
+            
+            const transferButton = accountCard.querySelector('.transfer-btn-active');
+            transferButton.addEventListener('click', () => {
+                showTransferModal(holderName, accountInfoText);
+            });
+            
+            addAccountModal.style.display = 'none';
+            this.reset();
+            selectedDisplay.innerHTML = `Select a Bank <i class="fas fa-chevron-down"></i>`;
+            alert('Bank account added successfully!');
+        });
+    </script>
+</body>
+</html>
