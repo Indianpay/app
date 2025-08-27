@@ -4,99 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobile Recharge - Indian Pay</title>
-    <!-- Fonts और Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- बाकी पेजों जैसा ही CSS --- */
-        :root { --primary-color: #00a884; --secondary-color: #1f2937; --text-color: #334155; --bg-color: #f8fafc; --card-bg: #ffffff; --danger-color: #ef4444; }
+        :root { --primary-color: #00a884; --secondary-color: #1f2937; --text-color: #334155; --bg-color: #f8fafc; --card-bg: #ffffff; --danger-color: #ef4444; --success-color: #16a34a; --pending-color: #f59e0b;}
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        h1, h2, h3 { color: var(--secondary-color); font-weight: 700; }
-        
-        /* Header */
         .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .navbar { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
         .logo span { color: var(--primary-color); }
         .nav-links { display: flex; align-items: center; gap: 1.5rem; }
         .nav-links .welcome-text { font-weight: 500; }
-        .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease; }
-        
-        /* Main Content */
+        .nav-links .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
         main { padding: 3rem 0; }
         .page-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
-        .page-header a { background: var(--card-bg); border: 1px solid #e5e7eb; color: var(--secondary-color); width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem; text-decoration: none; transition: background-color 0.3s; }
-        .page-header a:hover { background-color: #f3f4f6; }
+        .page-header a { background: var(--card-bg); border: 1px solid #e5e7eb; color: var(--secondary-color); width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; text-decoration: none; }
         .page-header h1 { font-size: 2.5rem; }
-
-        /* Recharge Card */
-        .recharge-card {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.07);
-            max-width: 600px;
-            margin: 0 auto 3rem auto;
-        }
-        .form-group { margin-bottom: 1.5rem; }
+        .recharge-card { background: var(--card-bg); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.07); max-width: 600px; margin: 0 auto 3rem auto; }
+        .form-group { margin-bottom: 1.5rem; position: relative; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.75rem; font-size: 1rem; }
-        .form-control { width: 100%; padding: 0.9rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; font-family: 'Montserrat', sans-serif; }
-        .form-control:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15); }
-        .browse-plans-btn { display: block; text-align: right; font-size: 0.9rem; color: var(--primary-color); text-decoration: none; margin-top: 0.5rem; font-weight: 600; }
-        .recharge-btn { width: 100%; padding: 1rem; border: none; background-color: var(--primary-color); color: white; font-size: 1.1rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease; }
-        .recharge-btn:hover { background-color: #008a6e; }
-
-        /* Recent Recharges Table */
-        .recent-recharges h2 { font-size: 1.8rem; margin-bottom: 1.5rem; }
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        th { background-color: #f9fafb; font-weight: 600; }
-        td .status-success { color: #16a34a; font-weight: 600; }
-        
-        /* Footer & Alerts (पहले जैसा) */
-        .footer { background-color: var(--secondary-color); color: #e2e8f0; padding: 4rem 0 2rem; text-align: center; }
-        .footer .logo { color: white; }
-        .footer .copyright { font-size: 0.9rem; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
+        .form-control { width: 100%; padding: 0.9rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; background-color: #fff; }
+        .input-loader { position: absolute; right: 1rem; top: 55%; display: none; }
+        .browse-plans-btn { display: block; text-align: right; font-size: 0.9rem; color: var(--primary-color); text-decoration: none; margin-top: 0.5rem; font-weight: 600; cursor: pointer; }
+        .recharge-btn { width: 100%; padding: 1rem; border: none; background-color: var(--primary-color); color: white; font-size: 1.1rem; font-weight: 700; border-radius: 8px; cursor: pointer; }
+        .recharge-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-box { background: var(--bg-color); width: 95%; max-width: 800px; height: 80%; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
+        .modal-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 1.3rem; }
+        .modal-close-btn { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-color); }
+        .modal-body { padding: 1.5rem; overflow-y: auto; flex-grow: 1; }
+        .plan-category { margin-bottom: 2rem; }
+        .plan-category h4 { font-size: 1.1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary-color); margin-bottom: 1rem; }
+        .plan-item { background: var(--card-bg); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #e5e7eb; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .plan-item:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .plan-item .price { font-size: 1.4rem; font-weight: 700; color: var(--primary-color); }
+        .plan-item .validity { font-weight: 600; font-size: 0.9rem; }
+        .plan-item .desc { font-size: 0.9rem; margin-top: 0.5rem; color: #64748b; }
+        .plan-details { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
         .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; }
-        .custom-alert-box { background: var(--card-bg); color: var(--text-color); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 90%; max-width: 450px; text-align: center; }
-        .custom-alert-box h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-        .custom-alert-box button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+        .custom-alert-box { background: var(--card-bg); padding: 2.5rem; border-radius: 16px; width: 90%; max-width: 450px; text-align: center; }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <nav class="navbar">
-                <a href="home.html" class="logo">Indian<span>Pay</span></a>
-                <div class="nav-links">
-                    <span class="welcome-text">Welcome, <strong id="user-name">User</strong></span>
-                    <button id="logout-btn" class="logout-btn">Logout</button>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <header class="header"><!-- Your Header HTML --></header>
 
     <main>
         <div class="container">
-            <div class="page-header">
-                <a href="home.html" title="Back to Dashboard"><i class="fa-solid fa-arrow-left"></i></a>
-                <h1>Mobile Recharge</h1>
-            </div>
+            <div class="page-header"><!-- Your Page Header HTML --></div>
 
-            <!-- Recharge Form -->
             <div class="recharge-card">
-                <form id="recharge-form">
+                <form id="recharge-form" onsubmit="return false;">
                     <div class="form-group">
                         <label for="mobile-number">Mobile Number</label>
-                        <input type="tel" id="mobile-number" class="form-control" placeholder="Enter 10-digit mobile number" maxlength="10" required>
+                        <input type="tel" id="mobile-number" class="form-control" placeholder="Enter 10-digit number to fetch operator" maxlength="10" required>
+                        <span class="input-loader" id="operator-loader">🔍</span>
                     </div>
                     <div class="form-group">
-                        <label for="operator">Operator</label>
-                        <select id="operator" class="form-control" required>
+                        <label for="operator-select">Operator</label>
+                        <select id="operator-select" class="form-control" required>
                             <option value="" disabled selected>Select Operator</option>
                             <option value="Airtel">Airtel</option>
                             <option value="Jio">Jio</option>
@@ -105,52 +74,65 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="circle-select">Circle (State)</label>
+                        <select id="circle-select" class="form-control" required>
+                            <option value="" disabled selected>Select Circle</option>
+                            <option value="Andhra Pradesh Telengana">Andhra Pradesh & Telengana</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar Jharkhand">Bihar & Jharkhand</option>
+                            <option value="Chennai">Chennai</option>
+                            <option value="Delhi NCR">Delhi NCR</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jammu Kashmir">Jammu & Kashmir</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Kolkata">Kolkata</option>
+                            <option value="Madhya Pradesh Chhattisgarh">Madhya Pradesh & Chhattisgarh</option>
+                            <option value="Maharashtra Goa">Maharashtra & Goa</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="North East">North East</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="UP East">UP East</option>
+                            <option value="UP West">UP West</option>
+                            <option value="West Bengal">West Bengal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="amount">Amount (₹)</label>
                         <input type="number" id="amount" class="form-control" placeholder="Enter recharge amount" required>
-                        <a href="#" class="browse-plans-btn" onclick="showAlert('Coming Soon', 'This feature will be available shortly.')">Browse Plans</a>
+                        <a class="browse-plans-btn" id="browse-plans-btn">Browse Plans</a>
                     </div>
-                    <button type="submit" class="recharge-btn">Proceed to Recharge</button>
+                    <button type="button" id="recharge-btn" class="recharge-btn">Proceed to Recharge</button>
                 </form>
             </div>
-
-            <!-- Recent Recharges Section -->
-            <div class="recent-recharges">
-                <h2>Recent Recharges</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Number</th>
-                                <th>Operator</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recharge-history">
-                            <!-- History will be loaded here by JavaScript -->
-                            <tr><td colspan="5" style="text-align:center;">No recent recharges found.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            
+            <div class="recent-recharges"><!-- Your Recent Recharges Table HTML --></div>
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <a href="home.html" class="logo">Indian<span>Pay</span></a>
-            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
-        </div>
-    </footer>
-
+    <footer class="footer"><!-- Your Footer HTML --></footer>
     <div id="custom-alert" class="custom-alert-overlay"></div>
+
+    <div id="plans-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="plans-modal-title">Recharge Plans</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body" id="plans-list"></div>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // --- Firebase और बाकी JavaScript कोड ---
+        // --- 1. Firebase Configuration ---
         const firebaseConfig = { 
             apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
             authDomain: "indianpay425.firebaseapp.com",
@@ -159,96 +141,185 @@
             messagingSenderId: "6705555817",
             appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // DOM Elements
-        const userNameEl = document.getElementById('user-name');
-        const logoutBtn = document.getElementById('logout-btn');
-        const rechargeForm = document.getElementById('recharge-form');
-        let currentUser = null; // Logged in user object
-        let currentUserData = null; // User data from Firestore
+        // --- 2. API CONFIGURATIONS ---
+        const PLAN_API_USER_ID = "6403";
+        const PLAN_API_PASSWORD = "Sattu@2122";
+        const PLAN_API_BASE_URL = "https://planapi.in/api/Mobile/";
+        const RECHARGE_API_TOKEN = "9a93634f-165e-4dac-be00-9558b2e69a62";
+        const RECHARGE_API_BASE_URL = "https://ultra.myfinpaypro.co.in/api/Service/";
 
-        // कस्टम अलर्ट के फंक्शन
+        // --- 3. PLAN API OPERATOR CODES (planapi.in) ---
+        // ⚠️⚠️ कृपया planapi.in के "OPERATOR CODE LIST" से देखकर सही कोड्स यहाँ भरें ⚠️⚠️
+        const PLAN_API_OP_CODES = {
+            'Airtel': 'AT',
+            'Jio': 'JO',
+            'Vi': 'VI',
+            'BSNL': 'BS'
+        };
+
+        // --- 4. RECHARGE API OPERATOR CODES (myfinpaypro) ---
+        // ⚠️⚠️ कृपया myfinpaypro के डॉक्यूमेंट से देखकर सही कोड्स यहाँ भरें ⚠️⚠️
+        const RECHARGE_API_OP_CODES = {
+            'Airtel': 'AP',
+            'Jio': 'JO',
+            'Vi': 'VI',
+            'BSNL': 'BS'
+        };
+
+        // --- 5. DOM Elements ---
+        const mobileNumberInput = document.getElementById('mobile-number');
+        const operatorSelect = document.getElementById('operator-select');
+        const circleSelect = document.getElementById('circle-select');
+        const amountInput = document.getElementById('amount');
+        const operatorLoader = document.getElementById('operator-loader');
+        const browsePlansBtn = document.getElementById('browse-plans-btn');
+        const rechargeBtn = document.getElementById('recharge-btn');
+        const plansModal = document.getElementById('plans-modal');
+        const plansModalTitle = document.getElementById('plans-modal-title');
+        const plansListContainer = document.getElementById('plans-list');
+        const closeModalBtn = document.getElementById('modal-close-btn');
         const customAlert = document.getElementById('custom-alert');
-        function showAlert(title, message) { /* ... पहले जैसा कोड ... */ }
-        function closeAlert() { /* ... पहले जैसा कोड ... */ }
+
+        // --- 6. Global Variables ---
+        let currentOperatorData = null; 
+        let currentUser = null;
+        let currentUserData = null;
+
+        // --- 7. Auth and Alert Functions ---
         function showAlert(title, message) { customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button onclick="closeAlert()">OK</button></div>`; customAlert.style.display = 'flex'; }
         function closeAlert() { customAlert.style.display = 'none'; }
+        auth.onAuthStateChanged(user => { /* your auth logic here */ });
 
-        // Logout
-        logoutBtn.addEventListener('click', () => auth.signOut());
-
-        // Login की जाँच
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                currentUser = user;
-                db.collection('users').doc(user.uid).get().then(doc => {
-                    if (doc.exists) {
-                        currentUserData = doc.data();
-                        userNameEl.textContent = currentUserData.fullName || 'User';
-                    }
-                });
-            } else {
-                window.location.href = 'index.html';
+        // --- 8. Event Listeners ---
+        mobileNumberInput.addEventListener('blur', async () => {
+            if (mobileNumberInput.value.trim().length === 10) {
+                await fetchOperatorAndCircle(mobileNumberInput.value.trim());
             }
         });
 
-        // Recharge Form Submit Event
-        rechargeForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        browsePlansBtn.addEventListener('click', () => {
+            let opCode, circle, operatorName;
             
-            const mobileNumber = document.getElementById('mobile-number').value;
-            const operator = document.getElementById('operator').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-
-            // Validation
-            if (mobileNumber.length !== 10 || isNaN(parseInt(mobileNumber))) {
-                showAlert('Invalid Input', 'Please enter a valid 10-digit mobile number.');
-                return;
+            if (currentOperatorData && currentOperatorData.OpCode && currentOperatorData.Circle) {
+                opCode = currentOperatorData.OpCode;
+                circle = currentOperatorData.Circle;
+                operatorName = currentOperatorData.Operator;
+            } else {
+                operatorName = operatorSelect.value;
+                opCode = PLAN_API_OP_CODES[operatorName];
+                circle = circleSelect.value;
             }
-            if (!operator) {
-                showAlert('Invalid Input', 'Please select an operator.');
-                return;
+            
+            if (!opCode || !circle) {
+                return showAlert('Info', 'Please select both Operator and Circle to browse plans.');
             }
-            if (isNaN(amount) || amount <= 0) {
-                showAlert('Invalid Input', 'Please enter a valid recharge amount.');
-                return;
-            }
-
-            // Wallet Balance Check
-            const currentBalance = currentUserData.walletBalance || 0;
-            if (currentBalance < amount) {
-                showAlert('Insufficient Balance', `Your wallet balance is ₹${currentBalance.toFixed(2)}, which is not enough for this recharge.`);
-                return;
-            }
-
-            // Confirmation
-            if (confirm(`You are about to recharge ${mobileNumber} (${operator}) with ₹${amount}. Proceed?`)) {
-                // --- Real-world scenario ---
-                // 1. Call your recharge API here.
-                // 2. If API call is successful, then update wallet balance.
-                
-                // --- Simulation for now ---
-                const newBalance = currentBalance - amount;
-                
-                // Update balance in Firestore
-                db.collection('users').doc(currentUser.uid).update({
-                    walletBalance: newBalance
-                })
-                .then(() => {
-                    showAlert('Success', `Recharge of ₹${amount} for ${mobileNumber} was successful! Your new balance is ₹${newBalance.toFixed(2)}.`);
-                    rechargeForm.reset(); // Clear the form
-                    // You can also add this transaction to a 'recharges' collection in Firestore
-                })
-                .catch(error => {
-                    showAlert('Error', 'An error occurred while updating your wallet. Please try again.');
-                    console.error("Error updating balance: ", error);
-                });
+            
+            openPlansModal();
+            fetchPlans(opCode, circle, operatorName);
+        });
+        
+        rechargeBtn.addEventListener('click', processRecharge);
+        closeModalBtn.addEventListener('click', closePlansModal);
+        plansModal.addEventListener('click', (e) => { if (e.target === plansModal) closePlansModal(); });
+        
+        plansListContainer.addEventListener('click', (e) => {
+            const planItem = e.target.closest('.plan-item');
+            if(planItem){
+                amountInput.value = planItem.dataset.amount;
+                closePlansModal();
             }
         });
+
+        // --- 9. Core Functions ---
+        async function fetchOperatorAndCircle(mobileNumber) {
+            operatorLoader.style.display = 'block';
+            currentOperatorData = null; 
+            operatorSelect.value = "";
+            circleSelect.value = "";
+
+            const url = `${PLAN_API_BASE_URL}OperatorFetchNew?ApiUserID=${PLAN_API_USER_ID}&ApiPassword=${PLAN_API_PASSWORD}&Mobileno=${mobileNumber}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.ERROR === "0") {
+                    currentOperatorData = data;
+                    
+                    for (let option of operatorSelect.options) {
+                        if (data.Operator && option.text.toLowerCase().includes(data.Operator.toLowerCase())) {
+                            option.selected = true;
+                            break;
+                        }
+                    }
+                    if (data.Circle) {
+                        circleSelect.value = data.Circle;
+                    }
+                } else {
+                    showAlert('Auto-detect Failed', `${data.Message || 'Unknown error'}. Please select Operator and Circle manually.`);
+                }
+            } catch (error) {
+                console.error("Operator Fetch Error:", error);
+                showAlert('Error', 'Auto-detect failed. Please select Operator and Circle manually.');
+            } finally {
+                operatorLoader.style.display = 'none';
+            }
+        }
+
+        async function fetchPlans(opCode, circle, operatorName) {
+            plansListContainer.innerHTML = '<p>Loading plans...</p>';
+            plansModalTitle.textContent = `Plans for ${operatorName} (${circle})`;
+
+            const url = `${PLAN_API_BASE_URL}NewMobilePlans?apimember_id=${PLAN_API_USER_ID}&api_password=${PLAN_API_PASSWORD}&operatorcode=${opCode}&circle=${circle}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if(data.ERROR === "0" && data.RDATA){
+                    displayPlans(data.RDATA);
+                } else {
+                     plansListContainer.innerHTML = `<p>${data.MESSAGE || 'No plans found for this selection.'}</p>`;
+                }
+            } catch(error) {
+                console.error("Plan Fetch Error:", error);
+                plansListContainer.innerHTML = '<p>Could not load plans. Please try again later.</p>';
+            }
+        }
+
+        function displayPlans(planData) {
+            let html = '';
+            for (const category in planData) {
+                html += `<div class="plan-category"><h4>${category}</h4>`;
+                const plans = planData[category];
+                if(Array.isArray(plans)) {
+                    plans.forEach(plan => {
+                        html += `
+                            <div class="plan-item" data-amount="${plan.rs}">
+                                <div class="plan-details">
+                                    <span class="price">₹ ${plan.rs}</span>
+                                    <span class="validity">Validity: ${plan.validity}</span>
+                                </div>
+                                <p class="desc">${plan.desc}</p>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div>`;
+            }
+            plansListContainer.innerHTML = html || '<p>No plans available.</p>';
+        }
+
+        async function processRecharge() {
+            // Recharge logic here
+        }
+
+        function openPlansModal() { plansModal.style.display = 'flex'; }
+        function closePlansModal() { plansModal.style.display = 'none'; }
     </script>
 </body>
 </html>
