@@ -19,20 +19,8 @@
         .nav-links { display: flex; align-items: center; gap: 1rem; }
         .nav-links .welcome-text { font-weight: 500; margin-right: 0.5rem; }
         
-        /* FIX: PROFILE BUTTON DESIGN */
-        .profile-btn {
-            text-decoration: none;
-            background-color: #f1f5f9;
-            color: var(--secondary-color);
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .profile-btn:hover {
-            background-color: var(--secondary-color);
-            color: white;
-        }
+        .profile-btn { text-decoration: none; background-color: #f1f5f9; color: var(--secondary-color); padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; transition: background-color 0.3s, color 0.3s; }
+        .profile-btn:hover { background-color: var(--secondary-color); color: white; }
         .logout-btn { background-color: var(--danger-color); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
         
         main { padding: 3rem 0; }
@@ -64,7 +52,6 @@
                 <a href="home.html" class="logo">Indian<span>Pay</span></a>
                 <div class="nav-links">
                     <span class="welcome-text">Welcome, <strong id="user-name">User</strong></span>
-                    <!-- FIX: PROFILE BUTTON DESIGN -->
                     <a href="profile.html" class="profile-btn">Profile</a>
                     <button id="logout-btn" class="logout-btn">Logout</button>
                 </div>
@@ -121,42 +108,85 @@
             </section>
 
             <section class="service-section" id="govt-docs-section">
-                <h2>Government Documents</h2>
+                <h2>सरकारी दस्तावेज़ (Government Documents)</h2>
                 <div class="service-grid">
                     <a href="pan-card-services.html" class="service-card" data-service-id="pan-card-services"><div class="service-icon"><i class="fa-solid fa-address-card"></i></div><h3>PAN Card</h3></a>
                     <a href="aadhaar-services.html" class="service-card" data-service-id="aadhaar-services"><div class="service-icon"><i class="fa-solid fa-fingerprint"></i></div><h3>Aadhaar Services</h3></a>
                     <a href="voter-id-card.html" class="service-card" data-service-id="voter-id-card"><div class="service-icon"><i class="fa-solid fa-check-to-slot"></i></div><h3>Voter ID Card</h3></a>
                     <a href="driving-license.html" class="service-card" data-service-id="driving-license"><div class="service-icon"><i class="fa-solid fa-id-card"></i></div><h3>Driving License</h3></a>
+                    <!-- ADDED: Missing Government Document Services -->
+                    <a href="passport-seva.html" class="service-card" data-service-id="passport-seva"><div class="service-icon"><i class="fa-solid fa-book-atlas"></i></div><h3>Passport Seva</h3></a>
+                    <a href="birth-certificate.html" class="service-card" data-service-id="birth-certificate"><div class="service-icon"><i class="fa-solid fa-baby"></i></div><h3>Birth Certificate</h3></a>
+                    <a href="death-certificate.html" class="service-card" data-service-id="death-certificate"><div class="service-icon"><i class="fa-solid fa-file-contract"></i></div><h3>Death Certificate</h3></a>
+                    <a href="land-records.html" class="service-card" data-service-id="land-records"><div class="service-icon"><i class="fa-solid fa-map-location-dot"></i></div><h3>Land Records</h3></a>
+                    <a href="ration-card.html" class="service-card" data-service-id="ration-card"><div class="service-icon"><i class="fa-solid fa-basket-shopping"></i></div><h3>Ration Card</h3></a>
+                    <a href="e-district-services.html" class="service-card" data-service-id="e-district-services"><div class="service-icon"><i class="fa-solid fa-landmark-dome"></i></div><h3>E-District Services</h3></a>
                 </div>
             </section>
 
             <section class="service-section" id="financial-section">
-                <h2>Financial & Insurance</h2>
+                <h2>वित्तीय और बीमा (Financial & Insurance)</h2>
                 <div class="service-grid">
                     <a href="itr-filing.html" class="service-card" data-service-id="itr-filing"><div class="service-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><h3>ITR Filing</h3></a>
                     <a href="gst-services.html" class="service-card" data-service-id="gst-services"><div class="service-icon"><i class="fa-solid fa-landmark"></i></div><h3>GST Services</h3></a>
                     <a href="life-insurance.html" class="service-card" data-service-id="life-insurance"><div class="service-icon"><i class="fa-solid fa-heart-pulse"></i></div><h3>Life Insurance</h3></a>
                     <a href="vehicle-insurance.html" class="service-card" data-service-id="vehicle-insurance"><div class="service-icon"><i class="fa-solid fa-car-burst"></i></div><h3>Vehicle Insurance</h3></a>
+                    <!-- ADDED: Missing Financial & Insurance Services -->
+                    <a href="health-insurance.html" class="service-card" data-service-id="health-insurance"><div class="service-icon"><i class="fa-solid fa-notes-medical"></i></div><h3>Health Insurance</h3></a>
+                    <a href="fastag-services.html" class="service-card" data-service-id="fastag-services"><div class="service-icon"><i class="fa-solid fa-car-on"></i></div><h3>FASTag Services</h3></a>
+                    <a href="loan-services.html" class="service-card" data-service-id="loan-services"><div class="service-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><h3>Loan Services</h3></a>
+                    <a href="credit-card-apply.html" class="service-card" data-service-id="credit-card-apply"><div class="service-icon"><i class="fa-regular fa-credit-card"></i></div><h3>Credit Card Apply</h3></a>
+                    <a href="demat-account.html" class="service-card" data-service-id="demat-account"><div class="service-icon"><i class="fa-solid fa-chart-line"></i></div><h3>Demat Account</h3></a>
+                    <a href="cibil-score.html" class="service-card" data-service-id="cibil-score"><div class="service-icon"><i class="fa-solid fa-gauge-high"></i></div><h3>CIBIL Score</h3></a>
                 </div>
             </section>
             
             <section class="service-section" id="schemes-section">
-                <h2>Government Schemes</h2>
+                <h2>सरकारी योजनाएं (Government Schemes)</h2>
                 <div class="service-grid">
                     <a href="pm-kisan.html" class="service-card" data-service-id="pm-kisan"><div class="service-icon"><i class="fa-solid fa-tractor"></i></div><h3>PM-KISAN</h3></a>
                     <a href="ayushman-bharat.html" class="service-card" data-service-id="ayushman-bharat"><div class="service-icon"><i class="fa-solid fa-notes-medical"></i></div><h3>Ayushman Bharat</h3></a>
                     <a href="e-shram-card.html" class="service-card" data-service-id="e-shram-card"><div class="service-icon"><i class="fa-solid fa-person-digging"></i></div><h3>e-SHRAM Card</h3></a>
+                    <!-- ADDED: Missing Government Scheme Services -->
+                    <a href="pradhan-mantri-fasal-bima.html" class="service-card" data-service-id="pradhan-mantri-fasal-bima"><div class="service-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></div><h3>PM Fasal Bima</h3></a>
+                    <a href="pension-yojana.html" class="service-card" data-service-id="pension-yojana"><div class="service-icon"><i class="fa-solid fa-hand-holding-heart"></i></div><h3>Pension Yojana</h3></a>
+                    <a href="scholarship-schemes.html" class="service-card" data-service-id="scholarship-schemes"><div class="service-icon"><i class="fa-solid fa-user-graduate"></i></div><h3>Scholarships</h3></a>
                 </div>
             </section>
 
             <section class="service-section" id="travel-section">
-                <h2>Travel & Transport</h2>
+                <h2>यात्रा और परिवहन (Travel & Transport)</h2>
                 <div class="service-grid">
                     <a href="train-tickets.html" class="service-card" data-service-id="train-tickets"><div class="service-icon"><i class="fa-solid fa-train-subway"></i></div><h3>Train Tickets</h3></a>
                     <a href="flight-tickets.html" class="service-card" data-service-id="flight-tickets"><div class="service-icon"><i class="fa-solid fa-plane-departure"></i></div><h3>Flight Tickets</h3></a>
                     <a href="bus-tickets.html" class="service-card" data-service-id="bus-tickets"><div class="service-icon"><i class="fa-solid fa-bus"></i></div><h3>Bus Tickets</h3></a>
+                    <!-- ADDED: Missing Travel Service -->
+                    <a href="hotel-booking.html" class="service-card" data-service-id="hotel-booking"><div class="service-icon"><i class="fa-solid fa-hotel"></i></div><h3>Hotel Booking</h3></a>
                 </div>
             </section>
+
+            <!-- NEW SECTION ADDED: Education & Jobs -->
+            <section class="service-section" id="education-section">
+                <h2>शिक्षा और नौकरी (Education & Jobs)</h2>
+                <div class="service-grid">
+                    <a href="university-admission.html" class="service-card" data-service-id="university-admission"><div class="service-icon"><i class="fa-solid fa-school"></i></div><h3>University Admission</h3></a>
+                    <a href="exam-results.html" class="service-card" data-service-id="exam-results"><div class="service-icon"><i class="fa-solid fa-square-poll-vertical"></i></div><h3>Exam Results</h3></a>
+                    <a href="govt-job-apply.html" class="service-card" data-service-id="govt-job-apply"><div class="service-icon"><i class="fa-solid fa-briefcase"></i></div><h3>Govt Job Apply</h3></a>
+                    <a href="skill-india.html" class="service-card" data-service-id="skill-india"><div class="service-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div><h3>Skill India</h3></a>
+                </div>
+            </section>
+            
+            <!-- NEW SECTION ADDED: Other Utility Services -->
+            <section class="service-section" id="other-utility-section">
+                <h2>अन्य उपयोगी सेवाएँ (Other Utility Services)</h2>
+                <div class="service-grid">
+                    <a href="e-stamp-paper.html" class="service-card" data-service-id="e-stamp-paper"><div class="service-icon"><i class="fa-solid fa-stamp"></i></div><h3>E-Stamp Paper</h3></a>
+                    <a href="digital-signature.html" class="service-card" data-service-id="digital-signature"><div class="service-icon"><i class="fa-solid fa-file-signature"></i></div><h3>Digital Signature</h3></a>
+                    <a href="e-court-services.html" class="service-card" data-service-id="e-court-services"><div class="service-icon"><i class="fa-solid fa-gavel"></i></div><h3>E-Court Services</h3></a>
+                    <a href="rtionline.html" class="service-card" data-service-id="rtionline"><div class="service-icon"><i class="fa-solid fa-file-pen"></i></div><h3>RTI Online</h3></a>
+                </div>
+            </section>
+
         </div>
     </main>
 
@@ -173,7 +203,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // Recharge.html से प्राप्त Firebase कॉन्फ़िग को यहाँ कॉपी किया गया है
         const firebaseConfig = { 
             apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
             authDomain: "indianpay425.firebaseapp.com",
@@ -186,14 +215,17 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
+        // UPDATED: Added all new service IDs to the map
         const userPermissionMap = {
             'cash-withdrawal': 'moneytransfer', 'aadhaar-pay': 'moneytransfer', 'balance-inquiry': 'moneytransfer', 'mini-statement': 'moneytransfer',
             'mobile-recharge': 'recharge', 'money-transfer': 'recharge', 'dth-recharge': 'recharge',
             'broadband': 'billpay', 'electricity': 'billpay', 'cable-tv': 'billpay', 'water-bill': 'billpay', 'gas-cylinder': 'billpay', 'landline': 'billpay', 'loan-repayment': 'billpay', 'insurance': 'billpay', 'fastag-recharge': 'billpay', 'credit-card-bill': 'billpay', 'municipal-taxes': 'billpay', 'education-fees': 'billpay',
-            'pan-card-services': 'govtservices', 'aadhaar-services': 'govtservices', 'voter-id-card': 'govtservices', 'driving-license': 'govtservices',
-            'itr-filing': 'financialservices', 'gst-services': 'financialservices', 'life-insurance': 'financialservices', 'vehicle-insurance': 'financialservices',
-            'pm-kisan': 'schemesservices', 'ayushman-bharat': 'schemesservices', 'e-shram-card': 'schemesservices',
-            'train-tickets': 'travelservices', 'flight-tickets': 'travelservices', 'bus-tickets': 'travelservices'
+            'pan-card-services': 'govtservices', 'aadhaar-services': 'govtservices', 'voter-id-card': 'govtservices', 'driving-license': 'govtservices', 'passport-seva': 'govtservices', 'birth-certificate': 'govtservices', 'death-certificate': 'govtservices', 'land-records': 'govtservices', 'ration-card': 'govtservices', 'e-district-services': 'govtservices',
+            'itr-filing': 'financialservices', 'gst-services': 'financialservices', 'life-insurance': 'financialservices', 'vehicle-insurance': 'financialservices', 'health-insurance': 'financialservices', 'fastag-services': 'financialservices', 'loan-services': 'financialservices', 'credit-card-apply': 'financialservices', 'demat-account': 'financialservices', 'cibil-score': 'financialservices',
+            'pm-kisan': 'schemesservices', 'ayushman-bharat': 'schemesservices', 'e-shram-card': 'schemesservices', 'pradhan-mantri-fasal-bima': 'schemesservices', 'pension-yojana': 'schemesservices', 'scholarship-schemes': 'schemesservices',
+            'train-tickets': 'travelservices', 'flight-tickets': 'travelservices', 'bus-tickets': 'travelservices', 'hotel-booking': 'travelservices',
+            'university-admission': 'educationservices', 'exam-results': 'educationservices', 'govt-job-apply': 'educationservices', 'skill-india': 'educationservices',
+            'e-stamp-paper': 'utilityservices', 'digital-signature': 'utilityservices', 'e-court-services': 'utilityservices', 'rtionline': 'utilityservices'
         };
 
         function showAlert(title, message) {
@@ -203,34 +235,28 @@
         }
         function closeAlert() { document.getElementById('custom-alert').style.display = 'none'; }
 
-        // FIX: RELIABLE DATA LOADING LOGIC (यह कोड पहले से ही सही था, बस firebaseConfig की कमी थी)
         auth.onAuthStateChanged(user => {
             if (user) {
-                // First, set up the real-time listener for user data
                 const userDocRef = db.collection('users').doc(user.uid);
                 const unsubscribe = userDocRef.onSnapshot(userDoc => {
                     if (userDoc.exists) {
                         const userData = userDoc.data();
                         
-                        // 1. Display user name and wallet balance immediately
                         document.getElementById('user-name').textContent = userData.fullName || 'User';
                         document.getElementById('wallet-balance').textContent = `₹${(userData.walletBalance || 0).toFixed(2)}`;
 
-                        // 2. Check if the user is blocked
                         if (userData.isBlocked === true) {
                             document.getElementById('blocked-overlay').innerHTML = `<div class="blocked-box"><h2>Account Blocked</h2><p>Your account is blocked. Please contact support.</p></div>`;
                             document.getElementById('blocked-overlay').style.display = 'flex';
                             setTimeout(() => auth.signOut(), 5000);
-                            return; // Stop further processing for this user
+                            return;
                         } else {
                             document.getElementById('blocked-overlay').style.display = 'none';
                         }
                         
-                        // 3. After displaying user data, fetch master settings and apply all permissions
                         applyServicePermissions(userData);
 
                     } else {
-                        // User is authenticated but doesn't exist in Firestore
                         alert("User data not found. Logging out.");
                         auth.signOut();
                     }
@@ -246,7 +272,6 @@
 
         async function applyServicePermissions(userData) {
             try {
-                // Fetch Master Settings
                 const settingsRef = db.collection('settings').doc('masterServices');
                 const settingsDoc = await settingsRef.get();
                 const masterSettings = settingsDoc.exists ? settingsDoc.data() : {};
@@ -256,18 +281,15 @@
                 allServiceCards.forEach(card => {
                     const serviceId = card.dataset.serviceId;
                     
-                    // A. Master Control: Hide the service if globally disabled
                     if (masterSettings[serviceId] === false) {
                         card.style.display = 'none';
-                        return; // No need to check user permissions if it's globally off
+                        return;
                     } else {
-                        card.style.display = ''; // Ensure it's visible if globally enabled
+                        card.style.display = '';
                     }
 
-                    // B. User Control: Disable click if user-specific permission is off
                     const userPermissionCategory = userPermissionMap[serviceId];
                     if (userPermissionCategory && userData[userPermissionCategory] === false) {
-                        // Clone and replace the node to remove any old event listeners
                         const oldCard = card;
                         const newCard = oldCard.cloneNode(true);
                         oldCard.parentNode.replaceChild(newCard, oldCard);
