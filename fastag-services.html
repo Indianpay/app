@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FASTag Services - Indian Pay</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary-color: #00a884; 
+            --secondary-color: #1f2937; 
+            --text-color: #334155; 
+            --bg-color: #f8fafc; 
+            --card-bg: #ffffff; 
+            --border-color: #e5e7eb;
+            --govt-blue: #0d6efd;
+            --govt-blue-dark: #0b5ed7;
+            --info-bg: #e7f3ff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .back-link i { margin-right: 0.5rem; }
+
+        .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        .service-header { padding: 2rem; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; text-align: center; }
+        .service-header i { font-size: 3rem; margin-bottom: 1rem; }
+        .service-header h1 { font-size: 2rem; margin: 0; }
+        .service-content { padding: 2.5rem; }
+
+        .tab-buttons { display: flex; flex-wrap: wrap; border-radius: 12px; background-color: #eef2ff; padding: 0.5rem; margin-bottom: 2rem; }
+        .tab-btn { flex-grow: 1; padding: 0.8rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: var(--govt-blue); border-radius: 8px; transition: all 0.3s; white-space: nowrap; }
+        .tab-btn.active { background-color: var(--govt-blue); color: white; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--govt-blue); display: inline-block; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .info-box { background-color: var(--info-bg); border-left: 4px solid var(--govt-blue); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        
+        .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
+        .submit-btn:hover { background-color: var(--govt-blue-dark); }
+        .submit-btn i { margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <header class="header"><nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav></header>
+
+    <main class="container">
+        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="service-card">
+            <div class="service-header"><i class="fa-solid fa-car-on"></i><h1>FASTag Services</h1></div>
+            <div class="service-content">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="recharge">Recharge FASTag</button>
+                    <button class="tab-btn" data-tab="balance">Check Balance</button>
+                    <button class="tab-btn" data-tab="new-fastag">Apply for New FASTag</button>
+                </div>
+
+                <!-- Tab 1: Recharge FASTag -->
+                <div id="recharge" class="tab-content active">
+                    <h3 class="form-section-title">Recharge Your FASTag</h3>
+                    <form id="recharge-form">
+                        <div class="form-group">
+                            <label for="recharge-bank">Select FASTag Issuer Bank</label>
+                            <select id="recharge-bank" required>
+                                <option value="">-- Select Bank --</option>
+                                <option>ICICI Bank</option> <option>HDFC Bank</option> <option>Paytm Payments Bank</option> <option>Axis Bank</option> <option>State Bank of India</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label for="recharge-vehicle-no">Vehicle Registration Number</label><input type="text" id="recharge-vehicle-no" required></div>
+                        <div class="form-group"><label for="recharge-amount">Amount (₹)</label><input type="number" id="recharge-amount" required></div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-bolt"></i> Recharge Now</button>
+                    </form>
+                </div>
+                
+                <!-- Tab 2: Check Balance -->
+                <div id="balance" class="tab-content">
+                    <h3 class="form-section-title">Check FASTag Balance</h3>
+                    <form id="balance-form">
+                        <div class="form-group">
+                            <label for="balance-bank">Select FASTag Issuer Bank</label>
+                            <select id="balance-bank" required>
+                                <option value="">-- Select Bank --</option>
+                                <option>ICICI Bank</option> <option>HDFC Bank</option> <option>Paytm Payments Bank</option> <option>Axis Bank</option> <option>State Bank of India</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label for="balance-vehicle-no">Vehicle Registration Number</label><input type="text" id="balance-vehicle-no" required></div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-search-dollar"></i> Check Balance</button>
+                    </form>
+                </div>
+
+                <!-- Tab 3: Apply for New FASTag -->
+                <div id="new-fastag" class="tab-content">
+                    <h3 class="form-section-title">Apply for a New FASTag</h3>
+                    <div class="info-box">Provide your details to get a new FASTag for your vehicle.</div>
+                    <form id="new-fastag-form">
+                        <!-- YAHAN BADLAV KIYA GAYA HAI -->
+                        <div class="form-group">
+                            <label for="apply-bank">Select Bank for FASTag</label>
+                            <select id="apply-bank" required>
+                                <option value="">-- Select Issuing Bank --</option>
+                                <option value="icici">ICICI Bank</option>
+                                <option value="hdfc">HDFC Bank</option>
+                                <option value="paytm">Paytm Payments Bank</option>
+                                <option value="axis">Axis Bank</option>
+                                <option value="sbi">State Bank of India</option>
+                                <option value="kotak">Kotak Mahindra Bank</option>
+                                <option value="airtel">Airtel Payments Bank</option>
+                                <option value="idfc">IDFC First Bank</option>
+                            </select>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group"><label for="owner-name">Vehicle Owner's Name</label><input type="text" id="owner-name" required></div>
+                            <div class="form-group"><label for="new-vehicle-no">Vehicle Registration Number</label><input type="text" id="new-vehicle-no" required></div>
+                            <div class="form-group"><label for="mobile">Mobile Number</label><input type="tel" id="mobile" required></div>
+                            <div class="form-group"><label for="address">Address</label><input type="text" id="address" required></div>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        // Firebase Auth Check
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+
+        // Tab Switching Logic
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Form Submission Logic
+        document.getElementById('recharge-form').addEventListener('submit', function(e) { e.preventDefault(); alert('please contact your admin'); });
+        document.getElementById('balance-form').addEventListener('submit', function(e) { e.preventDefault(); alert('please contact your admin'); });
+        document.getElementById('new-fastag-form').addEventListener('submit', function(e) { e.preventDefault(); alert('please contact your admin'); });
+    </script>
+</body>
+</html>
