@@ -36,8 +36,8 @@
         .service-header h1 { font-size: 2rem; margin: 0; }
         .service-content { padding: 2.5rem; }
 
-        .tab-buttons { display: flex; border-radius: 12px; background-color: #eef2ff; padding: 0.5rem; margin-bottom: 2rem; }
-        .tab-btn { flex: 1; padding: 0.8rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: var(--govt-blue); border-radius: 8px; transition: all 0.3s; }
+        .tab-buttons { display: flex; flex-wrap: wrap; border-radius: 12px; background-color: #eef2ff; padding: 0.5rem; margin-bottom: 2rem; }
+        .tab-btn { flex-grow: 1; padding: 0.8rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: var(--govt-blue); border-radius: 8px; transition: all 0.3s; white-space: nowrap; }
         .tab-btn.active { background-color: var(--govt-blue); color: white; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4); }
         
         .tab-content { display: none; }
@@ -47,15 +47,15 @@
         .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--govt-blue); display: inline-block; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        .form-group input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
         .info-box { background-color: var(--info-bg); border-left: 4px solid var(--govt-blue); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
         
-        .captcha-container { display: flex; align-items: center; gap: 1rem; }
+        .captcha-container { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
         #captcha-image { border-radius: 8px; height: 45px; }
         #refresh-captcha { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--govt-blue); transition: transform 0.3s; }
         #refresh-captcha:hover { transform: rotate(90deg); }
 
-        .update-options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+        .update-options-grid, .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
         .option-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
         .option-card:hover { border-color: var(--govt-blue); transform: translateY(-5px); box-shadow: 0 4px 20px rgba(13, 110, 253, 0.2); }
         .option-card i { font-size: 2rem; color: var(--govt-blue); margin-bottom: 0.75rem; }
@@ -76,10 +76,12 @@
             <div class="service-content">
                 <div class="tab-buttons">
                     <button class="tab-btn active" data-tab="update">Update Aadhaar</button>
+                    <button class="tab-btn" data-tab="new-child">New Child Aadhaar</button>
                     <button class="tab-btn" data-tab="download">Download Aadhaar</button>
                     <button class="tab-btn" data-tab="status">Check Status</button>
                 </div>
 
+                <!-- Tab 1: Update Aadhaar -->
                 <div id="update" class="tab-content active">
                     <div id="initial-step">
                         <h3 class="form-section-title">Update Demographics Data</h3>
@@ -89,11 +91,12 @@
                             <input type="text" id="aadhaar-number" placeholder="Enter 12-digit Aadhaar Number" required>
                         </div>
                         <div class="form-group">
-                            <label>Enter Captcha</label>
+                            <label for="captcha-input">Enter Captcha</label>
                             <div class="captcha-container">
                                 <img src="" id="captcha-image" alt="Captcha Image">
                                 <button type="button" id="refresh-captcha" title="Refresh Captcha"><i class="fas fa-sync-alt"></i></button>
                             </div>
+                            <input type="text" id="captcha-input" placeholder="Enter text shown in image" required style="margin-top: 1rem;">
                         </div>
                         <button type="button" class="submit-btn" id="proceed-btn"><i class="fas fa-arrow-right"></i> Proceed</button>
                     </div>
@@ -105,18 +108,87 @@
                             <div class="option-card" data-update-type="Name"><i class="fas fa-user-edit"></i><p>Name</p></div>
                             <div class="option-card" data-update-type="Date of Birth"><i class="fas fa-calendar-alt"></i><p>Date of Birth</p></div>
                             <div class="option-card" data-update-type="Gender"><i class="fas fa-venus-mars"></i><p>Gender</p></div>
-                             <div class="option-card" data-update-type="Address"><i class="fas fa-map-marker-alt"></i><p>Address</p></div>
+                            <div class="option-card" data-update-type="Address"><i class="fas fa-map-marker-alt"></i><p>Address</p></div>
                         </div>
                     </div>
                 </div>
                 
+                <!-- Tab 2: New Child Aadhaar -->
+                <div id="new-child" class="tab-content">
+                    <h3 class="form-section-title">New Aadhaar for Child (0-5 Years)</h3>
+                    <div class="info-box"><strong>Note:</strong> Biometrics are not captured for children below 5 years. Their UID is linked to one of the parents.</div>
+                    <form id="new-child-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="child-name">Child's Full Name</label>
+                                <input type="text" id="child-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="parent-aadhaar">Parent's Aadhaar Number</label>
+                                <input type="text" id="parent-aadhaar" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="parent-name">Parent's Name (as on Aadhaar)</label>
+                                <input type="text" id="parent-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="mobile-number">Mobile Number</label>
+                                <input type="tel" id="mobile-number" required>
+                            </div>
+                             <div class="form-group">
+                                <label for="dob">Date of Birth</label>
+                                <input type="date" id="dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            <label for="address">Full Address</label>
+                            <input type="text" id="address" placeholder="House No, Street, Landmark" required>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="pincode">Pincode</label>
+                                <input type="text" id="pincode" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="post-office">Post Office</label>
+                                <input type="text" id="post-office" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Application</button>
+                    </form>
+                </div>
+
+                <!-- Tab 3: Download Aadhaar -->
                 <div id="download" class="tab-content">
                     <h3 class="form-section-title">Download Aadhaar</h3>
-                    <div class="form-group"><label>Service under maintenance.</label></div>
+                    <form id="download-form">
+                        <div class="form-group">
+                            <label for="download-aadhaar">Aadhaar Number / VID</label>
+                            <input type="text" id="download-aadhaar" placeholder="Enter Aadhaar Number" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-download"></i> Download</button>
+                    </form>
                 </div>
+
+                <!-- Tab 4: Check Status -->
                 <div id="status" class="tab-content">
                     <h3 class="form-section-title">Check Status</h3>
-                    <div class="form-group"><label>Service under maintenance.</label></div>
+                    <form id="status-form">
+                        <div class="form-group">
+                            <label for="status-id">Enrollment ID / URN</label>
+                            <input type="text" id="status-id" placeholder="Enter Enrollment ID or URN" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -147,24 +219,21 @@
         const captchaImage = document.getElementById('captcha-image');
         const refreshCaptchaBtn = document.getElementById('refresh-captcha');
 
-        function generateCaptchaText() {
-            return Math.random().toString(36).substring(2, 7).toUpperCase();
-        }
-
+        function generateCaptchaText() { return Math.random().toString(36).substring(2, 7).toUpperCase(); }
         function updateCaptcha() {
             const captchaText = generateCaptchaText();
             captchaImage.src = `https://dummyimage.com/150x45/e5e7eb/334155&text=${captchaText}`;
         }
         
-        updateCaptcha(); // Load captcha for the first time
-        refreshCaptchaBtn.addEventListener('click', updateCaptcha); // Refresh on click
+        updateCaptcha();
+        refreshCaptchaBtn.addEventListener('click', updateCaptcha);
 
         const initialStep = document.getElementById('initial-step');
         const selectionStep = document.getElementById('selection-step');
         
         document.getElementById('proceed-btn').addEventListener('click', () => {
-            if (!document.getElementById('aadhaar-number').value) {
-                alert('Please enter Aadhaar Number.');
+            if (!document.getElementById('aadhaar-number').value || !document.getElementById('captcha-input').value) {
+                alert('Please fill Aadhaar Number and Captcha.');
                 return;
             }
             initialStep.style.display = 'none';
@@ -173,11 +242,23 @@
 
         document.querySelectorAll('.option-card').forEach(card => {
             card.addEventListener('click', () => {
-                // As requested, alert is shown immediately upon selection
                 alert('please contact your admin');
             });
         });
 
+        // --- Logic for other forms ---
+        document.getElementById('new-child-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('please contact your admin');
+        });
+        document.getElementById('download-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('please contact your admin');
+        });
+        document.getElementById('status-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('please contact your admin');
+        });
     </script>
 </body>
 </html>
