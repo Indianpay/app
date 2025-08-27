@@ -10,41 +10,49 @@
     
     <style>
         :root { 
-            --primary-color: #22c55e; /* Green */
-            --secondary-color: #15803d; /* Dark Green */
+            --primary-color: #00a884; 
+            --secondary-color: #1f2937; 
             --text-color: #334155; 
-            --bg-color: #f0fdf4; /* Light Green Background */
+            --bg-color: #f8fafc; 
             --card-bg: #ffffff; 
-            --border-color: #dcfce7;
+            --border-color: #e5e7eb;
+            /* Green theme for PM-KISAN */
+            --theme-color: #16a34a; 
+            --theme-color-dark: #15803d;
+            --theme-info-bg: #f0fdf4;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
         .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
         .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        .logo { font-size: 1.8rem; font-weight: 700; color: #1f2937; text-decoration: none; }
-        .logo span { color: #16a34a; }
-        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--secondary-color); text-decoration: none; font-weight: 600; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
         .back-link i { margin-right: 0.5rem; }
 
-        .page-title { text-align: center; margin-bottom: 2.5rem; }
-        .page-title i { font-size: 3rem; color: var(--primary-color); }
-        .page-title h1 { font-size: 2.5rem; color: var(--secondary-color); margin-top: 0.5rem; }
-        
-        .services-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-        
-        .service-block { background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 4px 25px rgba(0,0,0,0.05); overflow: hidden; }
-        .service-block-header { padding: 1.5rem; background-color: var(--secondary-color); color: white; display: flex; align-items: center; gap: 1rem; }
-        .service-block-header i { font-size: 1.5rem; }
-        .service-block-header h3 { margin: 0; font-size: 1.2rem; }
-        .service-block-content { padding: 2rem; }
+        .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        .service-header { padding: 2rem; background: linear-gradient(135deg, #15803d 0%, #22c55e 100%); color: white; text-align: center; }
+        .service-header i { font-size: 3rem; margin-bottom: 1rem; }
+        .service-header h1 { font-size: 2rem; margin: 0; }
+        .service-content { padding: 2.5rem; }
 
+        .tab-buttons { display: flex; flex-wrap: wrap; border-radius: 12px; background-color: #dcfce7; padding: 0.5rem; margin-bottom: 2rem; }
+        .tab-btn { flex-grow: 1; padding: 0.8rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: var(--theme-color-dark); border-radius: 8px; transition: all 0.3s; white-space: nowrap; }
+        .tab-btn.active { background-color: var(--theme-color); color: white; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.4); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--theme-color); display: inline-block; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .info-box { background-color: var(--theme-info-bg); border-left: 4px solid var(--theme-color); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
         
-        .submit-btn { width: 100%; padding: 1rem; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
-        .submit-btn:hover { background-color: var(--secondary-color); }
+        .submit-btn { width: 100%; padding: 1rem; background-color: var(--theme-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
+        .submit-btn:hover { background-color: var(--theme-color-dark); }
         .submit-btn i { margin-right: 0.5rem; }
     </style>
 </head>
@@ -53,63 +61,44 @@
 
     <main class="container">
         <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-        <div class="page-title">
-            <i class="fa-solid fa-tractor"></i>
-            <h1>PM-KISAN Samman Nidhi</h1>
-        </div>
-        
-        <div class="services-grid">
-            <!-- Service Block 1: New Farmer Registration -->
-            <div class="service-block">
-                <div class="service-block-header">
-                    <i class="fas fa-user-plus"></i>
-                    <h3>New Farmer Registration</h3>
+        <div class="service-card">
+            <div class="service-header"><i class="fa-solid fa-tractor"></i><h1>PM-KISAN Samman Nidhi</h1></div>
+            <div class="service-content">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="new-farmer">New Farmer Registration</button>
+                    <button class="tab-btn" data-tab="ekyc">eKYC</button>
+                    <button class="tab-btn" data-tab="status">Check Beneficiary Status</button>
                 </div>
-                <div class="service-block-content">
+
+                <!-- Tab 1: New Farmer Registration -->
+                <div id="new-farmer" class="tab-content active">
+                    <h3 class="form-section-title">New Farmer Registration</h3>
                     <form id="new-farmer-form">
-                        <div class="form-group">
-                            <label for="aadhaar-number">Aadhaar Number</label>
-                            <input type="text" id="aadhaar-number" placeholder="Enter farmer's 12-digit Aadhaar" required>
-                        </div>
-                         <div class="form-group">
-                            <label for="mobile-number">Mobile Number</label>
-                            <input type="tel" id="mobile-number" placeholder="Enter Aadhaar linked mobile number" required>
-                        </div>
+                        <div class="form-group"><label for="aadhaar-number">Aadhaar Number</label><input type="text" id="aadhaar-number" required></div>
+                        <div class="form-group"><label for="mobile-number">Mobile Number</label><input type="tel" id="mobile-number" required></div>
                         <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Register Now</button>
                     </form>
                 </div>
-            </div>
-
-            <!-- Service Block 2: eKYC -->
-            <div class="service-block">
-                <div class="service-block-header">
-                    <i class="fas fa-fingerprint"></i>
-                    <h3>eKYC</h3>
-                </div>
-                 <div class="service-block-content">
+                
+                <!-- Tab 2: eKYC -->
+                <div id="ekyc" class="tab-content">
+                    <h3 class="form-section-title">Aadhaar based eKYC</h3>
+                    <div class="info-box">Your mobile number must be linked with your Aadhaar for OTP based eKYC.</div>
                     <form id="ekyc-form">
-                        <div class="form-group">
-                            <label for="ekyc-aadhaar">Aadhaar Number</label>
-                            <input type="text" id="ekyc-aadhaar" required>
-                        </div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-check-circle"></i> Complete eKYC</button>
+                        <div class="form-group"><label for="ekyc-aadhaar">Aadhaar Number</label><input type="text" id="ekyc-aadhaar" required></div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-fingerprint"></i> Proceed for eKYC</button>
                     </form>
                 </div>
-            </div>
 
-            <!-- Service Block 3: Check Beneficiary Status -->
-            <div class="service-block">
-                 <div class="service-block-header">
-                    <i class="fas fa-search"></i>
-                    <h3>Check Beneficiary Status</h3>
-                </div>
-                 <div class="service-block-content">
+                <!-- Tab 3: Check Status -->
+                <div id="status" class="tab-content">
+                    <h3 class="form-section-title">Beneficiary Status</h3>
                     <form id="status-form">
                         <div class="form-group">
-                            <label for="status-reg-no">Registration Number / Mobile Number</label>
-                            <input type="text" id="status-reg-no" required>
+                            <label for="status-id">Registration Number / Mobile Number</label>
+                            <input type="text" id="status-id" required>
                         </div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-tasks"></i> Check Status</button>
+                        <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
                     </form>
                 </div>
             </div>
@@ -124,6 +113,18 @@
         const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
         firebase.initializeApp(firebaseConfig);
         firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+
+        // Tab Switching Logic
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
 
         // Form Submission Logic
         document.getElementById('new-farmer-form').addEventListener('submit', function(e) { e.preventDefault(); alert('please contact your admin'); });
