@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Statement - Indian Pay</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS code (No changes here) */
+        :root { 
+            --primary-color: #00a884; 
+            --secondary-color: #1f2937; 
+            --text-color: #334155; 
+            --bg-color: #f8fafc; 
+            --card-bg: #ffffff; 
+            --danger-color: #ef4444;
+            --border-color: #d1d5db;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .back-link i { margin-right: 0.5rem; }
+        .service-form-card { background: var(--card-bg); padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+        .service-form-card h1 { font-size: 1.8rem; margin-bottom: 2rem; text-align: center; color: var(--secondary-color); display: flex; align-items: center; justify-content: center; gap: 1rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: 'Montserrat', sans-serif; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.2); }
+        .submit-btn { width: 100%; padding: 1rem; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+        .submit-btn:hover { background-color: #008a6e; }
+        .spinner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .searchable-select-container { position: relative; }
+        .selected-bank-display { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .options-container { display: none; position: absolute; top: 105%; left: 0; width: 100%; max-height: 250px; overflow-y: auto; background: white; border: 1px solid var(--border-color); border-radius: 8px; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .search-input { width: 100%; padding: 0.8rem; border: none; border-bottom: 1px solid var(--border-color); outline: none; }
+        .options-list .option { padding: 0.8rem 1rem; cursor: pointer; }
+        .options-list .option:hover { background-color: #f1f5f9; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav>
+    </header>
+
+    <main class="container">
+        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="service-form-card">
+            <h1><i class="fa-solid fa-receipt"></i> Mini Statement</h1>
+            <form id="mini-statement-form">
+                <div class="form-group">
+                    <label for="aadhaar-number">Aadhaar Number</label>
+                    <input type="tel" id="aadhaar-number" placeholder="Enter 12-digit Aadhaar Number" required maxlength="12" pattern="[0-9]{12}">
+                </div>
+                <div class="form-group">
+                    <label>Select Bank</label>
+                    <div class="searchable-select-container">
+                        <div class="selected-bank-display" id="selected-bank">Select a Bank <i class="fas fa-chevron-down"></i></div>
+                        <div class="options-container">
+                            <input type="text" class="search-input" placeholder="Search for a bank...">
+                            <div class="options-list"></div>
+                        </div>
+                        <input type="hidden" id="bank-name" name="bank-name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="device-select">Select Biometric Device</label>
+                    <select id="device-select" required>
+                        <option value="">-- Choose your device --</option>
+                        <option value="mantra">Mantra MFS100</option>
+                        <option value="morpho">Morpho MSO1300</option>
+                        <option value="startek">Startek FM220U</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn"><i class="fa-solid fa-fingerprint"></i> Scan & Fetch</button>
+            </form>
+        </div>
+    </main>
+    
+    <div class="spinner-overlay" id="spinner"><div class="spinner"></div></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        // Bank list (No changes here)
+        const indianBankList = [ "Abhyudaya Cooperative Bank", "Ahmedabad Mercantile Cooperative Bank", "Airtel Payments Bank", "Allahabad Bank", "Andhra Bank", "Axis Bank", "Bandhan Bank", "Bank of Baroda", "Bank of India", "Bank of Maharashtra", "Canara Bank", "Capital Small Finance Bank", "Central Bank of India", "City Union Bank", "Corporation Bank", "Cosmos Bank", "DCB Bank", "Dena Bank", "Dhanlaxmi Bank", "Equitas Small Finance Bank", "ESAF Small Finance Bank", "Federal Bank", "Fino Payments Bank", "HDFC Bank", "ICICI Bank", "IDBI Bank", "IDFC First Bank", "Indian Bank", "Indian Overseas Bank", "IndusInd Bank", "India Post Payments Bank", "Jammu & Kashmir Bank", "Jana Small Finance Bank", "Jio Payments Bank", "Karnataka Bank", "Karur Vysya Bank", "Kotak Mahindra Bank", "Lakshmi Vilas Bank", "NSDL Payments Bank", "Oriental Bank of Commerce", "Paytm Payments Bank", "Punjab National Bank", "Punjab & Sind Bank", "RBL Bank", "Saraswat Bank", "South Indian Bank", "State Bank of India", "Suryoday Small Finance Bank", "Syndicate Bank", "Tamilnad Mercantile Bank", "TJSB Sahakari Bank", "UCO Bank", "Ujjivan Small Finance Bank", "Union Bank of India", "United Bank of India", "Utkarsh Small Finance Bank", "Vijaya Bank", "Yes Bank" ];
+        
+        // Firebase and Bank Select Logic (No changes here)
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+        const spinner = document.getElementById('spinner');
+        const selectContainer = document.querySelector('.searchable-select-container');
+        const selectedDisplay = document.getElementById('selected-bank');
+        const optionsContainer = document.querySelector('.options-container');
+        const searchInput = document.querySelector('.search-input');
+        const optionsList = document.querySelector('.options-list');
+        const hiddenBankInput = document.getElementById('bank-name');
+        function populateBanks(filter = '') {
+            optionsList.innerHTML = '';
+            const filteredBanks = indianBankList.filter(bank => bank.toLowerCase().includes(filter.toLowerCase()));
+            filteredBanks.forEach(bank => {
+                const option = document.createElement('div');
+                option.classList.add('option');
+                option.textContent = bank;
+                option.addEventListener('click', () => {
+                    selectedDisplay.innerHTML = `${bank} <i class="fas fa-chevron-down"></i>`;
+                    hiddenBankInput.value = bank;
+                    optionsContainer.style.display = 'none';
+                });
+                optionsList.appendChild(option);
+            });
+        }
+        selectedDisplay.addEventListener('click', () => {
+            const isDisplayed = optionsContainer.style.display === 'block';
+            optionsContainer.style.display = isDisplayed ? 'none' : 'block';
+            if (!isDisplayed) { populateBanks(); searchInput.value = ''; searchInput.focus(); }
+        });
+        searchInput.addEventListener('keyup', () => populateBanks(searchInput.value));
+        document.addEventListener('click', (e) => { if (!selectContainer.contains(e.target)) { optionsContainer.style.display = 'none'; } });
+
+        // --- YAHAN BADLAV KIYA GAYA HAI ---
+        document.getElementById('mini-statement-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Form ko reload hone se roko
+
+            // Basic validation taki user pehle form bhare
+            if (!document.getElementById('aadhaar-number').value || !hiddenBankInput.value || !document.getElementById('device-select').value) {
+                alert('Please fill all the details first.');
+                return;
+            }
+            
+            // Yahan seedha aapka message show hoga
+            alert('please contact your admin');
+        });
+    </script>
+</body>
+</html>
