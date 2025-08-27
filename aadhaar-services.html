@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aadhaar Services - Indian Pay</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary-color: #00a884; 
+            --secondary-color: #1f2937; 
+            --text-color: #334155; 
+            --bg-color: #f8fafc; 
+            --card-bg: #ffffff; 
+            --border-color: #e5e7eb;
+            --info-bg: #eef2ff; /* Light blue for info boxes, similar to govt sites */
+            --govt-blue: #0d6efd;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .back-link i { margin-right: 0.5rem; }
+
+        .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        .service-header { padding: 2rem; background-color: var(--card-bg); color: var(--secondary-color); text-align: center; border-bottom: 1px solid var(--border-color); }
+        .service-header i { font-size: 3rem; margin-bottom: 1rem; color: var(--govt-blue); }
+        .service-header h1 { font-size: 2rem; margin: 0; }
+        .service-content { padding: 2.5rem; }
+
+        .tab-buttons { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; }
+        .tab-btn { flex: 1; padding: 1rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: #6b7280; position: relative; }
+        .tab-btn.active { color: var(--govt-blue); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--govt-blue); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--govt-blue); display: inline-block; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .info-box { background-color: var(--info-bg); border-left: 4px solid var(--govt-blue); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
+        .info-box p { margin: 0; }
+        .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .submit-btn i { margin-right: 0.5rem; }
+        .checkbox-group { display: flex; flex-direction: column; gap: 0.75rem; }
+        .checkbox-item { display: flex; align-items: center; gap: 0.5rem; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav>
+    </header>
+
+    <main class="container">
+        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="service-card">
+            <div class="service-header">
+                <i class="fa-solid fa-fingerprint"></i>
+                <h1>Aadhaar Services</h1>
+            </div>
+            <div class="service-content">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="update">Update Aadhaar</button>
+                    <button class="tab-btn" data-tab="download">Download Aadhaar</button>
+                    <button class="tab-btn" data-tab="status">Check Status</button>
+                </div>
+
+                <!-- Tab 1: Update Aadhaar -->
+                <div id="update" class="tab-content active">
+                    <h3 class="form-section-title">Update Demographics Data</h3>
+                    <div class="info-box">
+                        <p><strong>Note:</strong> Mobile number must be linked with Aadhaar to receive OTP for authentication.</p>
+                    </div>
+                    <form id="update-aadhaar-form">
+                        <div class="form-group">
+                            <label for="aadhaar-number">Enter Aadhaar Number</label>
+                            <input type="text" id="aadhaar-number" placeholder="Enter 12-digit Aadhaar Number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="captcha">Enter Captcha</label>
+                            <!-- In a real app, a captcha image would be here -->
+                            <input type="text" id="captcha" placeholder="Enter text as shown in image" required>
+                        </div>
+                        <button type="button" class="submit-btn" id="send-otp-btn"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                        
+                        <!-- This section would be shown after OTP verification -->
+                        <div id="update-fields-section" style="display: none; margin-top: 2rem;">
+                            <h3 class="form-section-title">Select fields to update</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" name="update_field" value="name"> Name</label>
+                                <label class="checkbox-item"><input type="checkbox" name="update_field" value="dob"> Date of Birth</label>
+                                <label class="checkbox-item"><input type="checkbox" name="update_field" value="gender"> Gender</label>
+                                <label class="checkbox-item"><input type="checkbox" name="update_field" value="address"> Address</label>
+                            </div>
+                            <button type="submit" class="submit-btn">Proceed to Update</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tab 2: Download Aadhaar -->
+                <div id="download" class="tab-content">
+                     <h3 class="form-section-title">Download Electronic Copy of Your Aadhaar</h3>
+                    <form id="download-aadhaar-form">
+                        <div class="form-group">
+                            <label for="download-aadhaar-number">Aadhaar Number / VID</label>
+                            <input type="text" id="download-aadhaar-number" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-download"></i> Get Aadhaar PDF</button>
+                    </form>
+                </div>
+
+                <!-- Tab 3: Check Status -->
+                <div id="status" class="tab-content">
+                    <h3 class="form-section-title">Check Aadhaar/Update Status</h3>
+                    <form id="status-check-form">
+                        <div class="form-group">
+                            <label for="enrollment-id">Enrollment ID (EID) / Update Request Number (URN)</label>
+                            <input type="text" id="enrollment-id" placeholder="Enter EID or URN" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        // Firebase Auth Check
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => { 
+            if (!user) window.location.href = 'index.html'; 
+        });
+
+        // Tab Switching Logic
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Demo logic for 'Send OTP'
+        const sendOtpBtn = document.getElementById('send-otp-btn');
+        const updateFieldsSection = document.getElementById('update-fields-section');
+        sendOtpBtn.addEventListener('click', () => {
+            // In a real app, this would send an OTP. Here we just show the next section.
+            alert('OTP has been sent to your registered mobile number. (This is a demo)');
+            updateFieldsSection.style.display = 'block';
+        });
+
+        // Form Submission Logic
+        document.getElementById('update-aadhaar-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('please contact your admin');
+        });
+        document.getElementById('download-aadhaar-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('please contact your admin');
+        });
+        document.getElementById('status-check-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('please contact your admin');
+        });
+    </script>
+</body>
+</html>
