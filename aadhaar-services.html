@@ -16,8 +16,9 @@
             --bg-color: #f8fafc; 
             --card-bg: #ffffff; 
             --border-color: #e5e7eb;
-            --info-bg: #eef2ff; /* Light blue for info boxes, similar to govt sites */
             --govt-blue: #0d6efd;
+            --govt-blue-dark: #0b5ed7;
+            --info-bg: #e7f3ff;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
@@ -30,29 +31,34 @@
         .back-link i { margin-right: 0.5rem; }
 
         .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
-        .service-header { padding: 2rem; background-color: var(--card-bg); color: var(--secondary-color); text-align: center; border-bottom: 1px solid var(--border-color); }
-        .service-header i { font-size: 3rem; margin-bottom: 1rem; color: var(--govt-blue); }
+        .service-header { padding: 2rem; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; text-align: center; }
+        .service-header i { font-size: 3rem; margin-bottom: 1rem; }
         .service-header h1 { font-size: 2rem; margin: 0; }
         .service-content { padding: 2.5rem; }
 
-        .tab-buttons { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; }
-        .tab-btn { flex: 1; padding: 1rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: #6b7280; position: relative; }
-        .tab-btn.active { color: var(--govt-blue); }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--govt-blue); }
+        .tab-buttons { display: flex; border-radius: 12px; background-color: #eef2ff; padding: 0.5rem; margin-bottom: 2rem; }
+        .tab-btn { flex: 1; padding: 0.8rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: var(--govt-blue); border-radius: 8px; transition: all 0.3s; }
+        .tab-btn.active { background-color: var(--govt-blue); color: white; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4); }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--govt-blue); display: inline-block; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
         .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
         .info-box { background-color: var(--info-bg); border-left: 4px solid var(--govt-blue); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
-        .info-box p { margin: 0; }
-        .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        
+        .update-options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+        .option-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .option-card:hover { border-color: var(--govt-blue); transform: translateY(-5px); box-shadow: 0 4px 20px rgba(13, 110, 253, 0.2); }
+        .option-card i { font-size: 2rem; color: var(--govt-blue); margin-bottom: 0.75rem; }
+        .option-card p { font-weight: 600; margin: 0; }
+        
+        .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
+        .submit-btn:hover { background-color: var(--govt-blue-dark); }
         .submit-btn i { margin-right: 0.5rem; }
-        .checkbox-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .checkbox-item { display: flex; align-items: center; gap: 0.5rem; }
     </style>
 </head>
 <body>
@@ -77,299 +83,53 @@
 
                 <!-- Tab 1: Update Aadhaar -->
                 <div id="update" class="tab-content active">
-                    <h3 class="form-section-title">Update Demographics Data</h3>
-                    <div class="info-box">
-                        <p><strong>Note:</strong> Mobile number must be linked with Aadhaar to receive OTP for authentication.</p>
-                    </div>
-                    <form id="update-aadhaar-form">
+                    <!-- STEP 1: Enter Aadhaar Details -->
+                    <div id="initial-step">
+                        <h3 class="form-section-title">Update Demographics Data</h3>
+                        <div class="info-box"><strong>Note:</strong> Enter Aadhaar number to proceed with update request.</div>
                         <div class="form-group">
                             <label for="aadhaar-number">Enter Aadhaar Number</label>
                             <input type="text" id="aadhaar-number" placeholder="Enter 12-digit Aadhaar Number" required>
                         </div>
                         <div class="form-group">
                             <label for="captcha">Enter Captcha</label>
-                            <!-- In a real app, a captcha image would be here -->
                             <input type="text" id="captcha" placeholder="Enter text as shown in image" required>
                         </div>
-                        <button type="button" class="submit-btn" id="send-otp-btn"><i class="fas fa-paper-plane"></i> Send OTP</button>
-                        
-                        <!-- This section would be shown after OTP verification -->
-                        <div id="update-fields-section" style="display: none; margin-top: 2rem;">
-                            <h3 class="form-section-title">Select fields to update</h3>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" name="update_field" value="name"> Name</label>
-                                <label class="checkbox-item"><input type="checkbox" name="update_field" value="dob"> Date of Birth</label>
-                                <label class="checkbox-item"><input type="checkbox" name="update_field" value="gender"> Gender</label>
-                                <label class="checkbox-item"><input type="checkbox" name="update_field" value="address"> Address</label>
-                            </div>
-                            <button type="submit" class="submit-btn">Proceed to Update</button>
-                        </div>
-                    </form>
-                </div>
+                        <button type="button" class="submit-btn" id="proceed-btn"><i class="fas fa-arrow-right"></i> Proceed</button>
+                    </div>
 
-                <!-- Tab 2: Download Aadhaar -->
-                <div id="download" class="tab-content">
-                     <h3 class="form-section-title">Download Electronic Copy of Your Aadhaar</h3>
-                    <form id="download-aadhaar-form">
-                        <div class="form-group">
-                            <label for="download-aadhaar-number">Aadhaar Number / VID</label>
-                            <input type="text" id="download-aadhaar-number" required>
-                        </div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-download"></i> Get Aadhaar PDF</button>
-                    </form>
-                </div>
-
-                <!-- Tab 3: Check Status -->
-                <div id="status" class="tab-content">
-                    <h3 class="form-section-title">Check Aadhaar/Update Status</h3>
-                    <form id="status-check-form">
-                        <div class="form-group">
-                            <label for="enrollment-id">Enrollment ID (EID) / Update Request Number (URN)</label>
-                            <input type="text" id="enrollment-id" placeholder="Enter EID or URN" required>
-                        </div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
-                    </form>
-                </div>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aadhaar Services - Indian Pay</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root { 
-            --primary-color: #00a884; 
-            --secondary-color: #1f2937; 
-            --text-color: #334155; 
-            --bg-color: #f8fafc; 
-            --card-bg: #ffffff; 
-            --border-color: #e5e7eb;
-            --info-bg: #f0fdf4;
-            /* New colors for unique design */
-            --gradient-start: #0575e6;
-            --gradient-end: #021b79;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
-        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
-        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
-        .logo span { color: var(--primary-color); }
-        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
-        .back-link i { margin-right: 0.5rem; }
-
-        .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
-        .service-header { padding: 2rem; background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white; text-align: center; }
-        .service-header i { font-size: 3rem; margin-bottom: 1rem; }
-        .service-header h1 { font-size: 2rem; margin: 0; }
-        .service-content { padding: 2.5rem; }
-
-        .tab-buttons { display: flex; border-radius: 12px; background-color: #eef2ff; padding: 0.5rem; margin-bottom: 2rem; }
-        .tab-btn { flex: 1; padding: 0.8rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: #4f46e5; border-radius: 8px; transition: background-color 0.3s, color 0.3s; }
-        .tab-btn.active { background-color: #4f46e5; color: white; }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--gradient-start); display: inline-block; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        .form-group input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
-        .info-box { background-color: var(--info-bg); border-left: 4px solid var(--primary-color); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
-        
-        /* New Update Options Design */
-        .update-options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
-        .option-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-        .option-card:hover { transform: translateY(-5px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .option-card i { font-size: 2rem; color: var(--gradient-start); margin-bottom: 0.75rem; }
-        .option-card p { font-weight: 600; margin: 0; }
-        
-        .submit-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
-    </style>
-</head>
-<body>
-
-    <header class="header">
-        <nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav>
-    </header>
-
-    <main class="container">
-        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-        <div class="service-card">
-            <div class="service-header">
-                <i class="fa-solid fa-fingerprint"></i>
-                <h1>Aadhaar Services</h1>
-            </div>
-            <div class="service-content">
-                <div class="tab-buttons">
-                    <button class="tab-btn active" data-tab="update">Update Aadhaar</button>
-                    <button class="tab-btn" data-tab="download">Download Aadhaar</button>
-                    <button class="tab-btn" data-tab="status">Check Status</button>
-                </div>
-
-                <!-- Tab 1: Update Aadhaar (Simplified & Redesigned) -->
-                <div id="update" class="tab-content active">
-                    <form id="update-aadhaar-form">
+                    <!-- STEP 2: Select What to Update -->
+                    <div id="selection-step" style="display: none;">
                         <h3 class="form-section-title">Update Your Aadhaar Details</h3>
-                        <div class="info-box">
-                            Select the information you wish to update after entering your Aadhaar number.
-                        </div>
-                        <div class="form-group">
-                            <label for="aadhaar-number">Enter Aadhaar Number</label>
-                            <input type="text" id="aadhaar-number" placeholder="Enter 12-digit Aadhaar Number" required>
-                        </div>
-                        
+                        <div class="info-box">Select the information you wish to update.</div>
                         <div class="update-options-grid">
-                            <div class="option-card" data-update-type="Name">
-                                <i class="fas fa-user-edit"></i>
-                                <p>Name</p>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aadhaar Services - Indian Pay</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root { 
-            --primary-color: #00a884; 
-            --secondary-color: #1f2937; 
-            --text-color: #334155; 
-            --bg-color: #f8fafc; 
-            --card-bg: #ffffff; 
-            --border-color: #e5e7eb;
-            --info-bg: #f0fdf4;
-            /* New colors for unique design */
-            --gradient-start: #0575e6;
-            --gradient-end: #021b79;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
-        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
-        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
-        .logo span { color: var(--primary-color); }
-        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
-        .back-link i { margin-right: 0.5rem; }
+                            <div class="option-card" data-update-type="Name"><i class="fas fa-user-edit"></i><p>Name</p></div>
+                            <div class="option-card" data-update-type="Date of Birth"><i class="fas fa-calendar-alt"></i><p>Date of Birth</p></div>
+                            <div class="option-card" data-update-type="Gender"><i class="fas fa-venus-mars"></i><p>Gender</p></div>
+                             <div class="option-card" data-update-type="Address"><i class="fas fa-map-marker-alt"></i><p>Address</p></div>
+                        </div>
+                    </div>
 
-        .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
-        .service-header { padding: 2rem; background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white; text-align: center; }
-        .service-header i { font-size: 3rem; margin-bottom: 1rem; }
-        .service-header h1 { font-size: 2rem; margin: 0; }
-        .service-content { padding: 2.5rem; }
-
-        .tab-buttons { display: flex; border-radius: 12px; background-color: #eef2ff; padding: 0.5rem; margin-bottom: 2rem; }
-        .tab-btn { flex: 1; padding: 0.8rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: #4f46e5; border-radius: 8px; transition: background-color 0.3s, color 0.3s; }
-        .tab-btn.active { background-color: #4f46e5; color: white; }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--gradient-start); display: inline-block; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        .form-group input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
-        .info-box { background-color: var(--info-bg); border-left: 4px solid var(--primary-color); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
-        
-        /* New Update Options Design */
-        .update-options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 2rem; }
-        .option-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-        .option-card:hover { transform: translateY(-5px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .option-card i { font-size: 2rem; color: var(--gradient-start); margin-bottom: 0.75rem; }
-        .option-card p { font-weight: 600; margin: 0; }
-        
-        .submit-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
-    </style>
-</head>
-<body>
-
-    <header class="header">
-        <nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav>
-    </header>
-
-    <main class="container">
-        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-        <div class="service-card">
-            <div class="service-header">
-                <i class="fa-solid fa-fingerprint"></i>
-                <h1>Aadhaar Services</h1>
-            </div>
-            <div class="service-content">
-                <div class="tab-buttons">
-                    <button class="tab-btn active" data-tab="update">Update Aadhaar</button>
-                    <button class="tab-btn" data-tab="download">Download Aadhaar</button>
-                    <button class="tab-btn" data-tab="status">Check Status</button>
+                    <!-- STEP 3: Final Update Form -->
+                    <div id="final-update-form" style="display: none;">
+                        <h3 class="form-section-title" id="final-update-title">Update Your Details</h3>
+                        <form id="update-form">
+                            <div class="form-group">
+                                <label for="new-data-input" id="new-data-label">Enter New Details</label>
+                                <input type="text" id="new-data-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="document-upload">Upload Supporting Document</label>
+                                <input type="file" id="document-upload" required>
+                            </div>
+                            <button type="submit" class="submit-btn">Submit Update Request</button>
+                        </form>
+                    </div>
                 </div>
 
-                <!-- Tab 1: Update Aadhaar (Simplified & Redesigned) -->
-                <div id="update" class="tab-content active">
-                    <form id="update-aadhaar-form">
-                        <h3 class="form-section-title">Update Your Aadhaar Details</h3>
-                        <div class="info-box">
-                            Select the information you wish to update after entering your Aadhaar number.
-                        </div>
-                        <div class="form-group">
-                            <label for="aadhaar-number">Enter Aadhaar Number</label>
-                            <input type="text" id="aadhaar-number" placeholder="Enter 12-digit Aadhaar Number" required>
-                        </div>
-                        
-                        <div class="update-options-grid">
-                            <div class="option-card" data-update-type="Name">
-                                <i class="fas fa-user-edit"></i>
-                                <p>Name</p>
-                            </div>
-                            <div class="option-card" data-update-type="DOB">
-                                <i class="fas fa-calendar-alt"></i>
-                                <p>Date of Birth</p>
-                            </div>
-                            <div class="option-card" data-update-type="Gender">
-                                <i class="fas fa-venus-mars"></i>
-                                <p>Gender</p>
-                            </div>
-                             <div class="option-card" data-update-type="Address">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <p>Address</p>
-                            </div>
-                        </div>
-                        <!-- A hidden input to store which option was clicked -->
-                        <input type="hidden" id="update-type-hidden" name="update-type">
-                    </form>
-                </div>
-
-                <!-- Tab 2: Download Aadhaar -->
-                <div id="download" class="tab-content">
-                     <h3 class="form-section-title">Download Electronic Copy</h3>
-                    <form id="download-aadhaar-form">
-                        <div class="form-group">
-                            <label for="download-aadhaar-number">Aadhaar Number / VID</label>
-                            <input type="text" id="download-aadhaar-number" required>
-                        </div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-download"></i> Get Aadhaar PDF</button>
-                    </form>
-                </div>
-
-                <!-- Tab 3: Check Status -->
-                <div id="status" class="tab-content">
-                    <h3 class="form-section-title">Check Enrollment & Update Status</h3>
-                    <form id="status-check-form">
-                        <div class="form-group">
-                            <label for="enrollment-id">Enrollment ID (EID) / URN</label>
-                            <input type="text" id="enrollment-id" placeholder="Enter EID or URN" required>
-                        </div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
-                    </form>
-                </div>
+                <!-- Other Tabs (Download & Status) -->
+                <div id="download" class="tab-content"><!-- Download Form Here --></div>
+                <div id="status" class="tab-content"><!-- Status Check Form Here --></div>
             </div>
         </div>
     </main>
@@ -397,31 +157,47 @@
             });
         });
 
-        // New Logic for Update Option Cards
-        const optionCards = document.querySelectorAll('.option-card');
-        const aadhaarNumberInput = document.getElementById('aadhaar-number');
-        optionCards.forEach(card => {
+        // --- NEW STEP-BY-STEP LOGIC FOR AADHAAR UPDATE ---
+        const initialStep = document.getElementById('initial-step');
+        const selectionStep = document.getElementById('selection-step');
+        const finalUpdateForm = document.getElementById('final-update-form');
+        
+        // Go from Step 1 to Step 2
+        document.getElementById('proceed-btn').addEventListener('click', () => {
+            if (!document.getElementById('aadhaar-number').value || !document.getElementById('captcha').value) {
+                alert('Please fill Aadhaar Number and Captcha.');
+                return;
+            }
+            initialStep.style.display = 'none';
+            selectionStep.style.display = 'block';
+        });
+
+        // Go from Step 2 to Step 3
+        document.querySelectorAll('.option-card').forEach(card => {
             card.addEventListener('click', () => {
-                if (!aadhaarNumberInput.value) {
-                    alert('Please enter your Aadhaar number first.');
-                    return;
-                }
                 const updateType = card.dataset.updateType;
-                // Here, you would normally redirect to another page with a form for that specific update
-                // For this demo, we will just show the alert.
-                alert('please contact your admin');
+                
+                // Set the title and label for the final form
+                document.getElementById('final-update-title').textContent = `Update Your ${updateType}`;
+                document.getElementById('new-data-label').textContent = `Enter New ${updateType}`;
+                if (updateType === 'Date of Birth') {
+                    document.getElementById('new-data-input').type = 'date';
+                } else {
+                    document.getElementById('new-data-input').type = 'text';
+                }
+
+                selectionStep.style.display = 'none';
+                finalUpdateForm.style.display = 'block';
             });
         });
 
-        // Form Submission for Download and Status Check
-        document.getElementById('download-aadhaar-form').addEventListener('submit', function(e) {
+        // Final Form Submission
+        document.getElementById('update-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            // User fills the final details and clicks submit
             alert('please contact your admin');
         });
-        document.getElementById('status-check-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('please contact your admin');
-        });
+
     </script>
 </body>
 </html>
