@@ -133,14 +133,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         // --- 1. Firebase Configuration ---
-        const firebaseConfig = { 
-            apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
-            authDomain: "indianpay425.firebaseapp.com",
-            projectId: "indianpay425",
-            storageBucket: "indianpay425.appspot.com",
-            messagingSenderId: "6705555817",
-            appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
-        };
+        const firebaseConfig = { /* ... your firebase config ... */ };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -160,7 +153,34 @@
             'BSNL': '4'
         };
 
-        // --- 4. RECHARGE API OPERATOR CODES (myfinpaypro) ---
+        // --- 4. PLAN API CIRCLE CODES (सही वाले) ---
+        const PLAN_API_CIRCLE_CODES = {
+            'Andhra Pradesh Telengana': '23',
+            'Assam': '16',
+            'Bihar Jharkhand': '52',
+            'Chennai': '49',
+            'Delhi NCR': '10',
+            'Gujarat': '98',
+            'Haryana': '96',
+            'Himachal Pradesh': '95',
+            'Jammu Kashmir': '94',
+            'Karnataka': '91',
+            'Kerala': '40',
+            'Kolkata': '31',
+            'Madhya Pradesh Chhattisgarh': '93',
+            'Maharashtra Goa': '92',
+            'Mumbai': '54',
+            'North East': '16', // NESA
+            'Odisha': '56',
+            'Punjab': '02',
+            'Rajasthan': '79',
+            'Tamil Nadu': '94',
+            'UP East': '03',
+            'UP West': '97',
+            'West Bengal': '53'
+        };
+
+        // --- 5. RECHARGE API OPERATOR CODES (myfinpaypro) ---
         const RECHARGE_API_OP_CODES = {
             'Airtel': 'AP',
             'Jio': 'JO',
@@ -168,7 +188,7 @@
             'BSNL': 'BS'
         };
 
-        // --- 5. DOM Elements ---
+        // --- 6. DOM Elements ---
         const mobileNumberInput = document.getElementById('mobile-number');
         const operatorSelect = document.getElementById('operator-select');
         const circleSelect = document.getElementById('circle-select');
@@ -182,17 +202,17 @@
         const closeModalBtn = document.getElementById('modal-close-btn');
         const customAlert = document.getElementById('custom-alert');
 
-        // --- 6. Global Variables ---
+        // --- 7. Global Variables ---
         let currentOperatorData = null; 
         let currentUser = null;
         let currentUserData = null;
 
-        // --- 7. Auth and Alert Functions ---
+        // --- 8. Auth and Alert Functions ---
         function showAlert(title, message) { customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button onclick="closeAlert()">OK</button></div>`; customAlert.style.display = 'flex'; }
         function closeAlert() { customAlert.style.display = 'none'; }
         auth.onAuthStateChanged(user => { /* your auth logic here */ });
 
-        // --- 8. Event Listeners ---
+        // --- 9. Event Listeners ---
         mobileNumberInput.addEventListener('blur', async () => {
             if (mobileNumberInput.value.trim().length === 10) {
                 await fetchOperatorAndCircle(mobileNumberInput.value.trim());
@@ -200,24 +220,26 @@
         });
 
         browsePlansBtn.addEventListener('click', () => {
-            let opCode, circle, operatorName;
+            let opCode, circleCode, operatorName, circleName;
             
-            if (currentOperatorData && currentOperatorData.OpCode && currentOperatorData.Circle) {
+            if (currentOperatorData && currentOperatorData.OpCode && currentOperatorData.CircleCode) {
                 opCode = currentOperatorData.OpCode;
-                circle = currentOperatorData.Circle;
+                circleCode = currentOperatorData.CircleCode;
                 operatorName = currentOperatorData.Operator;
+                circleName = currentOperatorData.Circle;
             } else {
                 operatorName = operatorSelect.value;
+                circleName = circleSelect.value;
                 opCode = PLAN_API_OP_CODES[operatorName];
-                circle = circleSelect.value;
+                circleCode = PLAN_API_CIRCLE_CODES[circleName];
             }
             
-            if (!opCode || !circle) {
+            if (!opCode || !circleCode) {
                 return showAlert('Info', 'Please select both Operator and Circle to browse plans.');
             }
             
             openPlansModal();
-            fetchPlans(opCode, circle, operatorName);
+            fetchPlans(opCode, circleCode, operatorName, circleName);
         });
         
         rechargeBtn.addEventListener('click', processRecharge);
@@ -232,7 +254,7 @@
             }
         });
 
-        // --- 9. Core Functions ---
+        // --- 10. Core Functions ---
         async function fetchOperatorAndCircle(mobileNumber) {
             operatorLoader.style.display = 'block';
             currentOperatorData = null; 
@@ -268,11 +290,11 @@
             }
         }
 
-        async function fetchPlans(opCode, circle, operatorName) {
+        async function fetchPlans(opCode, circleCode, operatorName, circleName) {
             plansListContainer.innerHTML = '<p>Loading plans...</p>';
-            plansModalTitle.textContent = `Plans for ${operatorName} (${circle})`;
+            plansModalTitle.textContent = `Plans for ${operatorName} (${circleName})`;
 
-            const url = `${PLAN_API_BASE_URL}NewMobilePlans?apimember_id=${PLAN_API_USER_ID}&api_password=${PLAN_API_PASSWORD}&operatorcode=${opCode}&circle=${circle}`;
+            const url = `${PLAN_API_BASE_URL}NewMobilePlans?apimember_id=${PLAN_API_USER_ID}&api_password=${PLAN_API_PASSWORD}&operatorcode=${opCode}&circle=${circleCode}`;
             
             try {
                 const response = await fetch(url);
