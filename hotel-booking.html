@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking - Indian Pay</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary-color: #00a884; 
+            --secondary-color: #1f2937; 
+            --text-color: #334155; 
+            --bg-color: #f8fafc; 
+            --card-bg: #ffffff; 
+            --border-color: #e5e7eb;
+            --theme-color: #8b5cf6; /* Purple for Hotels */
+            --theme-color-dark: #7c3aed;
+            --theme-info-bg: #f5f3ff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .back-link i { margin-right: 0.5rem; }
+
+        .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        .service-header { padding: 2rem; background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); color: white; text-align: center; }
+        .service-header i { font-size: 3rem; margin-bottom: 1rem; }
+        .service-header h1 { font-size: 2rem; margin: 0; }
+        .service-content { padding: 2.5rem; }
+
+        .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--theme-color); display: inline-block; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .info-box { background-color: var(--theme-info-bg); border-left: 4px solid var(--theme-color); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        
+        .submit-btn { width: 100%; padding: 1rem; background-color: var(--theme-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
+        .submit-btn:hover { background-color: var(--theme-color-dark); }
+        .submit-btn i { margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <header class="header"><nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav></header>
+
+    <main class="container">
+        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="service-card">
+            <div class="service-header"><i class="fa-solid fa-hotel"></i><h1>Hotel Booking</h1></div>
+            <div class="service-content">
+                <h3 class="form-section-title">Find the Perfect Hotel</h3>
+                <div class="info-box">Search and book hotels at the best prices.</div>
+                <form id="hotel-booking-form">
+                    <div class="form-group">
+                        <label for="destination">City, Property or Location</label>
+                        <input type="text" id="destination" placeholder="e.g., Goa" required>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"><label for="check-in-date">Check-in</label><input type="date" id="check-in-date" required></div>
+                        <div class="form-group"><label for="check-out-date">Check-out</label><input type="date" id="check-out-date" required></div>
+                        <div class="form-group"><label for="guests">Guests</label><input type="number" id="guests" value="2" min="1" required></div>
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Search Hotels</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        // Set minimum dates for check-in and check-out
+        const today = new Date().toISOString().split('T')[0];
+        const checkInInput = document.getElementById("check-in-date");
+        const checkOutInput = document.getElementById("check-out-date");
+        
+        checkInInput.setAttribute('min', today);
+        checkOutInput.setAttribute('min', today);
+
+        checkInInput.addEventListener('change', function() {
+            // Set the minimum check-out date to be the day after check-in
+            let checkInDate = new Date(this.value);
+            checkInDate.setDate(checkInDate.getDate() + 1);
+            let minCheckOutDate = checkInDate.toISOString().split('T')[0];
+            checkOutInput.setAttribute('min', minCheckOutDate);
+            // If check-out is before new min check-out, reset it
+            if(checkOutInput.value < minCheckOutDate) {
+                checkOutInput.value = minCheckOutDate;
+            }
+        });
+
+        // Firebase Auth Check
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+
+        // Form Submission Logic
+        document.getElementById('hotel-booking-form').addEventListener('submit', function(e) { 
+            e.preventDefault(); 
+            alert('please contact your admin'); 
+        });
+    </script>
+</body>
+</html>
