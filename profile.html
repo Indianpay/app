@@ -133,22 +133,19 @@
         });
 
         function loadUserProfile() {
-            userDocRef.get().then(doc => {
+            userDocRef.onSnapshot(doc => { // Using onSnapshot for real-time updates
                 if (doc.exists) {
                     const userData = doc.data();
                     
-                    // Populate Header
                     document.getElementById('user-fullname').textContent = userData.fullName;
                     document.getElementById('user-role-display').textContent = userData.role;
                     const initials = userData.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                     document.getElementById('avatar-initials').textContent = initials;
 
-                    // Populate Profile Form
                     document.getElementById('fullName').value = userData.fullName;
                     document.getElementById('mobileNumber').value = userData.mobileNumber;
                     document.getElementById('email').value = userData.email;
 
-                    // Populate KYC Tab
                     const kycStatusBadge = document.getElementById('kyc-status');
                     const kycActionButton = document.getElementById('kyc-action-btn');
                     const kycMessage = document.getElementById('kyc-message');
@@ -158,31 +155,31 @@
                     if (status === "Approved") {
                         kycStatusBadge.className = "status-badge status-approved";
                         kycMessage.textContent = "Your KYC is approved. You can access all services.";
-                        kycActionButton.style.display = 'none';
+                        kycActionButton.style.display = 'none'; // Hide button if approved
                     } else if (status === "Pending") {
                         kycStatusBadge.className = "status-badge status-pending";
                         kycMessage.textContent = "Your KYC is under review. Please wait for approval.";
-                        kycActionButton.textContent = "Track KYC";
+                        kycActionButton.textContent = "Track KYC Status";
+                        kycActionButton.disabled = true; // Disable button while pending
                     } else { // Rejected or Not Submitted
                         kycStatusBadge.textContent = "Not Submitted";
                         kycStatusBadge.className = "status-badge status-rejected";
                         kycMessage.textContent = "Please complete your KYC to access all features.";
                         kycActionButton.textContent = "Complete KYC Now";
+                        kycActionButton.disabled = false;
                     }
 
                 } else {
                     alert("User data not found.");
                     auth.signOut();
                 }
-            }).catch(error => {
+            }, error => {
                 console.error("Error fetching user data: ", error);
                 alert("Could not load profile.");
             });
         }
         
         // --- UPDATE LOGIC ---
-
-        // 1. Update Profile (Name, Mobile)
         document.getElementById('profile-update-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const saveButton = document.getElementById('save-profile-btn');
@@ -192,55 +189,33 @@
             const newName = document.getElementById('fullName').value;
             const newMobile = document.getElementById('mobileNumber').value;
 
-            userDocRef.update({
-                fullName: newName,
-                mobileNumber: newMobile
-            })
-            .then(() => {
-                alert("Profile updated successfully!");
-                loadUserProfile(); // Reload data to show changes
-            })
-            .catch(error => {
-                console.error("Error updating profile: ", error);
-                alert("Failed to update profile. Please try again.");
-            })
-            .finally(() => {
-                saveButton.disabled = false;
-                saveButton.textContent = "Save Changes";
-            });
+            userDocRef.update({ fullName: newName, mobileNumber: newMobile })
+            .then(() => { alert("Profile updated successfully!"); })
+            .catch(error => { alert("Failed to update profile. Please try again."); })
+            .finally(() => { saveButton.disabled = false; saveButton.textContent = "Save Changes"; });
         });
 
-        // 2. Update Password
         document.getElementById('change-password-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
-            if (newPassword.length < 6) {
-                alert("Password should be at least 6 characters long.");
-                return;
-            }
-            if (newPassword !== confirmPassword) {
-                alert("Passwords do not match.");
-                return;
-            }
+            if (newPassword.length < 6) { alert("Password should be at least 6 characters long."); return; }
+            if (newPassword !== confirmPassword) { alert("Passwords do not match."); return; }
 
             currentUser.updatePassword(newPassword)
                 .then(() => {
                     alert("Password updated successfully! Please log in again with your new password.");
                     auth.signOut();
                 })
-                .catch(error => {
-                    console.error("Error updating password: ", error);
-                    alert("Failed to update password. You may need to sign out and sign in again to perform this action.");
-                });
+                .catch(error => { alert("Failed to update password. You may need to sign out and sign in again to perform this action."); });
         });
 
-        // 3. KYC Button Action
+        // --- KYC BUTTON LINK ---
         document.getElementById('kyc-action-btn').addEventListener('click', function() {
-            alert('Please contact your admin to complete KYC.');
+            // Is button ko kyc-form.html par bhejein
+            window.location.href = 'kyc-form.html';
         });
-
 
         // Tab Switching Logic
         const tabButtons = document.querySelectorAll('.tab-btn');
