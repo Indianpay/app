@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commission Chart - Indian Pay</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary-color: #00a884; 
+            --secondary-color: #1f2937; 
+            --text-color: #334155; 
+            --bg-color: #f8fafc; 
+            --card-bg: #ffffff; 
+            --border-color: #e5e7eb;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .back-link i { margin-right: 0.5rem; }
+
+        .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        .service-header { padding: 2rem; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; text-align: center; }
+        .service-header i { font-size: 3rem; margin-bottom: 1rem; }
+        .service-header h1 { font-size: 2rem; margin: 0; }
+        .service-content { padding: 2.5rem; }
+
+        .section-title { font-size: 1.5rem; color: var(--secondary-color); margin-bottom: 1rem; margin-top: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        thead th { background-color: #f9fafb; font-weight: 600; color: var(--secondary-color); }
+        tbody tr:nth-child(even) { background-color: #f9fafb; }
+        .commission { color: #16a34a; font-weight: 600; }
+        .charge { color: #dc2626; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <header class="header"><nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav></header>
+
+    <main class="container">
+        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="service-card">
+            <div class="service-header"><i class="fa-solid fa-percent"></i><h1>Commission & Charges</h1></div>
+            <div class="service-content">
+                <!-- Tables will be dynamically inserted here by JavaScript -->
+                <div id="commission-tables"></div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        // Firebase Auth Check
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+
+        // --- Commission Data ---
+        // Jab aap admin panel banayenge, to is object ko database se aane wale data se replace kar dijiyega.
+        const commissionData = {
+            "AEPS Services": [
+                { name: 'Cash Withdrawal', commission: 'Up to ₹12.00', charges: '₹0' },
+                { name: 'Aadhaar Pay', commission: '0.15%', charges: '0.35%' },
+                { name: 'Balance Inquiry', commission: '₹1.00', charges: '₹0' },
+                { name: 'Mini Statement', commission: '₹1.00', charges: '₹0' },
+            ],
+            "Utility & Payments": [
+                { name: 'Mobile Recharge', commission: 'Up to 2.5%', charges: '₹0' },
+                { name: 'Money Transfer', commission: '₹0', charges: 'Up to 1.0%' },
+                { name: 'DTH Recharge', commission: 'Up to 3.0%', charges: '₹0' },
+            ],
+            "BBPS Services": [
+                { name: 'Electricity', commission: '₹5.00', charges: '₹0' },
+                { name: 'Water Bill', commission: '₹2.00', charges: '₹0' },
+                { name: 'Gas Cylinder', commission: '₹2.00', charges: '₹0' },
+                { name: 'Loan Repayment', commission: '0.20%', charges: '₹0' },
+                { name: 'Insurance Premium', commission: '0.10%', charges: '₹0' },
+                { name: 'FASTag Recharge', commission: '0.15%', charges: '₹0' },
+                { name: 'Credit Card Bill', commission: '₹5.00', charges: '₹0' },
+            ],
+            "Government Documents": [
+                { name: 'PAN Card (New/Correction)', commission: '₹5.00', charges: '₹107' },
+                { name: 'Aadhaar Services (Update)', commission: '₹0', charges: '₹50' },
+                { name: 'Voter ID Card', commission: '₹0', charges: '₹30' },
+            ],
+            "Financial & Insurance": [
+                { name: 'ITR Filing', commission: '₹50.00', charges: 'As per plan' },
+                { name: 'GST Services', commission: '₹100.00', charges: 'As per plan' },
+                { name: 'Loan Services', commission: 'Up to 1.0%', charges: '₹0' },
+                { name: 'CIBIL Score Check', commission: '₹10.00', charges: '₹50' },
+            ],
+            "Government Schemes": [
+                 { name: 'PM-KISAN', commission: '₹10.00', charges: '₹0' },
+                 { name: 'Ayushman Bharat', commission: '₹8.00', charges: '₹0' },
+                 { name: 'e-SHRAM Card', commission: '₹15.00', charges: '₹0' },
+            ],
+            "Travel & Transport": [
+                { name: 'Train Tickets', commission: '₹20/PNR (Non-AC), ₹40/PNR (AC)', charges: 'Gateway Charges' },
+                { name: 'Flight Tickets', commission: 'Up to 2.0%', charges: 'Gateway Charges' },
+                { name: 'Bus Tickets', commission: 'Up to 5.0%', charges: 'Gateway Charges' },
+            ]
+        };
+
+        // Function to dynamically create tables from the data object
+        function generateCommissionTables() {
+            const container = document.getElementById('commission-tables');
+            
+            for (const section in commissionData) {
+                // Create section title
+                const title = document.createElement('h2');
+                title.className = 'section-title';
+                title.textContent = section;
+                container.appendChild(title);
+
+                // Create table container for responsiveness
+                const tableContainer = document.createElement('div');
+                tableContainer.className = 'table-container';
+
+                // Create table
+                const table = document.createElement('table');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Your Commission</th>
+                            <th>Customer Charges</th>
+                        </tr>
+                    </thead>
+                `;
+
+                // Create table body
+                const tbody = document.createElement('tbody');
+                commissionData[section].forEach(service => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${service.name}</td>
+                        <td class="commission">${service.commission}</td>
+                        <td class="charge">${service.charges}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                table.appendChild(tbody);
+                tableContainer.appendChild(table);
+                container.appendChild(tableContainer);
+            }
+        }
+
+        // Generate the tables when the page loads
+        window.onload = generateCommissionTables;
+    </script>
+</body>
+</html>
