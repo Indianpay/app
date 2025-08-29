@@ -1,0 +1,134 @@
+    <!-- इस पूरे स्क्रिप्ट टैग को कॉपी करके अपने पुराने वाले से बदलें -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw",
+            authDomain: "indianpay425.firebaseapp.com",
+            projectId: "indianpay425",
+            storageBucket: "indianpay425.appspot.com",
+            messagingSenderId: "6705555817",
+            appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        const userPermissionMap = {
+            'cash-withdrawal': 'moneytransfer', 'aadhaar-pay': 'moneytransfer', 'balance-inquiry': 'moneytransfer', 'mini-statement': 'moneytransfer',
+            'mobile-recharge': 'recharge', 'money-transfer': 'recharge', 'dth-recharge': 'recharge',
+            'broadband': 'billpay', 'electricity': 'billpay', 'cable-tv': 'billpay', 'water-bill': 'billpay', 'gas-cylinder': 'billpay', 'landline': 'billpay', 'loan-repayment': 'billpay', 'insurance': 'billpay', 'fastag-recharge': 'billpay', 'credit-card-bill': 'billpay', 'municipal-taxes': 'billpay', 'education-fees': 'billpay',
+            'pan-card-services': 'govtservices', 'aadhaar-services': 'govtservices', 'voter-id-card': 'govtservices', 'driving-license': 'govtservices', 'passport-seva': 'govtservices', 'birth-certificate': 'govtservices', 'death-certificate': 'govtservices', 'land-records': 'govtservices', 'ration-card': 'govtservices', 'e-district-services': 'govtservices',
+            'itr-filing': 'financialservices', 'gst-services': 'financialservices', 'life-insurance': 'financialservices', 'vehicle-insurance': 'financialservices', 'health-insurance': 'financialservices', 'fastag-services': 'financialservices', 'loan-services': 'financialservices', 'credit-card-apply': 'financialservices', 'demat-account': 'financialservices', 'cibil-score': 'financialservices',
+            'pm-kisan': 'schemesservices', 'ayushman-bharat': 'schemesservices', 'e-shram-card': 'schemesservices', 'pradhan-mantri-fasal-bima': 'schemesservices', 'pension-yojana': 'schemesservices', 'scholarship-schemes': 'schemesservices',
+            'train-tickets': 'travelservices', 'flight-tickets': 'travelservices', 'bus-tickets': 'travelservices', 'hotel-booking': 'travelservices',
+            'university-admission': 'educationservices', 'exam-results': 'educationservices', 'govt-job-apply': 'educationservices', 'skill-india': 'educationservices',
+            'e-stamp-paper': 'utilityservices', 'digital-signature': 'utilityservices', 'e-court-services': 'utilityservices', 'rtionline': 'utilityservices'
+        };
+
+        function showAlert(title, message) {
+            const customAlert = document.getElementById('custom-alert');
+            customAlert.innerHTML = `<div class="custom-alert-box"><h3>${title}</h3><p>${message}</p><button onclick="closeAlert()">OK</button></div>`;
+            customAlert.style.display = 'flex';
+        }
+        function closeAlert() { document.getElementById('custom-alert').style.display = 'none'; }
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                const userDocRef = db.collection('users').doc(user.uid);
+                userDocRef.onSnapshot(userDoc => {
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        
+                        document.getElementById('user-name').textContent = userData.fullName || 'User';
+                        document.getElementById('wallet-balance').textContent = `₹${(userData.walletBalance || 0).toFixed(2)}`;
+
+                        if (userData.isBlocked === true) {
+                            document.getElementById('blocked-overlay').innerHTML = `<div class="blocked-box"><h2>Account Blocked</h2><p>Your account is blocked. Please contact support.</p></div>`;
+                            document.getElementById('blocked-overlay').style.display = 'flex';
+                            setTimeout(() => auth.signOut(), 5000);
+                            return;
+                        } else {
+                            document.getElementById('blocked-overlay').style.display = 'none';
+                        }
+                        
+                        applyServicePermissions(userData);
+
+                    } else {
+                        console.error("User document not found in Firestore.");
+                        showAlert("Error", "User data not found. Logging out.");
+                        auth.signOut();
+                    }
+                }, error => {
+                    console.error("Error listening to user data:", error);
+                    showAlert("Error", "Could not fetch user data. Please check your internet connection.");
+                    auth.signOut();
+                });
+            } else { 
+                window.location.href = 'index.html'; 
+            }
+        });
+
+        // =========================================================
+        // === UPDATED AND IMPROVED FUNCTION - यहाँ बदलाव किया गया है ===
+        // =========================================================
+        async function applyServicePermissions(userData) {
+            try {
+                const settingsRef = db.collection('settings').doc('masterServices');
+                const settingsDoc = await settingsRef.get();
+                const masterSettings = settingsDoc.exists ? settingsDoc.data() : {};
+
+                // सभी सर्विस सेक्शंस को चुनें
+                const allServiceSections = document.querySelectorAll('.service-section');
+
+                allServiceSections.forEach(section => {
+                    // सेक्शन के अंदर मौजूद सभी सर्विस कार्ड्स को चुनें
+                    const serviceCardsInSection = section.querySelectorAll('.service-card');
+                    let visibleServicesCount = 0; // यह गिनेगा कि सेक्शन में कितनी सर्विसेज़ दिख रही हैं
+
+                    serviceCardsInSection.forEach(card => {
+                        const serviceId = card.dataset.serviceId;
+                        
+                        // मास्टर कंट्रोल: अगर Firebase में सर्विस false है, तो उसे छिपा दें
+                        if (masterSettings[serviceId] === false) {
+                            card.style.display = 'none';
+                            return; // इस कार्ड के लिए आगे की जांच न करें
+                        }
+                        
+                        // अगर मास्टर सेटिंग में सर्विस ऑन है, तो उसे दिखाएं
+                        card.style.display = '';
+                        visibleServicesCount++; // दिखने वाली सर्विस की गिनती बढ़ाएं
+
+                        // यूज़र कंट्रोल: अब चेक करें कि इस यूज़र के लिए सर्विस चालू है या नहीं
+                        const userPermissionCategory = userPermissionMap[serviceId];
+                        if (userPermissionCategory && userData[userPermissionCategory] === false) {
+                            // कार्ड को क्लोन करके उसके क्लिक इवेंट को बदलें ताकि अलर्ट दिखाए
+                            const oldCard = card;
+                            const newCard = oldCard.cloneNode(true);
+                            oldCard.parentNode.replaceChild(newCard, oldCard);
+                            
+                            newCard.href = "#"; // लिंक को डिसेबल करें
+                            newCard.addEventListener('click', event => {
+                                event.preventDefault();
+                                showAlert('Service Not Active', 'This service is not active for your account.');
+                            });
+                        }
+                    });
+
+                    // अगर किसी सेक्शन में एक भी सर्विस नहीं दिख रही है, तो पूरे सेक्शन को ही छिपा दें
+                    if (visibleServicesCount === 0) {
+                        section.style.display = 'none';
+                    } else {
+                        section.style.display = 'block';
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error applying service permissions:", error);
+                showAlert("Error", "Could not load service settings.");
+            }
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
+    </script>
