@@ -157,128 +157,133 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
     <script>
-        // Firebase Auth and Tab Switching logic
-        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
-        firebase.initializeApp(firebaseConfig);
-        firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                tabContents.forEach(content => content.classList.remove('active'));
-                document.getElementById(button.dataset.tab).classList.add('active');
+        // Wrap all JS code in DOMContentLoaded to ensure the page is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // Firebase Auth and Tab Switching logic
+            const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+            firebase.initializeApp(firebaseConfig);
+            firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(button.dataset.tab).classList.add('active');
+                });
             });
-        });
-        
-        // Aadhaar Auto-Formatting Script
-        document.querySelectorAll('.aadhaar-input').forEach(input => {
-            input.addEventListener('input', (e) => {
-                let value = e.target.value.replace(/\D/g, '');
-                let formattedValue = '';
-                if (value.length > 0) { formattedValue = value.match(new RegExp('.{1,4}', 'g')).join(' '); }
-                e.target.value = formattedValue;
+            
+            // Aadhaar Auto-Formatting Script
+            document.querySelectorAll('.aadhaar-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    let formattedValue = '';
+                    if (value.length > 0) { formattedValue = value.match(new RegExp('.{1,4}', 'g')).join(' '); }
+                    e.target.value = formattedValue;
+                });
             });
-        });
 
-        // Update Aadhaar Tab Logic
-        const captchaImage = document.getElementById('captcha-image');
-        const refreshCaptchaBtn = document.getElementById('refresh-captcha');
-        function generateCaptchaText() { return Math.random().toString(36).substring(2, 7).toUpperCase(); }
-        function updateCaptcha() { captchaImage.src = `https://dummyimage.com/150x45/e5e7eb/334155&text=${generateCaptchaText()}`; }
-        updateCaptcha();
-        refreshCaptchaBtn.addEventListener('click', updateCaptcha);
-        document.getElementById('proceed-btn').addEventListener('click', () => alert('Please contact your admin to proceed.'));
+            // Update Aadhaar Tab Logic
+            const captchaImage = document.getElementById('captcha-image');
+            const refreshCaptchaBtn = document.getElementById('refresh-captcha');
+            function generateCaptchaText() { return Math.random().toString(36).substring(2, 7).toUpperCase(); }
+            function updateCaptcha() { captchaImage.src = `https://dummyimage.com/150x45/e5e7eb/334155&text=${generateCaptchaText()}`; }
+            updateCaptcha();
+            refreshCaptchaBtn.addEventListener('click', updateCaptcha);
+            document.getElementById('proceed-btn').addEventListener('click', () => alert('Please contact your admin to proceed.'));
 
-        // New Child Form Logic
-        document.getElementById('new-child-form').addEventListener('submit', e => { e.preventDefault(); alert('Application submitted. Please contact admin.'); });
+            // New Child Form Logic
+            document.getElementById('new-child-form').addEventListener('submit', e => { e.preventDefault(); alert('Application submitted. Please contact admin.'); });
 
-        // Download Aadhaar Logic with Button Loader
-        const downloadForm = document.getElementById('download-form');
-        const downloadAadhaarInput = document.getElementById('download-aadhaar');
-        const otpMessageContainer = document.getElementById('otp-message-container');
-        const otpSection = document.getElementById('otp-section');
-        const otpInput = document.getElementById('otp-input');
-        const downloadBtn = document.getElementById('download-btn');
-        let isOtpStep = false;
-        
-        const downloadDemoData = {
-            '247912345678': '789', '482198765432': '432', '693455443322': '322',
-            '812345678901': '901', '112233445566': '566', '567890123456': '456'
-        };
-        downloadForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!isOtpStep) {
-                downloadBtn.disabled = true;
-                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait...';
-                setTimeout(() => {
-                    const inputAadhaar = downloadAadhaarInput.value.replace(/\s/g, '');
-                    const mobileDigits = downloadDemoData[inputAadhaar];
-                    if (mobileDigits) {
-                        otpMessageContainer.innerHTML = `An OTP has been sent to your registered mobile number ending with <strong>XXXXXXX${mobileDigits}</strong>.`;
-                        otpMessageContainer.style.display = 'block';
-                        otpSection.style.display = 'block';
-                        downloadAadhaarInput.disabled = true;
-                        downloadBtn.innerHTML = '<i class="fas fa-check"></i> Verify & Download';
-                        isOtpStep = true;
-                    } else {
-                        alert('No Record Found');
-                        downloadBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
-                    }
-                    downloadBtn.disabled = false;
-                }, 5000);
-            } else {
-                if (!otpInput.value.trim()) { alert('Please enter the OTP.'); } 
-                else {
-                    alert('Invalid OTP. Please try again.');
-                    otpInput.value = '';
-                    otpInput.focus();
-                }
-            }
-        });
-
-        // Check Status Tab Logic with Button Loader
-        const statusForm = document.getElementById('status-form');
-        const statusBtn = document.getElementById('status-btn');
-        const resultContainer = document.getElementById('status-result-container');
-
-        statusForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            resultContainer.innerHTML = ''; // Clear previous results
-            resultContainer.style.display = 'none';
-            statusBtn.disabled = true;
-            statusBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait...';
-
-            setTimeout(() => {
-                const demoData = {
-                    '247912345678': { status: 'Completed', updateType: 'Name (Spelling Correction)', oldValue: 'Suneeta Sharma', newValue: 'Sunita Sharma', updatedOn: 'About 1 month ago' },
-                    '482198765432': { status: 'Completed', updateType: 'Date of Birth', oldValue: '15-Aug-1990', newValue: '20-Aug-1990', updatedOn: 'About 2 weeks ago' },
-                    '693455443322': { status: 'Completed', updateType: 'Address', oldValue: '123, Old Market, Delhi - 110006', newValue: 'Flat No. 501, Gurgaon - 122001', updatedOn: 'About 2 months ago' },
-                    '812345678901': { status: 'Completed', updateType: 'Mobile Number', oldValue: 'XXXXXX1234', newValue: 'XXXXXX5678', updatedOn: 'About 5 days ago' },
-                    '112233445566': { status: 'Completed', updateType: 'Biometrics', oldValue: 'Captured on 2012', newValue: 'Fingerprints & Iris updated', updatedOn: 'About 8 months ago' },
-                    '567890123456': { status: 'Rejected', updateType: 'Name', oldValue: 'Sameer', newValue: 'Sameer Khan', updatedOn: 'About 3 weeks ago', rejectionReason: 'Proof of Identity document provided was unclear.' }
-                };
-                const inputId = document.getElementById('status-id').value.replace(/\s/g, '');
-                const record = demoData[inputId];
-                
-                if (record) {
-                    if (record.status === 'Completed') {
-                        resultContainer.className = 'status-result success';
-                        resultContainer.innerHTML = `<div class="status-header"><i class="fas fa-check-circle"></i><h4>Update Request Completed</h4></div><div class="status-body"><p>Your Aadhaar update request has been successfully processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Previous Value:</strong> ${record.oldValue}</p><p><strong>Updated Value:</strong> ${record.newValue}</p><p><strong>Processed On:</strong> ${record.updatedOn}</p></div>`;
-                    } else if (record.status === 'Rejected') {
-                        resultContainer.className = 'status-result rejected';
-                        resultContainer.innerHTML = `<div class="status-header"><i class="fas fa-times-circle"></i><h4>Update Request Rejected</h4></div><div class="status-body"><p>Your recent request could not be processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Requested Value:</strong> ${record.newValue}</p><div class="rejection-reason"><strong>Reason:</strong> ${record.rejectionReason}</div></div>`;
-                    }
+            // Download Aadhaar Logic with Button Loader
+            const downloadForm = document.getElementById('download-form');
+            const downloadAadhaarInput = document.getElementById('download-aadhaar');
+            const otpMessageContainer = document.getElementById('otp-message-container');
+            const otpSection = document.getElementById('otp-section');
+            const otpInput = document.getElementById('otp-input');
+            const downloadBtn = document.getElementById('download-btn');
+            let isOtpStep = false;
+            
+            const downloadDemoData = {
+                '247912345678': '789', '482198765432': '432', '693455443322': '322',
+                '812345678901': '901', '112233445566': '566', '567890123456': '456'
+            };
+            downloadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!isOtpStep) {
+                    downloadBtn.disabled = true;
+                    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait...';
+                    setTimeout(() => {
+                        const inputAadhaar = downloadAadhaarInput.value.replace(/\s/g, '');
+                        const mobileDigits = downloadDemoData[inputAadhaar];
+                        if (mobileDigits) {
+                            otpMessageContainer.innerHTML = `An OTP has been sent to your registered mobile number ending with <strong>XXXXXXX${mobileDigits}</strong>.`;
+                            otpMessageContainer.style.display = 'block';
+                            otpSection.style.display = 'block';
+                            downloadAadhaarInput.disabled = true;
+                            downloadBtn.innerHTML = '<i class="fas fa-check"></i> Verify & Download';
+                            isOtpStep = true;
+                        } else {
+                            alert('No Record Found');
+                            downloadBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
+                        }
+                        downloadBtn.disabled = false;
+                    }, 5000);
                 } else {
-                    resultContainer.className = 'status-result not-found';
-                    resultContainer.innerHTML = `<div class="status-header"><i class="fas fa-exclamation-triangle"></i><h4>No Record Found</h4></div><div class="status-body"><p>We could not find records for this Aadhaar Number. Please check the number and try again.</p></div>`;
+                    if (!otpInput.value.trim()) { alert('Please enter the OTP.'); } 
+                    else {
+                        alert('Invalid OTP. Please try again.');
+                        otpInput.value = '';
+                        otpInput.focus();
+                    }
                 }
-                resultContainer.style.display = 'block';
-                statusBtn.disabled = false;
-                statusBtn.innerHTML = '<i class="fas fa-search"></i> Check Status';
-            }, 5000);
-        });
+            });
+
+            // Check Status Tab Logic with Button Loader
+            const statusForm = document.getElementById('status-form');
+            const statusBtn = document.getElementById('status-btn');
+            const resultContainer = document.getElementById('status-result-container');
+
+            statusForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                resultContainer.innerHTML = ''; // Clear previous results
+                resultContainer.style.display = 'none';
+                statusBtn.disabled = true;
+                statusBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait...';
+
+                setTimeout(() => {
+                    const demoData = {
+                        '247912345678': { status: 'Completed', updateType: 'Name (Spelling Correction)', oldValue: 'Suneeta Sharma', newValue: 'Sunita Sharma', updatedOn: 'About 1 month ago' },
+                        '482198765432': { status: 'Completed', updateType: 'Date of Birth', oldValue: '15-Aug-1990', newValue: '20-Aug-1990', updatedOn: 'About 2 weeks ago' },
+                        '693455443322': { status: 'Completed', updateType: 'Address', oldValue: '123, Old Market, Delhi - 110006', newValue: 'Flat No. 501, Gurgaon - 122001', updatedOn: 'About 2 months ago' },
+                        '812345678901': { status: 'Completed', updateType: 'Mobile Number', oldValue: 'XXXXXX1234', newValue: 'XXXXXX5678', updatedOn: 'About 5 days ago' },
+                        '112233445566': { status: 'Completed', updateType: 'Biometrics', oldValue: 'Captured on 2012', newValue: 'Fingerprints & Iris updated', updatedOn: 'About 8 months ago' },
+                        '567890123456': { status: 'Rejected', updateType: 'Name', oldValue: 'Sameer', newValue: 'Sameer Khan', updatedOn: 'About 3 weeks ago', rejectionReason: 'Proof of Identity document provided was unclear.' }
+                    };
+                    const inputId = document.getElementById('status-id').value.replace(/\s/g, '');
+                    const record = demoData[inputId];
+                    
+                    if (record) {
+                        if (record.status === 'Completed') {
+                            resultContainer.className = 'status-result success';
+                            resultContainer.innerHTML = `<div class="status-header"><i class="fas fa-check-circle"></i><h4>Update Request Completed</h4></div><div class="status-body"><p>Your Aadhaar update request has been successfully processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Previous Value:</strong> ${record.oldValue}</p><p><strong>Updated Value:</strong> ${record.newValue}</p><p><strong>Processed On:</strong> ${record.updatedOn}</p></div>`;
+                        } else if (record.status === 'Rejected') {
+                            resultContainer.className = 'status-result rejected';
+                            resultContainer.innerHTML = `<div class="status-header"><i class="fas fa-times-circle"></i><h4>Update Request Rejected</h4></div><div class="status-body"><p>Your recent request could not be processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Requested Value:</strong> ${record.newValue}</p><div class="rejection-reason"><strong>Reason:</strong> ${record.rejectionReason}</div></div>`;
+                        }
+                    } else {
+                        resultContainer.className = 'status-result not-found';
+                        resultContainer.innerHTML = `<div class="status-header"><i class="fas fa-exclamation-triangle"></i><h4>No Record Found</h4></div><div class="status-body"><p>We could not find records for this Aadhaar Number. Please check the number and try again.</p></div>`;
+                    }
+                    resultContainer.style.display = 'block';
+                    statusBtn.disabled = false;
+                    statusBtn.innerHTML = '<i class="fas fa-search"></i> Check Status';
+                }, 5000);
+            });
+
+        }); // End of DOMContentLoaded
     </script>
 </body>
 </html>
