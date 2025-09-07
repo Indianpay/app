@@ -27,6 +27,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
         .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .back-link i { margin-right: 0.5rem; }
         .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
         .service-header { padding: 2rem; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; text-align: center; }
         .service-header i { font-size: 3rem; margin-bottom: 1rem; }
@@ -41,14 +47,28 @@
         .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--govt-blue); display: inline-block; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        .form-group input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .captcha-container { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+        #captcha-image { border-radius: 8px; height: 45px; }
+        #refresh-captcha { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--govt-blue); transition: transform 0.3s; }
+        #refresh-captcha:hover { transform: rotate(90deg); }
         .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
         .submit-btn i { margin-right: 0.5rem; }
         #loader { text-align: center; padding: 2rem 0; font-size: 1.1rem; color: var(--text-color); }
         #loader i { margin-right: 0.5rem; animation: spin 1.5s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        /* --- Custom Alert Modal Styles --- */
+        .status-result { padding: 1.5rem; margin-top: 2rem; border-radius: 12px; border: 1px solid; box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08); }
+        .status-header { display: flex; align-items: center; margin-bottom: 1rem; }
+        .status-header i { font-size: 1.5rem; margin-right: 0.8rem; }
+        .status-header h4 { margin: 0; font-size: 1.2rem; font-weight: 600; }
+        .status-body p { font-size: 1rem; margin-bottom: 0.8rem; line-height: 1.6; }
+        .status-body strong { font-weight: 600; color: var(--secondary-color); min-width: 150px; display: inline-block; }
+        .rejection-reason { margin-top: 1rem; padding: 0.8rem; background-color: rgba(0,0,0,0.03); border-radius: 8px; font-size: 0.95rem; border: 1px dashed #ddd; }
+        .success .status-header { color: var(--success-border); } .status-result.success { background-color: var(--success-bg); border-color: var(--success-border); }
+        .rejected .status-header { color: var(--danger-border); } .status-result.rejected { background-color: var(--danger-bg); border-color: var(--danger-border); }
+        .not-found .status-header { color: var(--warning-border); } .status-result.not-found { background-color: var(--warning-bg); border-color: var(--warning-border); }
+
+        /* Custom Alert Modal Styles */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; max-width: 400px; width: 90%; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -73,10 +93,38 @@
                 </div>
 
                 <!-- Tab 1: Update Aadhaar -->
-                <div id="update" class="tab-content active">...</div>
+                <div id="update" class="tab-content active">
+                    <h3 class="form-section-title">Update Demographics Data</h3>
+                    <div class="form-group">
+                        <label for="aadhaar-number-update">Enter Aadhaar Number</label>
+                        <input type="text" id="aadhaar-number-update" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="captcha-input">Enter Captcha</label>
+                        <div class="captcha-container">
+                            <img src="" id="captcha-image" alt="Captcha Image">
+                            <button type="button" id="refresh-captcha" title="Refresh Captcha"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <input type="text" id="captcha-input" placeholder="Enter text shown in image" required style="margin-top: 1rem;">
+                    </div>
+                    <button type="button" class="submit-btn" id="proceed-btn"><i class="fas fa-arrow-right"></i> Proceed</button>
+                </div>
                 
                 <!-- Tab 2: New Child Aadhaar -->
-                <div id="new-child" class="tab-content">...</div>
+                <div id="new-child" class="tab-content">
+                    <h3 class="form-section-title">New Aadhaar for Child (0-5 Years)</h3>
+                    <form id="new-child-form">
+                        <div class="form-group">
+                            <label for="child-name">Child's Full Name</label>
+                            <input type="text" id="child-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="parent-aadhaar">Parent's Aadhaar Number</label>
+                            <input type="text" id="parent-aadhaar" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Application</button>
+                    </form>
+                </div>
 
                 <!-- Tab 3: Download Aadhaar -->
                 <div id="download" class="tab-content">
@@ -97,7 +145,18 @@
                 </div>
 
                 <!-- Tab 4: Check Status -->
-                <div id="status" class="tab-content">...</div>
+                <div id="status" class="tab-content">
+                    <h3 class="form-section-title">Check Aadhaar Update Status</h3>
+                    <form id="status-form">
+                        <div class="form-group">
+                            <label for="status-id">Enter Aadhaar Number</label>
+                            <input type="text" id="status-id" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
+                    </form>
+                    <div id="loader" style="display: none;"><p><i class="fas fa-spinner"></i> Processing... Please wait...</p></div>
+                    <div id="status-result-container" style="display: none;"></div>
+                </div>
             </div>
         </div>
     </main>
@@ -116,25 +175,51 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
     <script>
-        // ... (Firebase Auth, Tab Switching, Aadhaar Formatting Scripts are here) ...
+        // Firebase Auth and Tab Switching logic
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
         tabButtons.forEach(button => {
-            button.addEventListener('click', () => { /* ... tab switching logic ... */ });
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
         });
+        
+        // Aadhaar Auto-Formatting Script
         document.querySelectorAll('.aadhaar-input').forEach(input => {
-            input.addEventListener('input', (e) => { /* ... auto-spacing logic ... */ });
+            input.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                let formattedValue = '';
+                if (value.length > 0) { formattedValue = value.match(new RegExp('.{1,4}', 'g')).join(' '); }
+                e.target.value = formattedValue;
+            });
         });
 
-        // --- Improved Download Aadhaar Logic with Custom Modal ---
+        // Update Aadhaar Tab Logic
+        const captchaImage = document.getElementById('captcha-image');
+        const refreshCaptchaBtn = document.getElementById('refresh-captcha');
+        function generateCaptchaText() { return Math.random().toString(36).substring(2, 7).toUpperCase(); }
+        function updateCaptcha() { captchaImage.src = `https://dummyimage.com/150x45/e5e7eb/334155&text=${generateCaptchaText()}`; }
+        updateCaptcha();
+        refreshCaptchaBtn.addEventListener('click', updateCaptcha);
+        document.getElementById('proceed-btn').addEventListener('click', () => alert('Please contact your admin to proceed.'));
+
+        // New Child Form Logic
+        document.getElementById('new-child-form').addEventListener('submit', e => { e.preventDefault(); alert('Application submitted. Please contact admin.'); });
+
+        // Download Aadhaar Logic with Custom Modal
         const downloadForm = document.getElementById('download-form');
         const downloadAadhaarInput = document.getElementById('download-aadhaar');
         const otpSection = document.getElementById('otp-section');
         const otpInput = document.getElementById('otp-input');
         const downloadBtn = document.getElementById('download-btn');
         let isOtpStep = false;
-
-        // Custom Modal Elements
+        
         const customAlertModal = document.getElementById('custom-alert-modal');
         const modalMessage = document.getElementById('modal-message');
         const modalOkBtn = document.getElementById('modal-ok-btn');
@@ -143,55 +228,65 @@
             '247912345678': '789', '482198765432': '432', '693455443322': '322',
             '812345678901': '901', '112233445566': '566', '567890123456': '456'
         };
-
         downloadForm.addEventListener('submit', function(e) {
             e.preventDefault();
             if (!isOtpStep) {
                 const inputAadhaar = downloadAadhaarInput.value.replace(/\s/g, '');
                 const mobileDigits = downloadDemoData[inputAadhaar];
                 if (mobileDigits) {
-                    // Show custom modal instead of alert
                     modalMessage.innerText = `An OTP has been sent to your registered mobile number ending with XXXXXXX${mobileDigits}.`;
                     customAlertModal.style.display = 'flex';
                 } else {
                     alert('Aadhaar number not found in our demo records. Please try again.');
                 }
             } else {
-                if (!otpInput.value.trim()) {
-                    alert('Please enter the OTP.');
-                } else {
+                if (!otpInput.value.trim()) { alert('Please enter the OTP.'); } 
+                else {
                     alert('Invalid OTP. Please try again.');
                     otpInput.value = '';
                     otpInput.focus();
                 }
             }
         });
-
-        // Event listener for the modal's "OK" button
         modalOkBtn.addEventListener('click', () => {
-            customAlertModal.style.display = 'none'; // Hide the modal
-            
-            // Proceed to show the OTP section
+            customAlertModal.style.display = 'none';
             otpSection.style.display = 'block';
             downloadAadhaarInput.disabled = true;
             downloadBtn.innerHTML = '<i class="fas fa-check"></i> Verify & Download';
             isOtpStep = true;
         });
 
-        // --- Check Status Tab Logic with Loader ---
+        // Check Status Tab Logic with Loader
         const statusForm = document.getElementById('status-form');
         const loader = document.getElementById('loader');
         const resultContainer = document.getElementById('status-result-container');
+
         statusForm.addEventListener('submit', function(e) {
             e.preventDefault();
             resultContainer.style.display = 'none';
             loader.style.display = 'block';
             setTimeout(() => {
                 loader.style.display = 'none';
-                const demoData = { /* ... your demo data ... */ };
+                const demoData = {
+                    '247912345678': { status: 'Completed', updateType: 'Name (Spelling Correction)', oldValue: 'Suneeta Sharma', newValue: 'Sunita Sharma', updatedOn: 'About 1 month ago' },
+                    '482198765432': { status: 'Completed', updateType: 'Date of Birth', oldValue: '15-Aug-1990', newValue: '20-Aug-1990', updatedOn: 'About 2 weeks ago' },
+                    '693455443322': { status: 'Completed', updateType: 'Address', oldValue: '123, Old Market, Delhi - 110006', newValue: 'Flat No. 501, Gurgaon - 122001', updatedOn: 'About 2 months ago' },
+                    '812345678901': { status: 'Completed', updateType: 'Mobile Number', oldValue: 'XXXXXX1234', newValue: 'XXXXXX5678', updatedOn: 'About 5 days ago' },
+                    '112233445566': { status: 'Completed', updateType: 'Biometrics', oldValue: 'Captured on 2012', newValue: 'Fingerprints & Iris updated', updatedOn: 'About 8 months ago' },
+                    '567890123456': { status: 'Rejected', updateType: 'Name', oldValue: 'Sameer', newValue: 'Sameer Khan', updatedOn: 'About 3 weeks ago', rejectionReason: 'Proof of Identity document provided was unclear.' }
+                };
                 const inputId = document.getElementById('status-id').value.replace(/\s/g, '');
                 const record = demoData[inputId];
-                // ... (rest of the status logic remains the same) ...
+                
+                if (record) {
+                    if (record.status === 'Completed') {
+                        resultContainer.innerHTML = `<div class="status-result success"><div class="status-header"><i class="fas fa-check-circle"></i><h4>Update Request Completed</h4></div><div class="status-body"><p>Your Aadhaar update request has been successfully processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Previous Value:</strong> ${record.oldValue}</p><p><strong>Updated Value:</strong> ${record.newValue}</p><p><strong>Processed On:</strong> ${record.updatedOn}</p></div></div>`;
+                    } else if (record.status === 'Rejected') {
+                        resultContainer.innerHTML = `<div class="status-result rejected"><div class="status-header"><i class="fas fa-times-circle"></i><h4>Update Request Rejected</h4></div><div class="status-body"><p>Your recent request could not be processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Requested Value:</strong> ${record.newValue}</p><div class="rejection-reason"><strong>Reason:</strong> ${record.rejectionReason}</div></div></div>`;
+                    }
+                } else {
+                    resultContainer.innerHTML = `<div class="status-result not-found"><div class="status-header"><i class="fas fa-exclamation-triangle"></i><h4>No Record Found</h4></div><div class="status-body"><p>We could not find records for this Aadhaar Number. Please check the number and try again.</p></div></div>`;
+                }
                 resultContainer.style.display = 'block';
             }, 5000);
         });
