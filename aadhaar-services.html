@@ -197,7 +197,7 @@
             // New Child Form Logic
             document.getElementById('new-child-form').addEventListener('submit', e => { e.preventDefault(); alert('Application submitted. Please contact admin.'); });
 
-            // Download Aadhaar Logic with Button Loader
+            // Download Aadhaar Logic with Button Loader (IMPROVED VERSION)
             const downloadForm = document.getElementById('download-form');
             const downloadAadhaarInput = document.getElementById('download-aadhaar');
             const otpMessageContainer = document.getElementById('otp-message-container');
@@ -210,34 +210,60 @@
                 '247912345678': '789', '482198765432': '432', '693455443322': '322',
                 '812345678901': '901', '112233445566': '566', '567890123456': '456'
             };
+
             downloadForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+                
+                // Disable the button immediately to prevent multiple clicks
+                downloadBtn.disabled = true;
+                
                 if (!isOtpStep) {
-                    downloadBtn.disabled = true;
-                    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait...';
+                    // --- Step 1: Sending OTP ---
+                    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
+                    
+                    // Simulate a network request (2 seconds instead of 5)
                     setTimeout(() => {
                         const inputAadhaar = downloadAadhaarInput.value.replace(/\s/g, '');
                         const mobileDigits = downloadDemoData[inputAadhaar];
+                        
                         if (mobileDigits) {
                             otpMessageContainer.innerHTML = `An OTP has been sent to your registered mobile number ending with <strong>XXXXXXX${mobileDigits}</strong>.`;
                             otpMessageContainer.style.display = 'block';
                             otpSection.style.display = 'block';
-                            downloadAadhaarInput.disabled = true;
+                            downloadAadhaarInput.disabled = true; // Lock the Aadhaar input
                             downloadBtn.innerHTML = '<i class="fas fa-check"></i> Verify & Download';
                             isOtpStep = true;
                         } else {
-                            alert('No Record Found');
+                            otpMessageContainer.innerHTML = `<span style="color: var(--danger-border);">No record found for this Aadhaar number.</span>`;
+                            otpMessageContainer.style.display = 'block';
                             downloadBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
                         }
+                        
+                        // Re-enable the button after the process is complete
                         downloadBtn.disabled = false;
-                    }, 5000);
+                    }, 2000); // Reduced delay to 2 seconds for better UX
+
                 } else {
-                    if (!otpInput.value.trim()) { alert('Please enter the OTP.'); } 
-                    else {
-                        alert('Invalid OTP. Please try again.');
+                    // --- Step 2: Verifying OTP ---
+                    if (!otpInput.value.trim()) {
+                        alert('Please enter the OTP.');
+                        downloadBtn.disabled = false; // Re-enable if OTP is empty
+                        return;
+                    }
+
+                    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+                    // Simulate OTP verification
+                    setTimeout(() => {
+                        // In a real app, you would check the OTP here. We will always show it as invalid.
+                        otpMessageContainer.innerHTML = `<span style="color: var(--danger-border);">Invalid OTP. Please try again.</span>`;
                         otpInput.value = '';
                         otpInput.focus();
-                    }
+                        
+                        // Reset button to allow another attempt
+                        downloadBtn.innerHTML = '<i class="fas fa-check"></i> Verify & Download';
+                        downloadBtn.disabled = false;
+                    }, 2000);
                 }
             });
 
