@@ -48,6 +48,10 @@
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
         .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .captcha-container { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+        #captcha-image { border-radius: 8px; height: 45px; }
+        #refresh-captcha { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--govt-blue); transition: transform 0.3s; }
+        #refresh-captcha:hover { transform: rotate(90deg); }
         .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
         .submit-btn i { margin-right: 0.5rem; }
         #otp-section { margin-top: 2rem; animation: fadeIn 0.5s; }
@@ -81,10 +85,38 @@
                 </div>
 
                 <!-- Tab 1: Update Aadhaar -->
-                <div id="update" class="tab-content active">...</div>
+                <div id="update" class="tab-content active">
+                    <h3 class="form-section-title">Update Demographics Data</h3>
+                    <div class="form-group">
+                        <label for="aadhaar-number-update">Enter Aadhaar Number</label>
+                        <input type="text" id="aadhaar-number-update" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="captcha-input">Enter Captcha</label>
+                        <div class="captcha-container">
+                            <img src="" id="captcha-image" alt="Captcha Image">
+                            <button type="button" id="refresh-captcha" title="Refresh Captcha"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <input type="text" id="captcha-input" placeholder="Enter text shown in image" required style="margin-top: 1rem;">
+                    </div>
+                    <button type="button" class="submit-btn" id="proceed-btn"><i class="fas fa-arrow-right"></i> Proceed</button>
+                </div>
                 
                 <!-- Tab 2: New Child Aadhaar -->
-                <div id="new-child" class="tab-content">...</div>
+                <div id="new-child" class="tab-content">
+                    <h3 class="form-section-title">New Aadhaar for Child (0-5 Years)</h3>
+                    <form id="new-child-form">
+                        <div class="form-group">
+                            <label for="child-name">Child's Full Name</label>
+                            <input type="text" id="child-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="parent-aadhaar">Parent's Aadhaar Number</label>
+                            <input type="text" id="parent-aadhaar" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Application</button>
+                    </form>
+                </div>
 
                 <!-- Tab 3: Download Aadhaar -->
                 <div id="download" class="tab-content">
@@ -125,7 +157,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
     <script>
-        // Firebase Auth and Tab Switching logic here
+        // Firebase Auth and Tab Switching logic
         const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
         firebase.initializeApp(firebaseConfig);
         firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
@@ -140,7 +172,7 @@
             });
         });
         
-        // --- Aadhaar Auto-Formatting Script ---
+        // Aadhaar Auto-Formatting Script
         document.querySelectorAll('.aadhaar-input').forEach(input => {
             input.addEventListener('input', (e) => {
                 let value = e.target.value.replace(/\D/g, '');
@@ -152,7 +184,19 @@
             });
         });
 
-        // --- Download Aadhaar Tab Logic with "Invalid OTP" ---
+        // Update Aadhaar Tab Logic
+        const captchaImage = document.getElementById('captcha-image');
+        const refreshCaptchaBtn = document.getElementById('refresh-captcha');
+        function generateCaptchaText() { return Math.random().toString(36).substring(2, 7).toUpperCase(); }
+        function updateCaptcha() { captchaImage.src = `https://dummyimage.com/150x45/e5e7eb/334155&text=${generateCaptchaText()}`; }
+        updateCaptcha();
+        refreshCaptchaBtn.addEventListener('click', updateCaptcha);
+        document.getElementById('proceed-btn').addEventListener('click', () => alert('Please contact your admin to proceed.'));
+
+        // New Child Form Logic
+        document.getElementById('new-child-form').addEventListener('submit', e => { e.preventDefault(); alert('Application submitted. Please contact admin.'); });
+
+        // Download Aadhaar Tab Logic with "Invalid OTP"
         const downloadForm = document.getElementById('download-form');
         const downloadAadhaarInput = document.getElementById('download-aadhaar');
         const otpSection = document.getElementById('otp-section');
@@ -183,13 +227,13 @@
                     alert('Please enter the OTP.');
                 } else {
                     alert('Invalid OTP. Please try again.');
-                    otpInput.value = ''; // Clear the wrong OTP
-                    otpInput.focus();   // Put cursor back in OTP box
+                    otpInput.value = '';
+                    otpInput.focus();
                 }
             }
         });
 
-        // --- Check Status Tab Logic with Loader ---
+        // Check Status Tab Logic with Loader
         const statusForm = document.getElementById('status-form');
         const loader = document.getElementById('loader');
         const resultContainer = document.getElementById('status-result-container');
