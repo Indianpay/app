@@ -223,7 +223,7 @@
                         downloadBtn.innerHTML = '<i class="fas fa-check"></i> Verify & Download';
                         isOtpStep = true;
                     } else {
-                        alert('No Record Found'); // UPDATED ALERT MESSAGE
+                        alert('No Record Found');
                         downloadBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
                     }
                     downloadBtn.disabled = false;
@@ -245,7 +245,7 @@
 
         statusForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            resultContainer.innerHTML = ''; // Clear previous results before showing loader
+            resultContainer.innerHTML = ''; // Clear previous results
             resultContainer.style.display = 'none';
             statusBtn.disabled = true;
             statusBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait...';
