@@ -1,1 +1,207 @@
-qq
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aadhaar Services - Indian Pay</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary-color: #00a884; 
+            --secondary-color: #1f2937; 
+            --text-color: #334155; 
+            --bg-color: #f8fafc; 
+            --card-bg: #ffffff; 
+            --border-color: #e5e7eb;
+            --govt-blue: #0d6efd;
+            --govt-blue-dark: #0b5ed7;
+            --info-bg: #e7f3ff;
+            /* New Design Colors */
+            --success-bg: #e7f8f0;
+            --success-border: #28a745;
+            --danger-bg: #fdeded;
+            --danger-border: #dc3545;
+            --warning-bg: #fff8e1;
+            --warning-border: #ffc107;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .back-link i { margin-right: 0.5rem; }
+        .service-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        .service-header { padding: 2rem; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; text-align: center; }
+        .service-header i { font-size: 3rem; margin-bottom: 1rem; }
+        .service-header h1 { font-size: 2rem; margin: 0; }
+        .service-content { padding: 2.5rem; }
+        .tab-buttons { display: flex; flex-wrap: wrap; border-radius: 12px; background-color: #eef2ff; padding: 0.5rem; margin-bottom: 2rem; }
+        .tab-btn { flex-grow: 1; padding: 0.8rem; text-align: center; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; color: var(--govt-blue); border-radius: 8px; transition: all 0.3s; white-space: nowrap; }
+        .tab-btn.active { background-color: var(--govt-blue); color: white; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .form-section-title { font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--govt-blue); display: inline-block; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+        .captcha-container { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+        #captcha-image { border-radius: 8px; height: 45px; }
+        #refresh-captcha { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--govt-blue); transition: transform 0.3s; }
+        #refresh-captcha:hover { transform: rotate(90deg); }
+        .update-options-grid, .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
+        .submit-btn i { margin-right: 0.5rem; }
+
+        /* --- NEW DESIGN FOR STATUS RESULT BOX --- */
+        .status-result { padding: 1.5rem; margin-top: 2rem; border-radius: 12px; border: 1px solid; box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08); animation: fadeIn 0.5s; }
+        .status-result.success { background-color: var(--success-bg); border-color: var(--success-border); }
+        .status-result.rejected { background-color: var(--danger-bg); border-color: var(--danger-border); }
+        .status-result.not-found { background-color: var(--warning-bg); border-color: var(--warning-border); }
+        .status-header { display: flex; align-items: center; margin-bottom: 1rem; }
+        .status-header i { font-size: 1.5rem; margin-right: 0.8rem; }
+        .status-header h4 { margin: 0; font-size: 1.2rem; font-weight: 600; }
+        .success .status-header { color: var(--success-border); }
+        .rejected .status-header { color: var(--danger-border); }
+        .not-found .status-header { color: var(--warning-border); }
+        .status-body p { font-size: 1rem; margin-bottom: 0.8rem; line-height: 1.6; }
+        .status-body strong { font-weight: 600; color: var(--secondary-color); min-width: 150px; display: inline-block; }
+        .rejection-reason { margin-top: 1rem; padding: 0.8rem; background-color: rgba(0,0,0,0.03); border-radius: 8px; font-size: 0.95rem; border: 1px dashed #ddd; }
+    </style>
+</head>
+<body>
+    <header class="header"><nav class="navbar"><a href="home.html" class="logo">Indian<span>Pay</span></a></nav></header>
+    <main class="container">
+        <a href="home.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="service-card">
+            <div class="service-header"><i class="fa-solid fa-fingerprint"></i><h1>Aadhaar Services</h1></div>
+            <div class="service-content">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="update">Update Aadhaar</button>
+                    <button class="tab-btn" data-tab="new-child">New Child Aadhaar</button>
+                    <button class="tab-btn" data-tab="download">Download Aadhaar</button>
+                    <button class="tab-btn" data-tab="status">Check Status</button>
+                </div>
+
+                <!-- Tab 1: Update Aadhaar -->
+                <div id="update" class="tab-content active">
+                    <div id="initial-step">
+                        <h3 class="form-section-title">Update Demographics Data</h3>
+                        <div class="form-group"><label for="aadhaar-number">Enter Aadhaar Number</label><input type="text" id="aadhaar-number" placeholder="Enter 12-digit Aadhaar Number" required></div>
+                        <div class="form-group">
+                            <label for="captcha-input">Enter Captcha</label>
+                            <div class="captcha-container"><img src="" id="captcha-image" alt="Captcha Image"><button type="button" id="refresh-captcha" title="Refresh Captcha"><i class="fas fa-sync-alt"></i></button></div>
+                            <input type="text" id="captcha-input" placeholder="Enter text shown in image" required style="margin-top: 1rem;">
+                        </div>
+                        <button type="button" class="submit-btn" id="proceed-btn"><i class="fas fa-arrow-right"></i> Proceed</button>
+                    </div>
+                </div>
+                
+                <!-- Tab 2: New Child Aadhaar -->
+                <div id="new-child" class="tab-content">
+                    <h3 class="form-section-title">New Aadhaar for Child (0-5 Years)</h3>
+                    <form id="new-child-form">
+                        <div class="form-grid">
+                            <div class="form-group"><label for="child-name">Child's Full Name</label><input type="text" id="child-name" required></div>
+                            <div class="form-group"><label for="parent-aadhaar">Parent's Aadhaar Number</label><input type="text" id="parent-aadhaar" required></div>
+                            <div class="form-group"><label for="parent-name">Parent's Name</label><input type="text" id="parent-name" required></div>
+                            <div class="form-group"><label for="mobile-number">Mobile Number</label><input type="tel" id="mobile-number" required></div>
+                             <div class="form-group"><label for="dob">Date of Birth</label><input type="date" id="dob" required></div>
+                            <div class="form-group"><label for="gender">Gender</label><select id="gender" required><option value="">Select Gender</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+                        </div>
+                         <div class="form-group"><label for="address">Full Address</label><input type="text" id="address" placeholder="House No, Street, Landmark" required></div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Application</button>
+                    </form>
+                </div>
+
+                <!-- Tab 3: Download Aadhaar -->
+                <div id="download" class="tab-content">
+                    <h3 class="form-section-title">Download Aadhaar</h3>
+                    <form id="download-form"><div class="form-group"><label for="download-aadhaar">Aadhaar Number / VID</label><input type="text" id="download-aadhaar" placeholder="Enter Aadhaar Number" required></div><button type="submit" class="submit-btn"><i class="fas fa-download"></i> Download</button></form>
+                </div>
+
+                <!-- Tab 4: Check Status -->
+                <div id="status" class="tab-content">
+                    <h3 class="form-section-title">Check Aadhaar Update Status</h3>
+                    <form id="status-form">
+                        <div class="form-group"><label for="status-id">Enter Aadhaar Number</label><input type="text" id="status-id" placeholder="Enter a 12-digit Aadhaar Number" required></div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
+                    </form>
+                    <div id="status-result-container" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        // Firebase Auth Check
+        const firebaseConfig = { apiKey: "AIzaSyCf2jwqT1wn5lOBucXUSblJnuFYBbWPtpw", authDomain: "indianpay425.firebaseapp.com", projectId: "indianpay425", storageBucket: "indianpay425.appspot.com", messagingSenderId: "6705555817", appId: "1:6705555817:web:0f220b2ffa3f10cdceb5f8" };
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+
+        // Tab Switching Logic
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Update Aadhaar Tab Logic
+        const captchaImage = document.getElementById('captcha-image');
+        const refreshCaptchaBtn = document.getElementById('refresh-captcha');
+        function generateCaptchaText() { return Math.random().toString(36).substring(2, 7).toUpperCase(); }
+        function updateCaptcha() { captchaImage.src = `https://dummyimage.com/150x45/e5e7eb/334155&text=${generateCaptchaText()}`; }
+        if (captchaImage) {
+            updateCaptcha();
+            refreshCaptchaBtn.addEventListener('click', updateCaptcha);
+            document.getElementById('proceed-btn').addEventListener('click', () => alert('Please contact your admin to proceed.'));
+        }
+        
+        // Other Forms Logic
+        document.getElementById('new-child-form').addEventListener('submit', e => { e.preventDefault(); alert('Application submitted.'); });
+        document.getElementById('download-form').addEventListener('submit', e => { e.preventDefault(); alert('Download request sent.'); });
+
+        // Check Status Tab Logic
+        document.getElementById('status-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const demoData = {
+                '247912345678': { status: 'Completed', updateType: 'Name (Spelling Correction)', oldValue: 'Suneeta Sharma', newValue: 'Sunita Sharma', updatedOn: 'About 1 month ago' },
+                '482198765432': { status: 'Completed', updateType: 'Date of Birth', oldValue: '15-Aug-1990', newValue: '20-Aug-1990', updatedOn: 'About 2 weeks ago' },
+                '693455443322': { status: 'Completed', updateType: 'Address', oldValue: '123, Old Market, Delhi - 110006', newValue: 'Flat No. 501, Gurgaon - 122001', updatedOn: 'About 2 months ago' },
+                '812345678901': { status: 'Completed', updateType: 'Mobile Number', oldValue: 'XXXXXX1234', newValue: 'XXXXXX5678', updatedOn: 'About 5 days ago' },
+                '112233445566': { status: 'Completed', updateType: 'Biometrics', oldValue: 'Captured on 2012', newValue: 'Fingerprints & Iris updated', updatedOn: 'About 8 months ago' },
+                '567890123456': { status: 'Rejected', updateType: 'Name', oldValue: 'Sameer', newValue: 'Sameer Khan', updatedOn: 'About 3 weeks ago', rejectionReason: 'Proof of Identity document provided was unclear.' }
+            };
+
+            const inputId = document.getElementById('status-id').value.replace(/\s/g, '').trim();
+            const resultContainer = document.getElementById('status-result-container');
+            const record = demoData[inputId];
+            
+            if (record) {
+                if (record.status === 'Completed') {
+                    resultContainer.innerHTML = `<div class="status-result success"><div class="status-header"><i class="fas fa-check-circle"></i><h4>Update Request Completed</h4></div><div class="status-body"><p>Your Aadhaar update request has been successfully processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Previous Value:</strong> ${record.oldValue}</p><p><strong>Updated Value:</strong> ${record.newValue}</p><p><strong>Processed On:</strong> ${record.updatedOn}</p></div></div>`;
+                } else if (record.status === 'Rejected') {
+                    resultContainer.innerHTML = `<div class="status-result rejected"><div class="status-header"><i class="fas fa-times-circle"></i><h4>Update Request Rejected</h4></div><div class="status-body"><p>Your recent request could not be processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Requested Value:</strong> ${record.newValue}</p><div class="rejection-reason"><strong>Reason:</strong> ${record.rejectionReason}</div></div></div>`;
+                }
+            } else {
+                resultContainer.innerHTML = `<div class="status-result not-found"><div class="status-header"><i class="fas fa-exclamation-triangle"></i><h4>No Record Found</h4></div><div class="status-body"><p>We could not find records for this Aadhaar Number. Please check the number and try again.</p></div></div>`;
+            }
+            resultContainer.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
