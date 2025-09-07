@@ -55,11 +55,12 @@
         #captcha-image { border-radius: 8px; height: 45px; }
         #refresh-captcha { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--govt-blue); transition: transform 0.3s; }
         #refresh-captcha:hover { transform: rotate(90deg); }
-        .update-options-grid, .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
         .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
         .submit-btn i { margin-right: 0.5rem; }
-
-        /* --- NEW DESIGN FOR STATUS RESULT BOX --- */
+        #otp-section { margin-top: 2rem; animation: fadeIn 0.5s; }
+        .otp-message { padding: 1rem; background-color: var(--info-bg); border-radius: 8px; text-align: center; margin-bottom: 1.5rem; font-weight: 500; }
+        
+        /* --- Final Design for Status Result Box --- */
         .status-result { padding: 1.5rem; margin-top: 2rem; border-radius: 12px; border: 1px solid; box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08); animation: fadeIn 0.5s; }
         .status-result.success { background-color: var(--success-bg); border-color: var(--success-border); }
         .status-result.rejected { background-color: var(--danger-bg); border-color: var(--danger-border); }
@@ -91,31 +92,35 @@
 
                 <!-- Tab 1: Update Aadhaar -->
                 <div id="update" class="tab-content active">
-                    <div id="initial-step">
-                        <h3 class="form-section-title">Update Demographics Data</h3>
-                        <div class="form-group"><label for="aadhaar-number">Enter Aadhaar Number</label><input type="text" id="aadhaar-number" placeholder="Enter 12-digit Aadhaar Number" required></div>
-                        <div class="form-group">
-                            <label for="captcha-input">Enter Captcha</label>
-                            <div class="captcha-container"><img src="" id="captcha-image" alt="Captcha Image"><button type="button" id="refresh-captcha" title="Refresh Captcha"><i class="fas fa-sync-alt"></i></button></div>
-                            <input type="text" id="captcha-input" placeholder="Enter text shown in image" required style="margin-top: 1rem;">
-                        </div>
-                        <button type="button" class="submit-btn" id="proceed-btn"><i class="fas fa-arrow-right"></i> Proceed</button>
+                    <h3 class="form-section-title">Update Demographics Data</h3>
+                    <div class="form-group">
+                        <label for="aadhaar-number-update">Enter Aadhaar Number</label>
+                        <input type="text" id="aadhaar-number-update" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
                     </div>
+                    <div class="form-group">
+                        <label for="captcha-input">Enter Captcha</label>
+                        <div class="captcha-container">
+                            <img src="" id="captcha-image" alt="Captcha Image">
+                            <button type="button" id="refresh-captcha" title="Refresh Captcha"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <input type="text" id="captcha-input" placeholder="Enter text shown in image" required style="margin-top: 1rem;">
+                    </div>
+                    <button type="button" class="submit-btn" id="proceed-btn"><i class="fas fa-arrow-right"></i> Proceed</button>
                 </div>
                 
                 <!-- Tab 2: New Child Aadhaar -->
                 <div id="new-child" class="tab-content">
                     <h3 class="form-section-title">New Aadhaar for Child (0-5 Years)</h3>
                     <form id="new-child-form">
-                        <div class="form-grid">
-                            <div class="form-group"><label for="child-name">Child's Full Name</label><input type="text" id="child-name" required></div>
-                            <div class="form-group"><label for="parent-aadhaar">Parent's Aadhaar Number</label><input type="text" id="parent-aadhaar" required></div>
-                            <div class="form-group"><label for="parent-name">Parent's Name</label><input type="text" id="parent-name" required></div>
-                            <div class="form-group"><label for="mobile-number">Mobile Number</label><input type="tel" id="mobile-number" required></div>
-                             <div class="form-group"><label for="dob">Date of Birth</label><input type="date" id="dob" required></div>
-                            <div class="form-group"><label for="gender">Gender</label><select id="gender" required><option value="">Select Gender</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+                        <div class="form-group">
+                            <label for="child-name">Child's Full Name</label>
+                            <input type="text" id="child-name" required>
                         </div>
-                         <div class="form-group"><label for="address">Full Address</label><input type="text" id="address" placeholder="House No, Street, Landmark" required></div>
+                        <div class="form-group">
+                            <label for="parent-aadhaar">Parent's Aadhaar Number</label>
+                            <input type="text" id="parent-aadhaar" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                        </div>
+                         <!-- Other fields for this form -->
                         <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Application</button>
                     </form>
                 </div>
@@ -123,14 +128,30 @@
                 <!-- Tab 3: Download Aadhaar -->
                 <div id="download" class="tab-content">
                     <h3 class="form-section-title">Download Aadhaar</h3>
-                    <form id="download-form"><div class="form-group"><label for="download-aadhaar">Aadhaar Number / VID</label><input type="text" id="download-aadhaar" placeholder="Enter Aadhaar Number" required></div><button type="submit" class="submit-btn"><i class="fas fa-download"></i> Download</button></form>
+                    <form id="download-form">
+                        <div class="form-group">
+                            <label for="download-aadhaar">Enter Aadhaar Number</label>
+                            <input type="text" id="download-aadhaar" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                        </div>
+                        <div id="otp-section" style="display: none;">
+                            <p class="otp-message" id="otp-message-text"></p>
+                            <div class="form-group">
+                                <label for="otp-input">Enter OTP</label>
+                                <input type="text" id="otp-input" placeholder="Enter 6-digit OTP" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn" id="download-btn"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                    </form>
                 </div>
 
                 <!-- Tab 4: Check Status -->
                 <div id="status" class="tab-content">
                     <h3 class="form-section-title">Check Aadhaar Update Status</h3>
                     <form id="status-form">
-                        <div class="form-group"><label for="status-id">Enter Aadhaar Number</label><input type="text" id="status-id" placeholder="Enter a 12-digit Aadhaar Number" required></div>
+                        <div class="form-group">
+                            <label for="status-id">Enter Aadhaar Number</label>
+                            <input type="text" id="status-id" class="aadhaar-input" placeholder="XXXX XXXX XXXX" maxlength="14" required>
+                        </div>
                         <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
                     </form>
                     <div id="status-result-container" style="display: none;"></div>
@@ -160,22 +181,68 @@
             });
         });
         
-        // Update Aadhaar Tab Logic
+        // --- Aadhaar Auto-Formatting Script ---
+        document.querySelectorAll('.aadhaar-input').forEach(input => {
+            input.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                let formattedValue = '';
+                if (value.length > 0) {
+                    formattedValue = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+                }
+                e.target.value = formattedValue;
+            });
+        });
+
+        // --- Update Aadhaar Tab Logic ---
         const captchaImage = document.getElementById('captcha-image');
         const refreshCaptchaBtn = document.getElementById('refresh-captcha');
         function generateCaptchaText() { return Math.random().toString(36).substring(2, 7).toUpperCase(); }
         function updateCaptcha() { captchaImage.src = `https://dummyimage.com/150x45/e5e7eb/334155&text=${generateCaptchaText()}`; }
-        if (captchaImage) {
-            updateCaptcha();
-            refreshCaptchaBtn.addEventListener('click', updateCaptcha);
-            document.getElementById('proceed-btn').addEventListener('click', () => alert('Please contact your admin to proceed.'));
-        }
-        
-        // Other Forms Logic
-        document.getElementById('new-child-form').addEventListener('submit', e => { e.preventDefault(); alert('Application submitted.'); });
-        document.getElementById('download-form').addEventListener('submit', e => { e.preventDefault(); alert('Download request sent.'); });
+        updateCaptcha();
+        refreshCaptchaBtn.addEventListener('click', updateCaptcha);
+        document.getElementById('proceed-btn').addEventListener('click', () => alert('Please contact your admin to proceed.'));
 
-        // Check Status Tab Logic
+        // --- New Child Form Logic ---
+        document.getElementById('new-child-form').addEventListener('submit', e => { e.preventDefault(); alert('Application submitted. Please contact admin.'); });
+
+        // --- Download Aadhaar Tab Logic with OTP ---
+        const downloadForm = document.getElementById('download-form');
+        const downloadAadhaarInput = document.getElementById('download-aadhaar');
+        const otpSection = document.getElementById('otp-section');
+        const otpMessageText = document.getElementById('otp-message-text');
+        const otpInput = document.getElementById('otp-input');
+        const downloadBtn = document.getElementById('download-btn');
+        let isOtpStep = false;
+        
+        const downloadDemoData = {
+            '247912345678': '7890', '482198765432': '5432', '693455443322': '3322',
+            '812345678901': '8901', '112233445566': '5566', '567890123456': '3456'
+        };
+        downloadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isOtpStep) {
+                const inputAadhaar = downloadAadhaarInput.value.replace(/\s/g, '');
+                const mobileDigits = downloadDemoData[inputAadhaar];
+                if (mobileDigits) {
+                    otpMessageText.innerText = `An OTP has been sent to your registered mobile number ending with XXXXXX${mobileDigits}.`;
+                    otpSection.style.display = 'block';
+                    downloadAadhaarInput.disabled = true;
+                    downloadBtn.innerHTML = '<i class="fas fa-check"></i> Verify & Download';
+                    isOtpStep = true;
+                } else { alert('This Aadhaar number is not found in our demo records.'); }
+            } else {
+                if (otpInput.value) {
+                    alert('OTP Verified! Your e-Aadhaar will be downloaded shortly.');
+                    downloadForm.reset();
+                    otpSection.style.display = 'none';
+                    downloadAadhaarInput.disabled = false;
+                    downloadBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
+                    isOtpStep = false;
+                } else { alert('Please enter the OTP.'); }
+            }
+        });
+
+        // --- Check Status Tab Logic ---
         document.getElementById('status-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const demoData = {
@@ -186,11 +253,9 @@
                 '112233445566': { status: 'Completed', updateType: 'Biometrics', oldValue: 'Captured on 2012', newValue: 'Fingerprints & Iris updated', updatedOn: 'About 8 months ago' },
                 '567890123456': { status: 'Rejected', updateType: 'Name', oldValue: 'Sameer', newValue: 'Sameer Khan', updatedOn: 'About 3 weeks ago', rejectionReason: 'Proof of Identity document provided was unclear.' }
             };
-
-            const inputId = document.getElementById('status-id').value.replace(/\s/g, '').trim();
+            const inputId = document.getElementById('status-id').value.replace(/\s/g, '');
             const resultContainer = document.getElementById('status-result-container');
             const record = demoData[inputId];
-            
             if (record) {
                 if (record.status === 'Completed') {
                     resultContainer.innerHTML = `<div class="status-result success"><div class="status-header"><i class="fas fa-check-circle"></i><h4>Update Request Completed</h4></div><div class="status-body"><p>Your Aadhaar update request has been successfully processed.</p><hr style="border:0; border-top: 1px solid #ddd; margin: 1rem 0;"><p><strong>Update Type:</strong> ${record.updateType}</p><p><strong>Previous Value:</strong> ${record.oldValue}</p><p><strong>Updated Value:</strong> ${record.newValue}</p><p><strong>Processed On:</strong> ${record.updatedOn}</p></div></div>`;
