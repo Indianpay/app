@@ -19,6 +19,9 @@
             --govt-blue: #0d6efd;
             --govt-blue-dark: #0b5ed7;
             --info-bg: #e7f3ff;
+            /* Added color for rejected status */
+            --danger-bg: #f8d7da;
+            --danger-border: #842029;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
@@ -48,41 +51,20 @@
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
         .form-group input, .form-group select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
-        .info-box { background-color: var(--info-bg); border-left: 4px solid var(--govt-blue); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; }
+        .info-box { background-color: var(--info-bg); border-left: 4px solid var(--govt-blue); padding: 1rem; margin-bottom: 2rem; border-radius: 8px; line-height: 1.7; }
         .submit-btn { width: 100%; padding: 1rem; background-color: var(--govt-blue); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
         .submit-btn:hover { background-color: var(--govt-blue-dark); }
         .submit-btn i { margin-right: 0.5rem; }
 
-        /* --- STYLES FOR STATUS RESULT (ORIGINAL DESIGN) --- */
-        .status-result {
-            padding: 1.5rem;
-            margin-top: 2rem;
-            border-radius: 12px;
-            border-left: 5px solid;
-            animation: fadeIn 0.5s;
-        }
-        .status-result.success {
-            background-color: #d1e7dd;
-            border-color: #0f5132;
-            color: #0f5132;
-        }
-        .status-result.not-found {
-            background-color: #fff3cd;
-            border-color: #664d03;
-            color: #664d03;
-        }
-        .status-result h4 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-        }
-        .status-result h4 i {
-            margin-right: 0.75rem;
-            font-size: 1.5rem;
-        }
+        .status-result { padding: 1.5rem; margin-top: 2rem; border-radius: 12px; border-left: 5px solid; animation: fadeIn 0.5s; }
+        .status-result.success { background-color: #d1e7dd; border-color: #0f5132; color: #0f5132; }
+        .status-result.not-found { background-color: #fff3cd; border-color: #664d03; color: #664d03; }
+        .status-result.rejected { background-color: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-border); }
+        .status-result h4 { font-size: 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; }
+        .status-result h4 i { margin-right: 0.75rem; font-size: 1.5rem; }
         .status-result p { margin-bottom: 0.5rem; line-height: 1.6; }
         .status-result strong { color: #333; }
+        .rejection-reason { margin-top: 1rem; padding: 0.8rem; background-color: rgba(0,0,0,0.05); border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -105,15 +87,20 @@
                 <div id="new-child" class="tab-content">...</div>
                 <div id="download" class="tab-content">...</div>
                 
-                <!-- Tab 4: Check Status (UPDATED WITH NEW DEMO NUMBERS) -->
                 <div id="status" class="tab-content">
                     <h3 class="form-section-title">Check Aadhaar Update Status</h3>
                     <div class="info-box">
                         <strong>Try these Demo Aadhaar Numbers:</strong><br>
-                        2479 1234 5678 (For Name Update)<br>
-                        4821 9876 5432 (For DoB Update)<br>
-                        6934 5544 3322 (For Address Update)<br>
-                        8123 4567 8901 (For Mobile Update)
+                        2479 1234 5678 (Name Update)<br>
+                        4821 9876 5432 (Date of Birth Update)<br>
+                        6934 5544 3322 (Address Update)<br>
+                        8123 4567 8901 (Mobile Update)<br>
+                        5543 8765 1234 (Gender Update)<br>
+                        7890 1234 5678 (Email ID Added)<br>
+                        9087 5432 1654 (Name Update - Female)<br>
+                        3321 6549 8701 (Complex Address Update)<br>
+                        1122 3344 5566 (Biometrics Update)<br>
+                        5678 9012 3456 (Rejected Request)
                     </div>
                     <form id="status-form">
                         <div class="form-group">
@@ -123,10 +110,7 @@
                         <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Check Status</button>
                     </form>
 
-                    <!-- Container to display the status result (Original Design) -->
-                    <div id="status-result-container" style="display: none;">
-                        <!-- Dynamic result will be injected here by JavaScript -->
-                    </div>
+                    <div id="status-result-container" style="display: none;"></div>
                 </div>
             </div>
         </div>
@@ -141,70 +125,59 @@
         firebase.initializeApp(firebaseConfig);
         firebase.auth().onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
 
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        tabButtons.forEach(button => { /* ... tab switching logic ... */ });
+        // ... Assume tab switching logic is here ...
 
-        // --- NEW DEMO LOGIC FOR "CHECK STATUS" TAB (WITH ORIGINAL DESIGN) ---
         document.getElementById('status-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // New Demo Data with unique updates for each Aadhaar number
             const demoData = {
-                '247912345678': {
-                    updateType: 'Name',
-                    oldValue: 'Amit Kumar',
-                    newValue: 'Amit Kumar Singh',
-                    updatedOn: 'About 1 month ago'
-                },
-                '482198765432': {
-                    updateType: 'Date of Birth',
-                    oldValue: '15-Aug-1990',
-                    newValue: '20-Aug-1990',
-                    updatedOn: 'About 2 weeks ago'
-                },
-                '693455443322': {
-                    updateType: 'Address',
-                    oldValue: '123, Old Market, Delhi - 110006',
-                    newValue: 'Flat No. 501, Modern Apartments, Sector 15, Gurgaon - 122001',
-                    updatedOn: 'About 2 months ago'
-                },
-                '812345678901': {
-                    updateType: 'Mobile Number',
-                    oldValue: 'XXXXXX1234',
-                    newValue: 'XXXXXX5678',
-                    updatedOn: 'About 5 days ago'
-                }
+                '247912345678': { status: 'Completed', updateType: 'Name', oldValue: 'Amit Kumar', newValue: 'Amit Kumar Singh', updatedOn: 'About 1 month ago' },
+                '482198765432': { status: 'Completed', updateType: 'Date of Birth', oldValue: '15-Aug-1990', newValue: '20-Aug-1990', updatedOn: 'About 2 weeks ago' },
+                '693455443322': { status: 'Completed', updateType: 'Address', oldValue: '123, Old Market, Delhi - 110006', newValue: 'Flat No. 501, Modern Apartments, Sector 15, Gurgaon - 122001', updatedOn: 'About 2 months ago' },
+                '812345678901': { status: 'Completed', updateType: 'Mobile Number', oldValue: 'XXXXXX1234', newValue: 'XXXXXX5678', updatedOn: 'About 5 days ago' },
+                '554387651234': { status: 'Completed', updateType: 'Gender', oldValue: 'Male', newValue: 'Third Gender', updatedOn: 'About 3 months ago' },
+                '789012345678': { status: 'Completed', updateType: 'Email ID', oldValue: 'Not Provided', newValue: 'v.rathod***@email.com', updatedOn: 'About 6 months ago' },
+                '908754321654': { status: 'Completed', updateType: 'Name', oldValue: 'Anjali Sharma', newValue: 'Anjali Verma', updatedOn: 'About 1 year ago' },
+                '332165498701': { status: 'Completed', updateType: 'Address', oldValue: '15, Park Street, Kolkata, WB', newValue: '3rd Floor, IT Tower, Hitech City, Hyderabad, Telangana - 500081', updatedOn: 'About 4 months ago' },
+                '112233445566': { status: 'Completed', updateType: 'Biometrics', oldValue: 'Captured on 2012', newValue: 'Fingerprints & Iris updated', updatedOn: 'About 8 months ago' },
+                '567890123456': { status: 'Rejected', updateType: 'Name', oldValue: 'Sameer', newValue: 'Sameer Khan', updatedOn: 'About 3 weeks ago', rejectionReason: 'Proof of Identity document provided was unclear and did not match the requested name change.' }
             };
 
-            const inputId = document.getElementById('status-id').value.replace(/\s/g, '').trim(); // Remove spaces
+            const inputId = document.getElementById('status-id').value.replace(/\s/g, '').trim();
             const resultContainer = document.getElementById('status-result-container');
+            const record = demoData[inputId];
             
-            if (demoData[inputId]) {
-                const record = demoData[inputId];
-                // Generate SUCCESS HTML (Original simple design)
-                resultContainer.innerHTML = `
-                    <div class="status-result success">
-                        <h4><i class="fas fa-check-circle"></i>Update Request Completed</h4>
-                        <p>Your Aadhaar update request has been successfully processed.</p>
-                        <hr style="margin: 1rem 0; border:0; border-top: 1px solid #0f513230;">
-                        <p><strong>Update Type:</strong> ${record.updateType}</p>
-                        <p><strong>Previous Value:</strong> ${record.oldValue}</p>
-                        <p><strong>Updated Value:</strong> ${record.newValue}</p>
-                        <p><strong>Processed On:</strong> ${record.updatedOn}</p>
-                    </div>
-                `;
+            if (record) {
+                if (record.status === 'Completed') {
+                    resultContainer.innerHTML = `
+                        <div class="status-result success">
+                            <h4><i class="fas fa-check-circle"></i>Update Request Completed</h4>
+                            <p>Your Aadhaar update request has been successfully processed.</p>
+                            <hr style="margin: 1rem 0; border:0; border-top: 1px solid #0f513230;">
+                            <p><strong>Update Type:</strong> ${record.updateType}</p>
+                            <p><strong>Previous Value:</strong> ${record.oldValue}</p>
+                            <p><strong>Updated Value:</strong> ${record.newValue}</p>
+                            <p><strong>Processed On:</strong> ${record.updatedOn}</p>
+                        </div>`;
+                } else if (record.status === 'Rejected') {
+                    resultContainer.innerHTML = `
+                        <div class="status-result rejected">
+                            <h4><i class="fas fa-times-circle"></i>Update Request Rejected</h4>
+                            <p>Your recent Aadhaar update request could not be processed.</p>
+                            <hr style="margin: 1rem 0; border:0; border-top: 1px solid #84202930;">
+                            <p><strong>Update Type:</strong> ${record.updateType}</p>
+                            <p><strong>Requested Value:</strong> ${record.newValue}</p>
+                            <div class="rejection-reason"><strong>Reason for Rejection:</strong> ${record.rejectionReason}</div>
+                        </div>`;
+                }
             } else {
-                // Generate NOT FOUND HTML (Original simple design)
                 resultContainer.innerHTML = `
                     <div class="status-result not-found">
                         <h4><i class="fas fa-exclamation-triangle"></i>No Update Record Found</h4>
                         <p>We could not find any update records for the provided Aadhaar Number. Please check the number and try again using one of the demo numbers.</p>
-                    </div>
-                `;
+                    </div>`;
             }
 
-            // Show the result container
             resultContainer.style.display = 'block';
         });
     </script>
