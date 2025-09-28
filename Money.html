@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Pay - Your B2B Fintech Solution</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00a884;
+            --secondary-color: #1f2937;
+            --text-color: #334155;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        h1, h2, h3 { color: var(--secondary-color); font-weight: 700; }
+        .header { background-color: var(--card-bg); padding: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); text-decoration: none; }
+        .logo span { color: var(--primary-color); }
+        .nav-links a { text-decoration: none; color: var(--text-color); font-weight: 500; margin-left: 1.5rem; padding: 0.5rem 1rem; border-radius: 6px; transition: all 0.3s ease; }
+        .nav-links .signup-btn { background-color: var(--primary-color); color: white; }
+        .nav-links a:hover { color: var(--primary-color); }
+        .nav-links .signup-btn:hover { background-color: #008a6e; color: white; }
+        .hero { background-color: var(--card-bg); padding: 5rem 0; display: flex; align-items: center; }
+        .hero-content { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+        .hero-text { flex: 1; }
+        .hero-text .subtitle { font-weight: 600; color: var(--primary-color); margin-bottom: 0.5rem; }
+        .hero-text h1 { font-size: 3rem; line-height: 1.2; margin-bottom: 1.5rem; }
+        .hero-text p { font-size: 1.1rem; color: #64748b; margin-bottom: 2rem; }
+        .hero-text .cta-button { background-color: var(--primary-color); color: white; text-decoration: none; padding: 0.9rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; transition: background-color 0.3s ease; display: inline-block; }
+        .hero-text .cta-button:hover { background-color: #008a6e; }
+        .hero-image { flex: 1; text-align: center; }
+        .hero-image img { max-width: 100%; height: auto; border-radius: 12px; }
+        .services { padding: 5rem 0; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 { font-size: 2.5rem; }
+        .section-header p { font-size: 1.1rem; color: #64748b; max-width: 600px; margin: 0.5rem auto 0; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .service-item { background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid transparent; transition: all 0.3s ease; }
+        .service-item:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-top-color: var(--primary-color); }
+        .service-item .icon { font-size: 3rem; color: var(--primary-color); margin-bottom: 1.5rem; }
+        .service-item h3 { font-size: 1.25rem; margin-bottom: 0.75rem; }
+        .service-item p { font-size: 0.95rem; color: #64748b; line-height: 1.6; }
+        .footer { background-color: var(--secondary-color); color: #e2e8f0; padding: 4rem 0 2rem; text-align: center; }
+        .footer .logo { color: white; margin-bottom: 1rem; }
+        .footer-links { margin: 1.5rem 0; }
+        .footer-links a { color: #e2e8f0; text-decoration: none; margin: 0 1rem; transition: color 0.3s ease; }
+        .footer-links a:hover { color: var(--primary-color); }
+        .footer .copyright { font-size: 0.9rem; color: #94a3b8; margin-top: 2rem; border-top: 1px solid #334155; padding-top: 2rem; }
+        
+        /* ===== YAHAN BADLAV KIYA GAYA HAI ===== */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+        }
+
+        .ad-banner {
+            margin: 2rem auto; /* सेंटर में करें और ऊपर-नीचे थोड़ी जगह दें */
+            text-align: center; /* अगर ad iframe छोटा हो तो सेंटर में दिखे */
+        }
+        
+        @media (max-width: 992px) {
+            .hero-content { flex-direction: column; }
+            .hero-text { text-align: center; }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Hide links by default on mobile */
+                position: absolute;
+                top: 100%; /* Position below navbar */
+                left: 0;
+                width: 100%;
+                background-color: var(--card-bg);
+                flex-direction: column;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            .nav-links.active {
+                display: flex; /* Show links when menu is active */
+            }
+            .nav-links a {
+                margin: 0;
+                padding: 1rem;
+                text-align: center;
+                border-top: 1px solid #f1f5f9;
+                width: 100%;
+            }
+            .nav-links .signup-btn {
+                border-radius: 0;
+            }
+            .hamburger {
+                display: block; /* Show hamburger icon on mobile */
+            }
+            .hero { padding: 3rem 0; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .section-header h2 { font-size: 2rem; }
+        }
+        /* ======================================= */
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">Indian<span>Pay</span></a>
+                
+                <!-- HAMBURGER ICON -->
+                <button class="hamburger" id="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="nav-links">
+                    <a href="#services">Services</a>
+                    <a href="apk-download.html">Download App</a>
+                    <a href="login.html">Login</a>
+                    <a href="signup.html" class="signup-btn">Sign Up Free</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <span class="subtitle">B2B FINTECH NETWORK</span>
+                        <h1>Powering India's Local Economies</h1>
+                        <p>Join our trusted network and transform your shop into a digital financial hub. Offer essential services and earn commissions on every transaction.</p>
+                        <a href="signup.html" class="cta-button">Become a Partner Today</a>
+                    </div>
+                    <div class="hero-image">
+                        <img src="aeps-banner.png" alt="AEPS Aadhaar Enabled Payment System">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Adsterra Banner 1 (Hero Section के बाद) -->
+        <div class="ad-banner">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'd857d237fb905e1f90cb5e279e8182d1',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/d857d237fb905e1f90cb5e279e8182d1/invoke.js"></script>
+        </div>
+
+        <section id="services" class="services">
+            <div class="container">
+                <div class="section-header">
+                    <h2>One Platform, Limitless Possibilities</h2>
+                    <p>Offer a wide range of services that your customers need, all from a single, easy-to-use platform.</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-item"><div class="icon"><i class="fas fa-fingerprint"></i></div><h3>AEPS</h3><p>Provide Aadhaar-based cash withdrawal, balance checks, and mini statements seamlessly.</p></div>
+                    <div class="service-item"><div class="icon"><i class="fas fa-mobile-alt"></i></div><h3>Recharge & Bills</h3><p>Handle all mobile/DTH recharges and utility bill payments (BBPS) for your customers.</p></div>
+                    <div class="service-item"><div class="icon"><i class="fas fa-paper-plane"></i></div><h3>Money Transfer (DMT)</h3><p>Enable secure and instant money transfers to any bank account across the nation.</p></div>
+                    <div class="service-item"><div class="icon"><i class="fas fa-credit-card"></i></div><h3>Micro ATM</h3><p>Turn your shop into an ATM. Accept all debit cards for cash withdrawal services.</p></div>
+                    <div class="service-item"><div class="icon"><i class="fas fa-id-card"></i></div><h3>PAN Card Services</h3><p>Assist customers with applications for new PAN cards or corrections in existing ones.</p></div>
+                    <div class="service-item">
+                        <div class="icon"><i class="fas fa-address-card"></i></div>
+                        <h3>Aadhaar Services</h3>
+                        <p>Provide essential Aadhaar updates like Mobile No, DOB, Gender, Address & Biometric updates for customers.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Adsterra Banner 2 (Services Section के बाद) -->
+        <div class="ad-banner">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '7aa186eebae7e5338f56698a4cff4b02',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/7aa186eebae7e5338f56698a4cff4b02/invoke.js"></script>
+        </div>
+
+        <!-- Adsterra Banner 3 (मुख्य सामग्री के अंत में, फुटर से पहले) -->
+        <div class="ad-banner">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '99b5159c15fafa4abc93239e392327cf',
+                    'format' : 'iframe',
+                    'height' : 60,
+                    'width' : 468,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/99b5159c15fafa4abc93239e392327cf/invoke.js"></script>
+        </div>
+
+        <!-- Adsterra Popunder/Direct Link (यह पूरे पेज पर कहीं भी काम करेगा, आमतौर पर <body> के अंत में रखा जाता है) -->
+        <script type='text/javascript' src='//pl27738277.revenuecpmgate.com/59/ca/79/59ca796781b4124a7036df6a86a4a6b4.js'></script>
+        <a href="https://www.revenuecpmgate.com/nn2w5p6r3k?key=1b9c4bddbe9bf7d8b889e110ca2f80a6" style="display:none;"></a>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <a href="index.html" class="logo">Indian<span>Pay</span></a>
+            <p>Your Trusted Partner in Digital India.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="#services">Services</a>
+                <a href="apk-download.html">Download App</a>
+            </div>
+            <p class="copyright">&copy; 2024 Indian Pay. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- JAVASCRIPT FOR HAMBURGER MENU -->
+    <script>
+        const hamburger = document.getElementById('hamburger-menu');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+
+</body>
+</html>
